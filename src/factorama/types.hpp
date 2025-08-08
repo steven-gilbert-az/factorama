@@ -1,0 +1,138 @@
+#pragma once
+#include <Eigen/Dense>
+#include <memory>
+#include <vector>
+
+namespace factorama
+{
+    namespace VariableType
+    {
+        enum VariableTypeEnum
+        {
+            none = 0,
+            pose,
+            landmark,
+            inverse_range_landmark,
+            extrinsic_rotation,
+            generic,
+            num_variable_types
+        };
+
+        // Bulletproof pattern: constexpr function ensures compile-time safety
+        static constexpr std::array<const char*, num_variable_types> get_variable_names()
+        {
+            std::array<const char*, num_variable_types> names{};
+            names[none] = "none";
+            names[pose] = "pose";
+            names[landmark] = "landmark";
+            names[inverse_range_landmark] = "inverse_range_landmark";
+            names[extrinsic_rotation] = "extrinsic_rotation";
+            names[generic] = "generic";
+            return names;
+        }
+
+        static constexpr auto variable_names = get_variable_names();
+        
+        // Compile-time safety: ensure we didn't miss any enum values
+        static_assert(variable_names.size() == num_variable_types, 
+                     "VariableType: variable_names array size must match num_variable_types");
+        
+        // Additional safety: ensure no strings are null
+        static_assert(variable_names[none] != nullptr && 
+                     variable_names[pose] != nullptr &&
+                     variable_names[landmark] != nullptr &&
+                     variable_names[inverse_range_landmark] != nullptr &&
+                     variable_names[extrinsic_rotation] != nullptr &&
+                     variable_names[generic] != nullptr,
+                     "VariableType: all variable names must be non-null");
+    }
+
+    namespace FactorType
+    {
+        enum FactorTypeEnum
+        {
+            none = 0,
+            bearing_observation,
+            inverse_range_bearing,
+            generic_prior,
+            generic_between,
+            pose_position_prior,
+            pose_orientation_prior,
+            pose_position_between,
+            pose_orientation_between,
+            num_factor_types
+        };
+
+        // Bulletproof pattern: constexpr function ensures compile-time safety
+        static constexpr std::array<const char*, num_factor_types> get_factor_names()
+        {
+            std::array<const char*, num_factor_types> names{};
+            names[none] = "none";
+            names[bearing_observation] = "bearing_observation";
+            names[inverse_range_bearing] = "inverse_range_bearing";
+            names[generic_prior] = "generic_prior";
+            names[generic_between] = "generic_between";
+            names[pose_position_prior] = "pose_position_prior";
+            names[pose_orientation_prior] = "pose_orientation_prior";
+            names[pose_position_between] = "pose_position_between";
+            names[pose_orientation_between] = "pose_orientation_between";
+            return names;
+        }
+
+        static constexpr auto factor_names = get_factor_names();
+        
+        // Compile-time safety: ensure we didn't miss any enum values
+        static_assert(factor_names.size() == num_factor_types, 
+                     "FactorType: factor_names array size must match num_factor_types");
+        
+        // Additional safety: ensure no strings are null
+        static_assert(factor_names[none] != nullptr && 
+                     factor_names[bearing_observation] != nullptr &&
+                     factor_names[inverse_range_bearing] != nullptr &&
+                     factor_names[generic_prior] != nullptr &&
+                     factor_names[generic_between] != nullptr &&
+                     factor_names[pose_position_prior] != nullptr &&
+                     factor_names[pose_orientation_prior] != nullptr &&
+                     factor_names[pose_position_between] != nullptr &&
+                     factor_names[pose_orientation_between] != nullptr,
+                     "FactorType: all factor names must be non-null");
+    }
+
+    class Variable
+    {
+    public:
+        virtual ~Variable() = default;
+        virtual int id() const = 0;
+        // Dimension of the tangent space (e.g. 3 for SO(3), 6 for SE(3))
+        virtual int size() const = 0;
+        // Return the variable’s value as a tangent-space vector
+        virtual const Eigen::VectorXd &value() const = 0;
+        // Set the variable from a new tangent-space vector (used by optimizer)
+        virtual void set_value_from_vector(const Eigen::VectorXd &x) = 0;
+        // Add an increment in tangent space (used by Gauss-Newton/Levenberg-Marquardt)
+        virtual void apply_increment(const Eigen::VectorXd &dx) = 0;
+
+        // Metadata
+        virtual VariableType::VariableTypeEnum type() const = 0;
+        virtual std::string name() const = 0;
+        virtual void print() const = 0;
+        virtual bool is_constant() const = 0;
+        
+        // Clone method for creating deep copies (used for numerical Jacobians)
+        virtual std::shared_ptr<Variable> clone() const = 0;
+    };
+
+    class Factor
+    {
+    public:
+        virtual ~Factor() = default;
+        virtual int id() const = 0;
+        virtual int residual_size() const = 0;
+        virtual Eigen::VectorXd compute_residual() const = 0;
+        virtual void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const = 0;
+        virtual std::vector<std::shared_ptr<Variable>> variables() = 0;
+        virtual double weight() const = 0;
+        virtual std::string name() const = 0;
+        virtual FactorType::FactorTypeEnum type() const = 0;
+    };
+}

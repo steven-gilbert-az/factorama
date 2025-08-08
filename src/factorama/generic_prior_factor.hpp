@@ -1,0 +1,78 @@
+#pragma once
+#include "factorama/types.hpp"
+#include <cassert>
+#include <cmath>
+
+namespace factorama
+{
+
+    class GenericPriorFactor : public Factor
+    {
+    public:
+        GenericPriorFactor(int id,
+                           std::shared_ptr<Variable> variable,
+                           const Eigen::VectorXd &prior_value,
+                           double sigma = 1.0)
+            : id_(id), variable_(std::move(variable)), prior_(prior_value), weight_(1.0 / sigma)
+        {
+            assert(prior_.size() == variable_->size() && "Prior size must match variable size");
+            assert(sigma > 0.0 && "Sigma must be greater than zero");
+        }
+
+        int id() const override
+        {
+            return id_;
+        }
+
+        int residual_size() const override
+        {
+            return prior_.size();
+        }
+
+        Eigen::VectorXd compute_residual() const override
+        {
+            Eigen::VectorXd res = variable_->value() - prior_;
+            return weight_ * res;
+        }
+
+        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
+        {
+            if (variable_->is_constant())
+            {
+                jacobians.emplace_back(); // Empty Jacobian if variable is constant
+            }
+            else
+            {
+                Eigen::MatrixXd J = weight_ * Eigen::MatrixXd::Identity(prior_.size(), prior_.size());
+                jacobians.emplace_back(J);
+            }
+        }
+
+        std::vector<std::shared_ptr<Variable>> variables() override
+        {
+            return {variable_};
+        }
+
+        double weight() const override
+        {
+            return weight_;
+        }
+
+        std::string name() const override
+        {
+            return "GenericPriorFactor(" + variable_->name() + ")";
+        }
+
+        FactorType::FactorTypeEnum type() const override
+        {
+            return FactorType::generic_prior;
+        }
+
+    private:
+        int id_;
+        std::shared_ptr<Variable> variable_;
+        Eigen::VectorXd prior_;
+        double weight_;
+    };
+
+}

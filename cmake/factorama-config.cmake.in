@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find required dependencies
+find_dependency(Eigen3 3.4 REQUIRED)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/factorama-targets.cmake")
+
+check_required_components(factorama)
