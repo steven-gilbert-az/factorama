@@ -120,7 +120,7 @@ factorama/
 - **LandmarkVariable**: 3D world landmarks in Euclidean space  
 - **InverseRangeVariable**: Inverse depth parameterization (1 degree of freedom)
 - **RotationVariable**: Rotation-only variables for calibration
-- **GenericVariable**: Template-based variable for custom types
+- **GenericVariable**: Generic N-dimensional linear variable (uses Eigen::VectorXd and MatrixXd to achieve flexibility without over-templatization)
 
 ### Factors
 
@@ -138,8 +138,33 @@ factorama/
 The library provides optimization via the `SparseOptimizer` class (or just use the Jacobian/residual/update functions and bring your own optimizer):
 
 - **Sparse Linear Algebra**: Uses Eigen's sparse matrix operations for efficient computation
-- **Multiple Algorithms**: Both Gauss-Newton and Levenberg-Marquardt methods
-- **Configurable Settings**: Convergence tolerances, damping parameters, and verbosity controls
+- **Algorithms**: Gauss-Newton and Levenberg-Marquardt
+- **Configurable Settings**: Comprehensive optimization parameters
+
+```cpp
+OptimizerSettings settings;
+
+// Algorithm selection
+settings.method = OptimizerMethod::GaussNewton;        // or LevenbergMarquardt
+
+// Convergence criteria
+settings.max_num_iterations = 100;                     // Maximum iterations
+settings.step_tolerance = 1e-6;                        // ||dx|| threshold
+settings.residual_tolerance = 1e-6;                    // Residual improvement threshold
+
+// Levenberg-Marquardt damping parameters
+settings.initial_lambda = 1e-3;                        // Initial damping
+settings.max_lambda = 1e5;                             // Maximum damping (prevents runaway)
+settings.lambda_up_factor = 10.0;                      // Damping increase factor
+settings.lambda_down_factor = 0.1;                     // Damping decrease factor
+
+// Gauss-Newton step control
+settings.learning_rate = 1.0;                          // Step size (1.0 = full step)
+
+// Debugging and diagnostics
+settings.verbose = false;                              // Enable iteration logging
+settings.check_rank_deficiency = false;                // Enable rank analysis (slower)
+```
 
 ## Build Options
 
@@ -181,18 +206,9 @@ See `integration_test.cpp` for examples including:
 3. Camera-IMU calibration with relative orientation factors
 4. Prior factor constraints
 
-### Inverse Depth Parameterization
-
-See `unit_test.cpp` for examples of inverse depth parameterization.
-
-### Camera-IMU Calibration
-
-The library supports extrinsic calibration between camera and IMU coordinate frames using relative orientation alignment factors.
-
 
 ## Testing
 
-The library includes tests:
 
 ```bash
 # Run all tests
