@@ -148,6 +148,7 @@ namespace factorama
         // Main storage
         std::unordered_map<int, std::shared_ptr<Variable>> variables_map_;
         std::vector<std::shared_ptr<Variable>> variables_vector_;
+        std::unordered_map<int, std::shared_ptr<Factor>> factors_map_;
         std::vector<std::shared_ptr<Factor>> factors_;
 
         // Structure bookkeeping

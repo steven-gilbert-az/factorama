@@ -27,7 +27,7 @@ A C++17 library for factor graph-based optimization using non-linear least squar
 
 ```bash
 # Clone and build
-git clone <repository-url>
+git clone https://github.com/steven-gilbert-az/factorama.git
 cd factorama
 mkdir build && cd build
 
@@ -55,47 +55,7 @@ sudo make install
 
 ### Basic Usage
 
-```cpp
-#include "factorama/factor_graph.hpp"
-#include "factorama/pose_variable.hpp"
-#include "factorama/landmark_variable.hpp"
-#include "factorama/bearing_observation_factor.hpp"
-#include "factorama/sparse_optimizer.hpp"
-
-using namespace factorama;
-
-// Create variables
-Eigen::Matrix<double, 6, 1> pose_vec = Eigen::Matrix<double, 6, 1>::Zero();
-auto camera_pose = std::make_shared<PoseVariable>(1, pose_vec);
-
-Eigen::Vector3d landmark_pos(0.0, 0.0, 5.0);
-auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
-
-// Create factor
-Eigen::Vector3d bearing_vector(0.0, 0.0, 1.0);
-auto factor = std::make_shared<BearingObservationFactor>(
-    0, camera_pose, landmark, bearing_vector, 1.0);
-
-// Build factor graph
-FactorGraph graph;
-graph.add_variable(camera_pose);
-graph.add_variable(landmark);
-graph.add_factor(factor);
-graph.finalize_structure();
-
-// Configure optimizer
-OptimizerSettings settings;
-settings.method = OptimizerMethod::GaussNewton;
-settings.max_num_iterations = 100;
-settings.step_tolerance = 1e-6;
-settings.verbose = true;
-
-// Run optimization
-auto graph_ptr = std::make_shared<FactorGraph>(graph);
-SparseOptimizer optimizer;
-optimizer.setup(graph_ptr, settings);
-optimizer.optimize();
-```
+See [EXAMPLES.md](EXAMPLES.md) for usage examples.
 
 ## Project Structure
 

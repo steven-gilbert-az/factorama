@@ -1635,3 +1635,47 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         REQUIRE(is_approx_equal(x1, x0 + dx));
     }
 }
+
+TEST_CASE("FactorGraph ID Collision Detection", "[factor_graph][error_handling]")
+{
+    SECTION("Variable ID collision should throw exception")
+    {
+        FactorGraph graph;
+        
+        // Add first variable with ID = 1
+        auto var1 = std::make_shared<LandmarkVariable>(1, Eigen::Vector3d(1.0, 2.0, 3.0));
+        REQUIRE_NOTHROW(graph.add_variable(var1));
+        
+        // Try to add second variable with same ID = 1
+        auto var2 = std::make_shared<LandmarkVariable>(1, Eigen::Vector3d(4.0, 5.0, 6.0));
+        REQUIRE_THROWS_AS(graph.add_variable(var2), std::runtime_error);
+        
+        // Different ID should work fine
+        auto var3 = std::make_shared<LandmarkVariable>(2, Eigen::Vector3d(7.0, 8.0, 9.0));
+        REQUIRE_NOTHROW(graph.add_variable(var3));
+    }
+    
+    SECTION("Factor ID collision should throw exception")
+    {
+        FactorGraph graph;
+        
+        // Set up variables
+        auto pose = std::make_shared<PoseVariable>(1, Eigen::Matrix<double, 6, 1>::Zero());
+        auto landmark = std::make_shared<LandmarkVariable>(2, Eigen::Vector3d(0.0, 0.0, 5.0));
+        graph.add_variable(pose);
+        graph.add_variable(landmark);
+        
+        // Add first factor with ID = 10
+        Eigen::Vector3d bearing(0.0, 0.0, 1.0);
+        auto factor1 = std::make_shared<BearingObservationFactor>(10, pose, landmark, bearing, 1.0);
+        REQUIRE_NOTHROW(graph.add_factor(factor1));
+        
+        // Try to add second factor with same ID = 10
+        auto factor2 = std::make_shared<BearingObservationFactor>(10, pose, landmark, bearing, 1.0);
+        REQUIRE_THROWS_AS(graph.add_factor(factor2), std::runtime_error);
+        
+        // Different ID should work fine
+        auto factor3 = std::make_shared<BearingObservationFactor>(11, pose, landmark, bearing, 1.0);
+        REQUIRE_NOTHROW(graph.add_factor(factor3));
+    }
+}

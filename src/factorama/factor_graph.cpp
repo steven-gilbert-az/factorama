@@ -7,12 +7,23 @@ namespace factorama
 {
     void FactorGraph::add_variable(const std::shared_ptr<Variable> &variable)
     {
+        if (variables_map_.find(variable->id()) != variables_map_.end())
+        {
+            throw std::runtime_error("Variable with ID " + std::to_string(variable->id()) + 
+                                   " already exists in factor graph. Variable IDs must be unique.");
+        }
         variables_map_[variable->id()] = variable;
         variables_vector_.push_back(variable);
     }
 
     void FactorGraph::add_factor(const std::shared_ptr<Factor> &factor)
     {
+        if (factors_map_.find(factor->id()) != factors_map_.end())
+        {
+            throw std::runtime_error("Factor with ID " + std::to_string(factor->id()) + 
+                                   " already exists in factor graph. Factor IDs must be unique.");
+        }
+        factors_map_[factor->id()] = factor;
         factors_.push_back(factor);
     }
 
@@ -272,7 +283,7 @@ namespace factorama
                 if (!var_placement_valid)
                 {
                     throw std::runtime_error("Variable placement not found for variable: " + 
-                                           var->print() + 
+                                           var->name() + 
                                            ". Variable may not have been added to the factor graph.");
                 }
 
