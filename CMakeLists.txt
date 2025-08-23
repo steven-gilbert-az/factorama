@@ -62,6 +62,12 @@ add_executable(optimize src/factorama_test/sparse_optimize.cpp)
 target_link_libraries(optimize PRIVATE factorama)
 
 
+# DELETE ME
+# === Example executable ===
+add_executable(example1 examples/01_simple_localization.cpp)
+target_link_libraries(example1 PRIVATE factorama)
+
+
 # === GTSAM support ===
 if(GTSAM)
     message(STATUS "Building GTSAM benchmark test...")
@@ -98,6 +104,14 @@ if(BUILD_TESTS)
     add_factorama_test(unit_test src/factorama_test/unit_test.cpp)
     add_factorama_test(integration_test src/factorama_test/integration_test.cpp)
     add_factorama_test(optimizer_test src/factorama_test/optimizer_test.cpp)
+    
+    # Solver benchmark executable (standalone, not a Catch2 test)
+    add_executable(solver_benchmark src/factorama_test/solver_benchmark.cpp)
+    target_link_libraries(solver_benchmark
+        PRIVATE
+            factorama
+    )
+    target_compile_features(solver_benchmark PRIVATE cxx_std_17)
     
     # Discover and register tests
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.10)
