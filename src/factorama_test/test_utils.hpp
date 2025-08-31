@@ -9,6 +9,7 @@
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
 #include "factorama/pose_between_factors.hpp"
+#include "factorama/bearing_projection_factor_2d.hpp"
 
 namespace factorama
 {
@@ -498,6 +499,122 @@ namespace factorama
         }
 
         std::cout << "==========================================\n";
+    }
+
+    // Creates a factor graph using BearingProjectionFactor2D instead of BearingObservationFactor
+    inline FactorGraph CreateGraphWithBearingProjection2D(std::vector<Eigen::Matrix<double, 6, 1>> camera_poses,
+                                                          std::vector<Eigen::Vector3d> landmark_positions,
+                                                          bool random_noise,
+                                                          bool constant_pose,
+                                                          bool prior_factors,
+                                                          double noise_sigma = 0.04,
+                                                          double sparsity = 0.0)
+    {
+        FactorGraph graph;
+        int var_id = 0;
+        int factor_id = 0;
+
+        std::mt19937 rng(42);                                     // fixed seed for reproducibility
+        std::normal_distribution<double> noise(0.0, noise_sigma); // small perturbation
+
+        std::vector<std::shared_ptr<PoseVariable>> poses;
+        std::vector<std::shared_ptr<PoseVariable>> truth_poses;
+        for (size_t i = 0; i < camera_poses.size(); i++)
+        {
+            auto original_cam_pose = camera_poses[i];
+            auto cam_pose = camera_poses[i];
+
+            if (random_noise && i != 0)
+            {
+                // Noise up the camera position (except the first one)
+                cam_pose.segment<3>(0) += random_vector3d(noise, rng);
+                // Noise up the camera orientation
+                cam_pose.segment<3>(3) += random_vector3d(noise, rng);
+            }
+
+            auto pose = std::make_shared<PoseVariable>(var_id++, cam_pose);
+
+            if (constant_pose || i == 0)
+            {
+                pose->set_constant(true);
+            }
+            else if (prior_factors)
+            {
+                // Create a pair of prior factors (position / orientation)
+                Eigen::Vector3d pos_prior = original_cam_pose.segment<3>(0);
+                Eigen::Vector3d rot_prior = original_cam_pose.segment<3>(3);
+
+                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose, pos_prior, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose, rot_prior, noise_sigma);
+                graph.add_factor(position_prior);
+                graph.add_factor(rotation_prior);
+            }
+            graph.add_variable(pose);
+
+            poses.push_back(pose);
+
+            // add truth pose
+            auto truth_pose = std::make_shared<PoseVariable>(var_id++, original_cam_pose);
+            truth_poses.push_back(truth_pose);
+        }
+        std::vector<std::shared_ptr<LandmarkVariable>> landmarks;
+
+        for (auto lm_pos : landmark_positions)
+        {
+            auto original_lm_pos = lm_pos;
+            if (random_noise)
+            {
+                lm_pos += random_vector3d(noise, rng);
+            }
+            auto landmark = std::make_shared<LandmarkVariable>(
+                var_id++, lm_pos);
+            landmarks.push_back(landmark);
+            graph.add_variable(landmark);
+            if (prior_factors)
+            {
+                // Create landmark prior factor
+                auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmark, original_lm_pos, noise_sigma);
+                graph.add_factor(landmark_prior);
+            }
+        }
+
+        for (size_t pose_num = 0; pose_num < poses.size(); pose_num++)
+        {
+            // Generate bearing measurements for each landmark
+            auto pose = poses[pose_num];
+            auto truth_pose = truth_poses[pose_num];
+            auto dcm_CW = truth_pose->dcm_CW();
+            for (size_t lm_num = 0; lm_num < landmarks.size(); lm_num++)
+            {
+                // Randomly choose whether to populate the bearing factor based on "filled_in"
+                double tmp = rng();
+                tmp /= static_cast<double>(rng.max());
+                if (tmp < sparsity)
+                {
+                    continue; // Skip this landmark for this camera
+                }
+
+                auto lm_pos = landmark_positions[lm_num];
+                auto lm = landmarks[lm_num];
+
+                Eigen::Vector3d pos_C = dcm_CW * (lm_pos - truth_pose->pos_W());
+                Eigen::Vector3d bearing = pos_C.normalized();
+
+                double angle_noise_mult = 0.1;
+                double angle_noise_sigma = noise_sigma * angle_noise_mult; // assume angles sensor is more accurate than position.
+                if (random_noise)
+                {
+                    bearing += random_vector3d(noise, rng) * angle_noise_mult; // Bearing noise
+                    bearing = bearing.normalized();
+                }
+
+                // Use BearingProjectionFactor2D instead of BearingObservationFactor
+                auto factor = std::make_shared<BearingProjectionFactor2D>(factor_id++, pose, lm, bearing, angle_noise_sigma);
+                graph.add_factor(factor);
+            }
+        }
+
+        return graph;
     }
 
 }

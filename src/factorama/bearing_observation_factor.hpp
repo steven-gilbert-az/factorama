@@ -20,8 +20,8 @@ namespace factorama
             double angle_sigma = 1.0,
             bool do_so3_nudge = true)
             : id_(id),
-              pose_var_(std::move(pose_var)),
-              landmark_var_(std::move(landmark_var)),
+              pose_var_(pose_var),
+              landmark_var_(landmark_var),
               bearing_C_obs_(bearing_C_observed.normalized()),
               weight_(1.0 / angle_sigma),
               do_so3_nudge_(do_so3_nudge)

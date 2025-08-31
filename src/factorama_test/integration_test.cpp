@@ -6,6 +6,7 @@
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/bearing_observation_factor.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
+#include "factorama/bearing_projection_factor_2d.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/sparse_optimizer.hpp"
 #include "factorama_test/test_utils.hpp"
@@ -232,6 +233,42 @@ TEST_CASE("Consolidated Integration Tests")
             },
             settings8,
             false, 1e-6, false
+        });
+    }
+    
+    // Scenario 9: BearingProjectionFactor2D basic test
+    {
+        OptimizerSettings settings9;
+        settings9.method = OptimizerMethod::GaussNewton;
+        settings9.verbose = true;
+        scenarios.push_back({
+            "Full optimization with BearingProjectionFactor2D",
+            []() {
+                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                std::vector<Eigen::Vector3d> gt_landmark_positions;
+                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, false);
+            },
+            settings9,
+            false, 1e-6, true
+        });
+    }
+    
+    // Scenario 10: BearingProjectionFactor2D with prior factors  
+    {
+        OptimizerSettings settings10;
+        settings10.method = OptimizerMethod::GaussNewton;
+        settings10.verbose = true;
+        scenarios.push_back({
+            "Full optimization with BearingProjectionFactor2D and prior factors",
+            []() {
+                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                std::vector<Eigen::Vector3d> gt_landmark_positions;
+                CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
+                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, true, 0.005);
+            },
+            settings10,
+            false, 1e-6, true
         });
     }
     

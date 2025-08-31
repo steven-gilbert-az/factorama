@@ -13,8 +13,10 @@
 #include "factorama/generic_prior_factor.hpp"
 #include "factorama/pose_between_factors.hpp"
 #include "factorama/pose_prior_factors.hpp"
+#include "factorama/rotation_prior_factor.hpp"
 #include "factorama/random_utils.hpp"
 #include "factorama/numerical_jacobian.hpp"
+#include "factorama/bearing_projection_factor_2d.hpp"
 
 using namespace factorama;
 
@@ -1677,5 +1679,279 @@ TEST_CASE("FactorGraph ID Collision Detection", "[factor_graph][error_handling]"
         // Different ID should work fine
         auto factor3 = std::make_shared<BearingObservationFactor>(11, pose, landmark, bearing, 1.0);
         REQUIRE_NOTHROW(graph.add_factor(factor3));
+    }
+}
+
+// ============================================================================
+// BearingProjectionFactor2D Tests
+// ============================================================================
+
+TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computation", "[bearing_projection_2d][residual]")
+{
+    // Setup: camera at origin, looking down +Z axis
+    Eigen::Matrix<double, 6, 1> pose_vec = Eigen::Matrix<double, 6, 1>::Zero();
+    auto pose = std::make_shared<PoseVariable>(1, pose_vec);
+    
+    // Landmark at (1, 0, 5) - offset to the right
+    Eigen::Vector3d landmark_pos(1.0, 0.0, 5.0);
+    auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
+    
+    // Perfect bearing measurement pointing toward the landmark
+    Eigen::Vector3d bearing_k(1.0, 0.0, 5.0);
+    bearing_k.normalize();
+    
+    SECTION("Perfect measurement should give near-zero residual")
+    {
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0);
+        
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 2);
+        REQUIRE(residual.norm() < kTol);
+    }
+    
+    SECTION("Misaligned measurement should give non-zero residual")
+    {
+        // Introduce bearing error
+        Eigen::Vector3d wrong_bearing(0.0, 0.0, 1.0); // straight ahead instead of angled
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, 1.0);
+        
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 2);
+        REQUIRE(residual.norm() > 1e-6); // Should be significantly non-zero
+    }
+    
+    SECTION("Weight scaling works correctly")
+    {
+        double sigma = 0.5;
+        double expected_weight = 1.0 / sigma;
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, sigma);
+        
+        REQUIRE(std::abs(factor->weight() - expected_weight) < kTol);
+        
+        // Residual should be scaled by weight
+        Eigen::Vector3d wrong_bearing(0.0, 0.0, 1.0);
+        auto factor_wrong = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, sigma);
+        Eigen::VectorXd weighted_residual = factor_wrong->compute_residual();
+        
+        // Compare with unit weight version
+        auto factor_unit = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, 1.0);
+        Eigen::VectorXd unit_residual = factor_unit->compute_residual();
+        
+        Eigen::VectorXd expected_weighted = expected_weight * unit_residual;
+        REQUIRE(is_approx_equal(weighted_residual, expected_weighted, kTol));
+    }
+}
+
+TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation", "[bearing_projection_2d][jacobian]")
+{
+    // Setup with non-trivial pose and landmark positions
+    Eigen::Matrix<double, 6, 1> pose_vec;
+    pose_vec << 0.5, -0.3, 0.2, 0.1, -0.05, 0.15; // [tx, ty, tz, rx, ry, rz]
+    auto pose = std::make_shared<PoseVariable>(1, pose_vec);
+    
+    Eigen::Vector3d landmark_pos(2.0, 1.5, 4.0);
+    auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
+    
+    // Bearing measurement with some reasonable direction
+    Eigen::Vector3d bearing_k(0.3, 0.4, 0.8);
+    bearing_k.normalize();
+    
+    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0);
+    
+    SECTION("Analytic vs numerical Jacobians should match")
+    {
+        // Compute analytic Jacobians
+        std::vector<Eigen::MatrixXd> analytic_jacobians;
+        factor->compute_jacobians(analytic_jacobians);
+        
+        // Compute numerical Jacobians
+        std::vector<Eigen::MatrixXd> numerical_jacobians;
+        ComputeNumericalJacobians(*factor, numerical_jacobians, 1e-6);
+        
+        REQUIRE(analytic_jacobians.size() == 2);
+        REQUIRE(numerical_jacobians.size() == 2);
+        
+        // Check pose Jacobian (2x6)
+        REQUIRE(analytic_jacobians[0].rows() == 2);
+        REQUIRE(analytic_jacobians[0].cols() == 6);
+        REQUIRE(numerical_jacobians[0].rows() == 2);
+        REQUIRE(numerical_jacobians[0].cols() == 6);
+
+        
+        for (int i = 0; i < analytic_jacobians[0].rows(); ++i) {
+            for (int j = 0; j < analytic_jacobians[0].cols(); ++j) {
+                REQUIRE(std::abs(analytic_jacobians[0](i,j) - numerical_jacobians[0](i,j)) < 1e-6);
+            }
+        }
+        
+        // Check landmark Jacobian (2x3)
+        REQUIRE(analytic_jacobians[1].rows() == 2);
+        REQUIRE(analytic_jacobians[1].cols() == 3);
+        REQUIRE(numerical_jacobians[1].rows() == 2);
+        REQUIRE(numerical_jacobians[1].cols() == 3);
+        
+        for (int i = 0; i < analytic_jacobians[1].rows(); ++i) {
+            for (int j = 0; j < analytic_jacobians[1].cols(); ++j) {
+                REQUIRE(std::abs(analytic_jacobians[1](i,j) - numerical_jacobians[1](i,j)) < 1e-6);
+            }
+        }
+    }
+    
+    SECTION("Multiple random configurations should all pass Jacobian test")
+    {
+        // Test several random configurations to ensure robustness
+        for (int test_idx = 0; test_idx < 5; ++test_idx) {
+            // Random pose
+            Eigen::Matrix<double, 6, 1> rand_pose = Eigen::Matrix<double, 6, 1>::Random() * 0.5;
+            pose->set_value_from_vector(rand_pose);
+            
+            // Random landmark (keep reasonable distance from camera)
+            Eigen::Vector3d rand_landmark = Eigen::Vector3d::Random() * 2.0 + Eigen::Vector3d(0, 0, 3);
+            landmark->set_pos_W(rand_landmark);
+            
+            // Compute Jacobians
+            std::vector<Eigen::MatrixXd> analytic_jac, numerical_jac;
+            factor->compute_jacobians(analytic_jac);
+            ComputeNumericalJacobians(*factor, numerical_jac, 1e-6);
+            
+            // Check agreement
+            for (int i = 0; i < 2; ++i) {
+                for (int r = 0; r < analytic_jac[i].rows(); ++r) {
+                    for (int c = 0; c < analytic_jac[i].cols(); ++c) {
+                        double diff = std::abs(analytic_jac[i](r,c) - numerical_jac[i](r,c));
+                        REQUIRE(diff < 1e-5);
+                    }
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("BearingProjectionFactor2D: Edge case handling for small alpha", "[bearing_projection_2d][edge_cases]")
+{
+    // Setup where landmark is behind or very close to the camera
+    Eigen::Matrix<double, 6, 1> pose_vec = Eigen::Matrix<double, 6, 1>::Zero();
+    auto pose = std::make_shared<PoseVariable>(1, pose_vec);
+    
+    SECTION("Landmark behind camera (negative alpha)")
+    {
+        // Landmark behind the camera
+        Eigen::Vector3d landmark_pos(0.0, 0.0, -2.0);
+        auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
+        
+        // Bearing pointing forward (but landmark is behind)
+        Eigen::Vector3d bearing_k(0.0, 0.0, 1.0);
+        
+        double eps = 1e-6;
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0, eps);
+        
+        // Should return large residual and not crash
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 2);
+        REQUIRE(residual.norm() > 1.0); // Should be large
+        
+        // Jacobians should be zero/small
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor->compute_jacobians(jacobians);
+        REQUIRE(jacobians.size() == 2);
+        REQUIRE(jacobians[0].norm() < 1e-3); // Should be near zero
+        REQUIRE(jacobians[1].norm() < 1e-3); // Should be near zero
+    }
+    
+    SECTION("Landmark very close to camera (small positive alpha)")
+    {
+        // Landmark very close but slightly in front
+        Eigen::Vector3d landmark_pos(0.0, 0.0, 1e-8);
+        auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
+        
+        Eigen::Vector3d bearing_k(0.0, 0.0, 1.0);
+        
+        double eps = 1e-6;
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0, eps);
+        
+        // Should handle gracefully
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 2);
+        REQUIRE(std::isfinite(residual.norm())); // Should not be NaN/inf
+        
+        std::vector<Eigen::MatrixXd> jacobians;
+        REQUIRE_NOTHROW(factor->compute_jacobians(jacobians));
+    }
+}
+
+TEST_CASE("BearingProjectionFactor2D: Integration test with optimization convergence", "[bearing_projection_2d][integration]")
+{
+    // Setup initial guess with some error
+    Eigen::Matrix<double, 6, 1> initial_pose;
+    initial_pose << 0.1, -0.05, 0.02, 0.03, -0.01, 0.04; // small errors
+    auto pose = std::make_shared<PoseVariable>(1, initial_pose);
+    
+    // True landmark position
+    Eigen::Vector3d true_landmark(1.5, 1.0, 4.0);
+    // Initial landmark guess with error
+    Eigen::Vector3d initial_landmark = true_landmark + Eigen::Vector3d(0.2, -0.1, 0.3);
+    auto landmark = std::make_shared<LandmarkVariable>(2, initial_landmark);
+    
+    // Generate "measurement" from true values
+    Eigen::Matrix<double, 6, 1> true_pose = Eigen::Matrix<double, 6, 1>::Zero();
+    auto true_pose_var = std::make_shared<PoseVariable>(999, true_pose); // temporary for measurement generation
+    
+    // Compute expected bearing from true pose to true landmark
+    Eigen::Vector3d delta_W = true_landmark - true_pose_var->pos_W();
+    Eigen::Vector3d bearing_C_true = true_pose_var->dcm_CW() * delta_W;
+    bearing_C_true.normalize();
+    
+    // Create factor with this "perfect" measurement
+    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_C_true, 0.1);
+    
+    SECTION("Single iteration should reduce residual")
+    {
+        // Compute initial residual
+        Eigen::VectorXd initial_residual = factor->compute_residual();
+        double initial_cost = 0.5 * initial_residual.squaredNorm();
+        
+        // Compute Jacobians for Gauss-Newton step
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor->compute_jacobians(jacobians);
+        
+        // Simple Gauss-Newton step (assuming single factor)
+        Eigen::MatrixXd H = Eigen::MatrixXd::Zero(9, 9); // 6 (pose) + 3 (landmark)
+        Eigen::VectorXd b = Eigen::VectorXd::Zero(9);
+        
+        // Accumulate pose contribution
+        if (jacobians[0].size() > 0) {
+            H.block<6, 6>(0, 0) += jacobians[0].transpose() * jacobians[0];
+            b.segment<6>(0) += jacobians[0].transpose() * initial_residual;
+        }
+        
+        // Accumulate landmark contribution
+        if (jacobians[1].size() > 0) {
+            H.block<3, 3>(6, 6) += jacobians[1].transpose() * jacobians[1];
+            b.segment<3>(6) += jacobians[1].transpose() * initial_residual;
+        }
+        
+        // Cross terms
+        if (jacobians[0].size() > 0 && jacobians[1].size() > 0) {
+            H.block<6, 3>(0, 6) += jacobians[0].transpose() * jacobians[1];
+            H.block<3, 6>(6, 0) += jacobians[1].transpose() * jacobians[0];
+        }
+        
+        // Solve for increment
+        Eigen::VectorXd dx = H.ldlt().solve(-b);
+        
+        // Apply increments
+        if (jacobians[0].size() > 0) {
+            pose->apply_increment(dx.segment<6>(0));
+        }
+        if (jacobians[1].size() > 0) {
+            landmark->apply_increment(dx.segment<3>(6));
+        }
+        
+        // Check that cost decreased
+        Eigen::VectorXd final_residual = factor->compute_residual();
+        double final_cost = 0.5 * final_residual.squaredNorm();
+        
+        REQUIRE(final_cost < initial_cost);
+        REQUIRE(final_residual.norm() < initial_residual.norm());
     }
 }

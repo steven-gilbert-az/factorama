@@ -5,6 +5,7 @@
 
 #include "factorama/sparse_optimizer.hpp"
 #include "factorama/factor_graph.hpp"
+#include "factorama/bearing_projection_factor_2d.hpp"
 #include "factorama_test/test_utils.hpp"
 
 using namespace factorama;
@@ -55,7 +56,7 @@ void CreateLargeScenario(std::vector<Eigen::Matrix<double, 6, 1>>& camera_poses,
               << num_landmarks << " landmarks\n";
 }
 
-void RunSolverBenchmark()
+void RunSolverBenchmark(bool use_2d_bearing_factors)
 {
     std::cout << "\n" << std::string(60, '=') << "\n";
     std::cout << "           FACTORAMA SOLVER BENCHMARK\n"; 
@@ -94,18 +95,38 @@ void RunSolverBenchmark()
         
         // Create fresh factor graph for each test
         auto graph = std::make_shared<FactorGraph>();
-        *graph = CreateGraphWithLandmarks(
-            gt_camera_poses, 
-            gt_landmark_positions, 
-            true,    // random_noise
-            false,   // constant_pose (let poses optimize)
-            true,    // prior_factors
-            0.08,    // noise_sigma (moderate noise)
-            0.1      // sparsity (10% missing observations)
-        );
+        if (use_2d_bearing_factors) {  // Use BearingProjectionFactor2D for LevenbergMarquardt
+            std::cout << "Using 2d bearing factor" << std::endl;
+            *graph = CreateGraphWithBearingProjection2D(
+                gt_camera_poses, 
+                gt_landmark_positions, 
+                true,    // random_noise
+                false,   // constant_pose (let poses optimize)
+                true,    // prior_factors
+                0.08,    // noise_sigma (moderate noise)
+                0.1      // sparsity (10% missing observations)
+            );
+        } else {
+            std::cout << "Using 3d bearing factor" << std::endl;
+            *graph = CreateGraphWithLandmarks(
+                gt_camera_poses, 
+                gt_landmark_positions, 
+                true,    // random_noise
+                false,   // constant_pose (let poses optimize)
+                true,    // prior_factors
+                0.08,    // noise_sigma (moderate noise)
+                0.1      // sparsity (10% missing observations)
+            );
+        }
         
         graph->set_sparse_jacobians(true);
         graph->finalize_structure();
+
+        // Run the jacobian test!
+        if(!graph->detailed_factor_test(1e-6, false)) {
+            // If it failed, re run it with verbose true
+            graph->detailed_factor_test(1e-6, true);
+        }
         
         // Print Jacobian size
         const Eigen::SparseMatrix<double>& J = graph->compute_sparse_jacobian_matrix();
@@ -156,11 +177,12 @@ void RunSolverBenchmark()
                   << result.total_time_ms << " ms\n";
         std::cout << "  Avg time/iter: " << std::fixed << std::setprecision(2) 
                   << result.avg_time_per_iter_ms << " ms\n";
-        
-        if (result.initial_residual > 0) {
-            double improvement = (result.initial_residual - result.final_residual) / result.initial_residual * 100.0;
-            std::cout << "  Improvement: " << std::fixed << std::setprecision(1) 
-                      << improvement << "%\n";
+
+        // Rerun the detailed factor test again, after optimization
+                // Run the jacobian test!
+        if(!graph->detailed_factor_test(1e-6, false)) {
+            // If it failed, re run it with verbose true
+            graph->detailed_factor_test(1e-6, true);
         }
     }
     
@@ -207,7 +229,8 @@ void RunSolverBenchmark()
 int main()
 {
     try {
-        RunSolverBenchmark();
+        RunSolverBenchmark(false);
+        RunSolverBenchmark(true);
         return 0;
     }
     catch (const std::exception& e) {

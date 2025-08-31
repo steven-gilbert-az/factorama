@@ -7,10 +7,10 @@ namespace factorama
     void BearingObservationFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const
     {
         const Eigen::Matrix3d &dcm_CW = pose_var_->dcm_CW();
-        const Eigen::Vector3d &t_CW = pose_var_->pos_W();
+        const Eigen::Vector3d &pos_W_cam = pose_var_->pos_W();
         const Eigen::Vector3d landmark_W = landmark_var_->pos_W();
 
-        Eigen::Vector3d pos_C = dcm_CW * (landmark_W - t_CW);
+        Eigen::Vector3d pos_C = dcm_CW * (landmark_W - pos_W_cam);
         double pos_C_norm = pos_C.norm();
         
         if (pos_C_norm < MIN_DISTANCE_FROM_CAMERA) {
@@ -45,7 +45,7 @@ namespace factorama
             else
             {
                 // Use simple skew-symmetric jacobian (original approach)
-                Eigen::Matrix3d skew = -dcm_CW * skew_symmetric(landmark_W - t_CW);
+                Eigen::Matrix3d skew = -dcm_CW * skew_symmetric(landmark_W - pos_W_cam);
                 J_pose.block<3, 3>(0, 3) = weight_ * d_bearing_d_pos * skew;
             }
         }

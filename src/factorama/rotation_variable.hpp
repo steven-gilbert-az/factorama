@@ -65,6 +65,10 @@ namespace factorama
             }
         }
 
+        Eigen::Matrix3d& dcm_AB() {
+            return dcm_AB_;
+        }
+
         void print() const override
         {
             std::cout << "RotationVariable (Camera-to-External) ID " << id_ << std::endl;

@@ -13,7 +13,7 @@ namespace factorama
                            std::shared_ptr<Variable> variable,
                            const Eigen::VectorXd &prior_value,
                            double sigma = 1.0)
-            : id_(id), variable_(std::move(variable)), prior_(prior_value), weight_(1.0 / sigma)
+            : id_(id), variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
         {
             assert(prior_.size() == variable_->size() && "Prior size must match variable size");
             assert(sigma > 0.0 && "Sigma must be greater than zero");

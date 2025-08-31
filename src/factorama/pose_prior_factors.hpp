@@ -14,7 +14,7 @@ namespace factorama
                                 std::shared_ptr<PoseVariable> pose,
                                 const Eigen::Vector3d &pos_prior,
                                 double sigma = 1.0)
-            : id_(id), pose_(std::move(pose)), pos_prior_(pos_prior), weight_(1.0 / sigma)
+            : id_(id), pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
         {
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
@@ -85,7 +85,7 @@ namespace factorama
                                    const Eigen::Vector3d &rotvec_prior,
                                    double sigma = 1.0,
                                    bool do_so3_nudge = true)
-            : id_(id), pose_(std::move(pose)), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
+            : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
         {
             assert(do_so3_nudge == pose_->do_so3_nudge() && "do_so3_nudge must match pose");
             assert(sigma > 0.0 && "Sigma must be greater than zero");

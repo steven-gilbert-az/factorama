@@ -19,6 +19,7 @@ endif()
 # Options
 option(GTSAM "Enable building of GTSAM example" OFF)
 option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_EXAMPLES "Build example programs" OFF)
 
 # Find required packages
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
@@ -35,6 +36,7 @@ add_library(factorama)
 target_sources(factorama
     PRIVATE
         src/factorama/bearing_observation_factor.cpp
+        src/factorama/bearing_projection_factor_2d.cpp
         src/factorama/factor_graph.cpp
         src/factorama/inverse_range_bearing_factor.cpp  
         src/factorama/sparse_optimizer.cpp
@@ -62,10 +64,14 @@ add_executable(optimize src/factorama_test/sparse_optimize.cpp)
 target_link_libraries(optimize PRIVATE factorama)
 
 
-# DELETE ME
-# === Example executable ===
-add_executable(example1 examples/01_simple_localization.cpp)
-target_link_libraries(example1 PRIVATE factorama)
+# === Examples ===
+if(BUILD_EXAMPLES)
+    add_executable(example1 examples/01_simple_localization.cpp)
+    target_link_libraries(example1 PRIVATE factorama)
+    
+    add_executable(example2 examples/02_landmark_triangulation.cpp)
+    target_link_libraries(example2 PRIVATE factorama)
+endif()
 
 
 # === GTSAM support ===
