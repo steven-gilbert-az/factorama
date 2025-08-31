@@ -16,6 +16,7 @@ namespace factorama
                                 double sigma = 1.0)
             : id_(id), pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
         {
+            assert(pose != nullptr && "pose cannot be nullptr");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
@@ -87,6 +88,7 @@ namespace factorama
                                    bool do_so3_nudge = true)
             : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
         {
+            assert(pose != nullptr && "pose cannot be nullptr");
             assert(do_so3_nudge == pose_->do_so3_nudge() && "do_so3_nudge must match pose");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }

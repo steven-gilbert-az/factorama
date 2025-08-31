@@ -17,6 +17,7 @@ namespace factorama
                                    bool do_so3_nudge = true)
             : id_(id), rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
         {
+            assert(rotation != nullptr && "rotation variable cannot be nullptr");
             assert(do_so3_nudge == true && "do_so3_nudge now mandatory for this factor");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }

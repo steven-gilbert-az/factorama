@@ -24,6 +24,8 @@ namespace factorama
               weight_(1.0 / sigma),
               reverse_depth_tolerance_(along_tolerance_epsilon)
         {
+            assert(pose != nullptr && "pose cannot be nullptr");
+            assert(landmark != nullptr && "landmark cannot be nullptr");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
             compute_tangent_basis();
         }

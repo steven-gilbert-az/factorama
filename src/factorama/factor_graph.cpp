@@ -274,6 +274,10 @@ namespace factorama
 
             for (const auto &var : factor->variables())
             {
+                if(var == nullptr) {
+                    throw std::runtime_error("Factor: " + factor->name() + "variable was null");
+                }
+
                 if (var->is_constant()) {
                     continue;
                 }

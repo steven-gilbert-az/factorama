@@ -16,6 +16,9 @@ namespace factorama
                              double sigma = 1.0)
             : id_(id), var_a_(var_a), var_b_(var_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
+            assert(var_a != nullptr && "var_a cannot be nullptr");
+            assert(var_b != nullptr && "var_b cannot be nullptr");
+            assert(measured_diff != nullptr && "measured_diff cannot be nullptr");
             assert(var_a_->size() == var_b_->size() &&
                    "BetweenFactor: variable size mismatch");
 

@@ -26,6 +26,8 @@ namespace factorama
               weight_(1.0 / angle_sigma),
               do_so3_nudge_(do_so3_nudge)
         {
+            assert(pose_var != nullptr && "pose_var cannot be nullptr");
+            assert(landmark_var != nullptr && "landmark_var cannot be nullptr");
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
         }
 

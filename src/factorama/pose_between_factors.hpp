@@ -18,6 +18,9 @@ namespace factorama
                                   double sigma = 1.0)
             : id_(id), pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
+            assert(pose_a != nullptr && "pose_a cannot be nullptr");
+            assert(pose_b != nullptr && "pose_b cannot be nullptr");
+            assert(measured_diff != nullptr && "measured_diff cannot be nullptr");
             assert(measured_diff_->size() == 3 && "PosePositionBetweenFactor: measured_diff must be 3D");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
@@ -123,6 +126,9 @@ namespace factorama
               weight_(1.0 / angle_sigma),
               do_so3_nudge_(do_so3_nudge)
         {
+            assert(pose1 != nullptr && "pose1 cannot be nullptr");
+            assert(pose2 != nullptr && "pose2 cannot be nullptr");
+            assert(calibration_rotation_12 != nullptr && "calibration_rotation_12 cannot be nullptr");
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
         }
 

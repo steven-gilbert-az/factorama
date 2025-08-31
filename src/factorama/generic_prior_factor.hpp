@@ -15,6 +15,7 @@ namespace factorama
                            double sigma = 1.0)
             : id_(id), variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
         {
+            assert(variable != nullptr && "variable cannot be nullptr");
             assert(prior_.size() == variable_->size() && "Prior size must match variable size");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }

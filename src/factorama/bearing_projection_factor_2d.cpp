@@ -101,7 +101,6 @@ namespace factorama
 
         // Compute Jacobian w.r.t. camera-frame point y (2x3):
         // dr/dy = (1/alpha) * T^T - (1/alpha^2) * (T^T y) * k^T
-        Eigen::Vector2d Ty = T_.transpose() * bearing_C;
         Eigen::Matrix<double, 2, 3> J_y = T_.transpose();
 
         
