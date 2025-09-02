@@ -441,6 +441,13 @@ namespace factorama
                         int sparse_row = current_row_index[dense_col];
                         // sparse_jacobian_.coeffRef(row_offset + r, col_offset + c) = value;
                         // sparse_jacobian_.insert(row_offset + r, col_offset + c) = value;
+                        if(dense_col < 0 || dense_col >= sparse_jacobian_data_.size()) {
+                            throw std::runtime_error("column index " + std::to_string(dense_col) +  " out of bounds for sparse jacobian data");
+                        }
+
+                        if(sparse_row < 0 || sparse_row >= sparse_jacobian_data_[dense_col].size()) {
+                            throw std::runtime_error("sparse row index " + std::to_string(sparse_row) +  " out of bounds for sparse jacobian data");
+                        }
 
                         sparse_jacobian_data_[dense_col][sparse_row] = value;
                         current_row_index[dense_col]++;
