@@ -4,3 +4,4 @@ CLAUDE.md
 .vscode/
 TODO.md
 dist/
+*.so
