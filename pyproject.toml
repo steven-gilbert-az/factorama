@@ -27,7 +27,7 @@ classifiers = [
 
 [tool.scikit-build]
 cmake.build-type = "Release"
-cmake.args = ["-DBUILD_PYTHON_BINDINGS=ON"]
+cmake.args = ["-DBUILD_PYTHON_BINDINGS=ON", "-DBUILD_TESTS=OFF"]
 wheel.packages = ["python_bindings/python/factorama"]
 
 [tool.cibuildwheel]
