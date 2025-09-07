@@ -399,7 +399,7 @@ namespace factorama
 
         Eigen::Matrix3d dcm_IC = ExpMapSO3(relative_orientation);
 
-        auto extrinsic_rotation_IC = std::make_shared<RotationVariable>(var_id++, Eigen::Matrix3d::Identity(), false);
+        auto extrinsic_rotation_IC = std::make_shared<RotationVariable>(var_id++, Eigen::Matrix3d::Identity());
         graph.add_variable(extrinsic_rotation_IC);
 
         std::vector<std::shared_ptr<PoseVariable>> poses;

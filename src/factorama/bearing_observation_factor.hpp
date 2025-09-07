@@ -17,14 +17,12 @@ namespace factorama
             PoseVariable* pose_var,
             LandmarkVariable* landmark_var,
             const Eigen::Vector3d &bearing_C_observed,
-            double angle_sigma = 1.0,
-            bool do_so3_nudge = true)
+            double angle_sigma = 1.0)
             : id_(id),
               pose_var_(pose_var),
               landmark_var_(landmark_var),
               bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma),
-              do_so3_nudge_(do_so3_nudge)
+              weight_(1.0 / angle_sigma)
         {
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
             assert(landmark_var != nullptr && "landmark_var cannot be nullptr");
@@ -81,6 +79,5 @@ namespace factorama
         LandmarkVariable* landmark_var_;
         Eigen::Vector3d bearing_C_obs_;
         double weight_;
-        bool do_so3_nudge_;
     };
 }

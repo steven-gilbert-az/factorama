@@ -11,10 +11,10 @@ namespace factorama
     class PoseVariable : public Variable
     {
     public:
-        PoseVariable(int id, const Eigen::Matrix<double, 6, 1> &pose_CW_init, bool do_so3_nudge = true)
-            : id_(id), pose_CW_(pose_CW_init), do_so3_nudge_(do_so3_nudge) {}
+        PoseVariable(int id, const Eigen::Matrix<double, 6, 1> &pose_CW_init)
+            : id_(id), pose_CW_(pose_CW_init) {}
 
-        PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW, bool do_so3_nudge = true)
+        PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW)
         {
             id_ = id;
             pose_CW_ = Eigen::VectorXd(6);
@@ -22,7 +22,6 @@ namespace factorama
 
             Eigen::AngleAxisd aa(dcm_CW);
             pose_CW_.segment<3>(3) = aa.axis() * aa.angle();
-            do_so3_nudge_ = do_so3_nudge;
         }
 
         int size() const override { return 6; }
@@ -45,27 +44,19 @@ namespace factorama
             pose_CW_.segment<3>(0) += dx.segment<3>(0);
 
             // Rotation increment:
-            if (do_so3_nudge_)
-            {
-                // Current rotation as matrix
-                Eigen::Matrix3d R = dcm_CW();
+            // Current rotation as matrix
+            Eigen::Matrix3d R = dcm_CW();
 
-                // Increment rotation vector (tangent space)
-                Eigen::Vector3d delta_rot = dx.segment<3>(3);
+            // Increment rotation vector (tangent space)
+            Eigen::Vector3d delta_rot = dx.segment<3>(3);
 
-                // Apply incremental rotation on manifold: R_new = exp(delta_rot) * R
-                Eigen::Matrix3d R_new = ExpMapSO3(delta_rot) * R; // right - multiply perturbation convention
+            // Apply incremental rotation on manifold: R_new = exp(delta_rot) * R
+            Eigen::Matrix3d R_new = ExpMapSO3(delta_rot) * R; // right - multiply perturbation convention
 
-                // Update rotation vector (log map)
-                Eigen::Vector3d rot_vec_new = LogMapSO3(R_new);
+            // Update rotation vector (log map)
+            Eigen::Vector3d rot_vec_new = LogMapSO3(R_new);
 
-                pose_CW_.segment<3>(3) = rot_vec_new;
-            }
-            else
-            {
-                // Linear add for rotation vector (less correct, but easier)
-                pose_CW_.segment<3>(3) += dx.segment<3>(3);
-            }
+            pose_CW_.segment<3>(3) = rot_vec_new;
         }
 
         int id() const override { return id_; }
@@ -131,10 +122,6 @@ namespace factorama
             std::cout << "dcm_CW: " << dcm_CW() << std::endl;
         }
 
-        bool do_so3_nudge() {
-            return do_so3_nudge_;
-        }
-        
         std::shared_ptr<Variable> clone() const override {
             return std::make_shared<PoseVariable>(*this);
         }
@@ -143,6 +130,5 @@ namespace factorama
         int id_;
         Eigen::VectorXd pose_CW_; // [tx, ty, tz, rx, ry, rz] representing pose_CW
         bool is_constant_ = false;
-        bool do_so3_nudge_ = true;
     };
 }

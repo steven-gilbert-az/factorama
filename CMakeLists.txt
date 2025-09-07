@@ -23,7 +23,21 @@ option(BUILD_EXAMPLES "Build example programs" OFF)
 option(BUILD_PYTHON_BINDINGS "Build Python bindings via pybind11" OFF)
 
 # Find required packages
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+# Try to find system Eigen first
+find_package(Eigen3 3.4 QUIET NO_MODULE)
+
+if (Eigen3_FOUND)
+    message(STATUS "Found system Eigen3: ${Eigen3_DIR}")
+else()
+    message(WARNING "System Eigen3 not found. Using vendored Eigen3.")
+    include(FetchContent)
+    FetchContent_Declare(
+        eigen
+        URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+    )
+    FetchContent_MakeAvailable(eigen)
+    find_package(Eigen3 REQUIRED NO_MODULE)
+endif()
 
 # Find Catch2 only if building tests
 if(BUILD_TESTS)
@@ -63,13 +77,15 @@ target_compile_features(factorama PUBLIC cxx_std_17)
 # Enable position-independent code for Python bindings
 set_target_properties(factorama PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-# === Optimize executable ===
-add_executable(optimize src/factorama_test/sparse_optimize.cpp)
-target_link_libraries(optimize PRIVATE factorama)
+
 
 
 # === Examples ===
 if(BUILD_EXAMPLES)
+
+    add_executable(optimize src/factorama_test/sparse_optimize.cpp)
+    target_link_libraries(optimize PRIVATE factorama)
+
     add_executable(example1 examples/01_simple_localization.cpp)
     target_link_libraries(example1 PRIVATE factorama)
     

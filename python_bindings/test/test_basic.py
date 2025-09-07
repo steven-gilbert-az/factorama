@@ -29,7 +29,7 @@ def test_pose_variable_creation():
     """Test pose variable creation and basic operations"""
     # Test SE(3) constructor
     pose_init = np.array([1.0, 2.0, 3.0, 0.1, 0.2, 0.3])  # [tx, ty, tz, rx, ry, rz]
-    pose_var = factorama.PoseVariable(1, pose_init, True)
+    pose_var = factorama.PoseVariable(1, pose_init)
     
     assert pose_var.id() == 1
     assert pose_var.size() == 6

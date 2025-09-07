@@ -14,8 +14,8 @@ namespace factorama
     class RotationVariable : public Variable
     {
     public:
-        RotationVariable(int id, const Eigen::Matrix3d &dcm_AB, bool do_so3_nudge=true)
-            : id_(id), dcm_AB_(dcm_AB), do_so3_nudge_(do_so3_nudge)
+        RotationVariable(int id, const Eigen::Matrix3d &dcm_AB)
+            : id_(id), dcm_AB_(dcm_AB)
         {
             value_ = LogMapSO3(dcm_AB_);
         }
@@ -53,16 +53,8 @@ namespace factorama
 
         void apply_increment(const Eigen::VectorXd &dx) override
         {
-            if (do_so3_nudge_)
-            {
-                dcm_AB_ = ExpMapSO3(dx) * dcm_AB_;
-                value_ = LogMapSO3(dcm_AB_);
-            }
-            else
-            {
-                value_ += dx;
-                dcm_AB_ = ExpMapSO3(value_);
-            }
+            dcm_AB_ = ExpMapSO3(dx) * dcm_AB_;
+            value_ = LogMapSO3(dcm_AB_);
         }
 
         Eigen::Matrix3d& dcm_AB() {
@@ -85,7 +77,6 @@ namespace factorama
         int id_;
         Eigen::VectorXd value_;
         Eigen::Matrix3d dcm_AB_;
-        bool do_so3_nudge_ = true;
         bool is_constant_ = false;
     };
 

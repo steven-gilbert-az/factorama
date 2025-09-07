@@ -60,12 +60,12 @@ PYBIND11_MODULE(_factorama, m) {
 
     // Bind concrete variable classes
     py::class_<factorama::PoseVariable, std::shared_ptr<factorama::PoseVariable>, factorama::Variable>(m, "PoseVariable")
-        .def(py::init<int, const Eigen::Matrix<double, 6, 1>&, bool>(),
+        .def(py::init<int, const Eigen::Matrix<double, 6, 1>&>(),
              "Create a PoseVariable with SE(3) pose",
-             py::arg("id"), py::arg("pose_CW_init"), py::arg("do_so3_nudge") = true)
-        .def(py::init<int, const Eigen::Vector3d&, const Eigen::Matrix3d&, bool>(),
+             py::arg("id"), py::arg("pose_CW_init"))
+        .def(py::init<int, const Eigen::Vector3d&, const Eigen::Matrix3d&>(),
              "Create a PoseVariable with position and rotation matrix",
-             py::arg("id"), py::arg("pos_W"), py::arg("dcm_CW"), py::arg("do_so3_nudge") = true)
+             py::arg("id"), py::arg("pos_W"), py::arg("dcm_CW"))
         .def("pos_W", &factorama::PoseVariable::pos_W)
         .def("rot_CW", &factorama::PoseVariable::rot_CW)
         .def("dcm_CW", &factorama::PoseVariable::dcm_CW)
@@ -87,10 +87,10 @@ PYBIND11_MODULE(_factorama, m) {
     // Bind factor classes
     py::class_<factorama::BearingObservationFactor, std::shared_ptr<factorama::BearingObservationFactor>, factorama::Factor>(m, "BearingObservationFactor")
         .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, 
-                      const Eigen::Vector3d&, double, bool>(),
+                      const Eigen::Vector3d&, double>(),
              "Create a BearingObservationFactor",
              py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"), 
-             py::arg("bearing_C_observed"), py::arg("angle_sigma") = 1.0, py::arg("do_so3_nudge") = true);
+             py::arg("bearing_C_observed"), py::arg("angle_sigma") = 1.0);
 
     py::class_<factorama::GenericPriorFactor, 
                std::shared_ptr<factorama::GenericPriorFactor>, 

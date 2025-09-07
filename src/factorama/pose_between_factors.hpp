@@ -117,14 +117,12 @@ namespace factorama
             PoseVariable* pose1,
             PoseVariable* pose2,
             RotationVariable* calibration_rotation_12,
-            double angle_sigma = 1.0,
-            bool do_so3_nudge = true)
+            double angle_sigma = 1.0)
             : id_(id),
               pose1_(pose1),
               pose2_(pose2),
               calibration_rotation_12_(calibration_rotation_12),
-              weight_(1.0 / angle_sigma),
-              do_so3_nudge_(do_so3_nudge)
+              weight_(1.0 / angle_sigma)
         {
             assert(pose1 != nullptr && "pose1 cannot be nullptr");
             assert(pose2 != nullptr && "pose2 cannot be nullptr");
@@ -185,6 +183,5 @@ namespace factorama
         PoseVariable* pose2_;
         RotationVariable* calibration_rotation_12_;
         double weight_;
-        bool do_so3_nudge_;
     };
 } // namespace factorama

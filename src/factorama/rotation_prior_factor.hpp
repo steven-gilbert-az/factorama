@@ -13,12 +13,10 @@ namespace factorama
         RotationPriorFactor(int id,
                                    RotationVariable* rotation,
                                    const Eigen::Matrix3d &dcm_AB_prior,
-                                   double sigma = 1.0,
-                                   bool do_so3_nudge = true)
-            : id_(id), rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
+                                   double sigma = 1.0)
+            : id_(id), rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma)
         {
             assert(rotation != nullptr && "rotation variable cannot be nullptr");
-            assert(do_so3_nudge == true && "do_so3_nudge now mandatory for this factor");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
@@ -98,7 +96,6 @@ namespace factorama
         RotationVariable* rotation_;
         Eigen::Matrix3d dcm_AB_prior_;
         double weight_;
-        bool do_so3_nudge_;
     };
 
 }

@@ -235,13 +235,13 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         Eigen::Matrix<double, 6, 1> cam_pose;
         cam_pose << pos_W, rot_W;
 
-        auto pose = std::make_shared<PoseVariable>(0, cam_pose, true); // do_so3_nudge=true
+        auto pose = std::make_shared<PoseVariable>(0, cam_pose);
         auto landmark = std::make_shared<LandmarkVariable>(1, Eigen::Vector3d(2.8, 1.2, 3.5));
         
         Eigen::Vector3d bearing_C = Eigen::Vector3d(0.6, -0.3, 0.8).normalized();
         double sigma = 0.05; // Non-unit sigma
         
-        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma, true);
+        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -270,13 +270,13 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         Eigen::Matrix<double, 6, 1> cam_pose;
         cam_pose << pos_W, rot_W;
 
-        auto pose = std::make_shared<PoseVariable>(0, cam_pose, true); // do_so3_nudge=true
+        auto pose = std::make_shared<PoseVariable>(0, cam_pose);
         auto landmark = std::make_shared<LandmarkVariable>(1, Eigen::Vector3d(-1.2, 0.8, 4.2));
         
         Eigen::Vector3d bearing_C = Eigen::Vector3d(-0.4, 0.7, 0.6).normalized();
         double sigma = 0.2;
         
-        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma, true);
+        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -343,7 +343,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Matrix<double, 6, 1> cam_pose;
         cam_pose << cam_pos_W, rot_W;
 
-        auto pose = std::make_shared<PoseVariable>(0, cam_pose, true); // do_so3_nudge=true
+        auto pose = std::make_shared<PoseVariable>(0, cam_pose);
         
         Eigen::Vector3d bearing_W = Eigen::Vector3d(0.6, 0.8, 0.1).normalized();
         double range = 3.5;
@@ -355,7 +355,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_C = dcm_CW * (lm_pos - cam_pos_W).normalized();
         
         double sigma = 0.08;
-        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma, true);
+        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -382,7 +382,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Matrix<double, 6, 1> cam_pose;
         cam_pose << cam_pos_W, rot_W;
 
-        auto pose = std::make_shared<PoseVariable>(0, cam_pose, true); // do_so3_nudge=true
+        auto pose = std::make_shared<PoseVariable>(0, cam_pose);
         
         Eigen::Vector3d bearing_W = Eigen::Vector3d(-0.4, 0.5, 0.7).normalized();
         double range = 2.8;
@@ -394,7 +394,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_C = dcm_CW * (lm_pos - cam_pos_W).normalized();
         
         double sigma = 0.15;
-        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma, true);
+        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -596,21 +596,21 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         Eigen::Vector3d rot1_W(0.1, -0.2, 0.15);
         Eigen::Matrix<double, 6, 1> pose1_vec;
         pose1_vec << pos1_W, rot1_W;
-        auto pose1 = std::make_shared<PoseVariable>(0, pose1_vec, true); // do_so3_nudge=true
+        auto pose1 = std::make_shared<PoseVariable>(0, pose1_vec);
         
         Eigen::Vector3d pos2_W(1.2, 0.8, 0.3);
         Eigen::Vector3d rot2_W(0.05, 0.25, 0.18);
         Eigen::Matrix<double, 6, 1> pose2_vec;
         pose2_vec << pos2_W, rot2_W;
-        auto pose2 = std::make_shared<PoseVariable>(1, pose2_vec, true); // do_so3_nudge=true
+        auto pose2 = std::make_shared<PoseVariable>(1, pose2_vec);
         
         // Extrinsic rotation between sensor frames
         Eigen::Vector3d extrinsic_rot_vec(0.02, 0.03, -0.01);
         Eigen::Matrix3d extrinsic_rot = ExpMapSO3(extrinsic_rot_vec);
-        auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot, true);
+        auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot);
         
         double sigma = 0.75;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma, true);
+        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -639,21 +639,21 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         Eigen::Vector3d rot1_W(-0.08, 0.12, -0.05);
         Eigen::Matrix<double, 6, 1> pose1_vec;
         pose1_vec << pos1_W, rot1_W;
-        auto pose1 = std::make_shared<PoseVariable>(0, pose1_vec, true); // do_so3_nudge=true
+        auto pose1 = std::make_shared<PoseVariable>(0, pose1_vec);
         
         Eigen::Vector3d pos2_W(-0.2, 1.5, -0.1);
         Eigen::Vector3d rot2_W(-0.1, 0.08, -0.02);
         Eigen::Matrix<double, 6, 1> pose2_vec;
         pose2_vec << pos2_W, rot2_W;
-        auto pose2 = std::make_shared<PoseVariable>(1, pose2_vec, true); // do_so3_nudge=true
+        auto pose2 = std::make_shared<PoseVariable>(1, pose2_vec);
         
         // Different extrinsic rotation
         Eigen::Vector3d extrinsic_rot_vec(-0.015, 0.025, 0.008);
         Eigen::Matrix3d extrinsic_rot = ExpMapSO3(extrinsic_rot_vec);
-        auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot, true);
+        auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot);
         
         double sigma = 0.12;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma, true);
+        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -673,7 +673,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
     }
 }
 
-TEST_CASE("PoseVariable apply_increment with and without do_so3_nudge")
+TEST_CASE("PoseVariable apply_increment")
 {
     // Initial pose: zero translation, small rotation about X axis
     Eigen::Matrix<double, 6, 1> init_pose;
@@ -683,15 +683,8 @@ TEST_CASE("PoseVariable apply_increment with and without do_so3_nudge")
     Eigen::Matrix<double, 6, 1> dx;
     dx << 1, 2, 3, 0, 0.2, 0;
 
-    // PoseVariable with do_so3_nudge = false
-    PoseVariable pose_linear(0, init_pose, false);
-    pose_linear.apply_increment(dx);
-
-    Eigen::Matrix<double, 6, 1> expected_linear = init_pose + dx;
-    REQUIRE(is_approx_equal(pose_linear.value(), expected_linear));
-
-    // PoseVariable with do_so3_nudge = true
-    PoseVariable pose_so3(1, init_pose, true);
+    // PoseVariable using SO(3) manifold
+    PoseVariable pose_so3(1, init_pose);
     pose_so3.apply_increment(dx);
 
     // Compute expected rotation update: R_new = exp(dR) * R_old
@@ -707,7 +700,7 @@ TEST_CASE("PoseVariable apply_increment with and without do_so3_nudge")
     REQUIRE(is_approx_equal(pose_so3.value().tail<3>(), expected_so3.tail<3>()));
 }
 
-TEST_CASE("RotationVariable apply_increment with and without do_so3_nudge")
+TEST_CASE("RotationVariable apply_increment")
 {
     // Initial rotation: 45 degrees about Z axis
     Eigen::Matrix3d R_init = Eigen::AngleAxisd(M_PI / 4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
@@ -715,18 +708,8 @@ TEST_CASE("RotationVariable apply_increment with and without do_so3_nudge")
     // Rotation increment: 30 degrees about Y axis
     Eigen::Vector3d dx(0, M_PI / 6, 0);
 
-    // RotationVariable with do_so3_nudge = false
-    RotationVariable rot_linear(0, R_init, false);
-    rot_linear.apply_increment(dx);
-
-    Eigen::Vector3d expected_vec_linear = LogMapSO3(R_init) + dx;
-    Eigen::Matrix3d expected_R_linear = ExpMapSO3(expected_vec_linear);
-
-    REQUIRE(is_approx_equal(rot_linear.value(), expected_vec_linear));
-    REQUIRE(is_approx_equal(rot_linear.rotation(), expected_R_linear));
-
-    // RotationVariable with do_so3_nudge = true
-    RotationVariable rot_so3(1, R_init, true);
+    // RotationVariable using SO(3) manifold
+    RotationVariable rot_so3(1, R_init);
     rot_so3.apply_increment(dx);
 
     Eigen::Matrix3d expected_R_so3 = ExpMapSO3(dx) * R_init;
@@ -1059,201 +1042,6 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
     }
 }
 
-
-TEST_CASE("PoseOrientationPriorFactor: behavior with do_so3_nudge modes", "[prior][orientation][so3]")
-{
-    // Setup: pose with non-trivial initial rotation
-    Eigen::Matrix<double, 6, 1> pose_init;
-    pose_init.head<3>() = Eigen::Vector3d(1.0, 2.0, 3.0);  // position (irrelevant for this factor)
-    pose_init.tail<3>() = Eigen::Vector3d(0.15, -0.2, 0.25); // initial rotation vector
-    
-    // Prior rotation (different from initial)
-    Eigen::Vector3d rot_prior(0.1, -0.15, 0.2);
-    double sigma = 0.1;
-    
-    // Small rotation increment for testing
-    Eigen::Matrix<double, 6, 1> dx = Eigen::Matrix<double, 6, 1>::Zero();
-    dx.tail<3>() = Eigen::Vector3d(0.03, 0.02, -0.015); // small rotation increment
-    
-    SECTION("Linear mode (do_so3_nudge = false)")
-    {
-        // Create pose variable with linear rotation updates
-        auto pose_linear = std::make_shared<PoseVariable>(0, pose_init, false);
-        PoseOrientationPriorFactor factor(0, pose_linear.get(), rot_prior, sigma, false);
-        
-        // Compute initial residual
-        Eigen::VectorXd r_initial = factor.compute_residual();
-        REQUIRE(r_initial.size() == 3);
-        
-        // Expected initial residual (linear difference)
-        Eigen::Vector3d expected_initial = (1.0 / sigma) * (pose_init.tail<3>() - rot_prior);
-        REQUIRE(is_approx_equal(r_initial, expected_initial, kTol));
-        
-        // Apply increment using linear mode
-        pose_linear->apply_increment(dx);
-        
-        // Compute residual after increment
-        Eigen::VectorXd r_after = factor.compute_residual();
-        
-        // Expected residual after linear increment
-        Eigen::Vector3d expected_after_linear = (1.0 / sigma) * ((pose_init.tail<3>() + dx.tail<3>()) - rot_prior);
-        REQUIRE(is_approx_equal(r_after, expected_after_linear, kTol));
-        
-        // The change in residual should be linear in the increment
-        Eigen::Vector3d residual_change = r_after - r_initial;
-        Eigen::Vector3d expected_change = (1.0 / sigma) * dx.tail<3>();
-        REQUIRE(is_approx_equal(residual_change, expected_change, kTol));
-    }
-    
-    SECTION("Manifold mode (do_so3_nudge = true)")
-    {
-        // Create pose variable with manifold rotation updates
-        auto pose_manifold = std::make_shared<PoseVariable>(1, pose_init, true);
-        PoseOrientationPriorFactor factor(1, pose_manifold.get(), rot_prior, sigma, true);
-        
-        // Compute initial residual (should be same as linear case initially)
-        Eigen::VectorXd r_initial = factor.compute_residual();
-        REQUIRE(r_initial.size() == 3);
-        
-        Eigen::Vector3d expected_initial = (1.0 / sigma) * (pose_init.tail<3>() - rot_prior);
-        CAPTURE(r_initial);
-        CAPTURE(expected_initial);
-        bool is_close_ish = is_approx_equal(r_initial, expected_initial, 0.1);
-        bool is_pretty_exact = is_approx_equal(r_initial, expected_initial, kTol);
-        // Manifold should not match exactly the linear expectation.
-        REQUIRE(is_close_ish);
-        REQUIRE(!is_pretty_exact);
-        
-        // Apply increment using manifold mode
-        pose_manifold->apply_increment(dx);
-        
-        // Compute residual after increment
-        Eigen::VectorXd r_after = factor.compute_residual();
-        
-        // Expected rotation after manifold increment: R_new = exp(dx_rot) * R_init
-        Eigen::Matrix3d R_init = ExpMapSO3(pose_init.tail<3>());
-        Eigen::Matrix3d R_new = ExpMapSO3(dx.tail<3>()) * R_init;
-        Eigen::Vector3d rot_vec_new = LogMapSO3(R_new);
-        
-        Eigen::Vector3d expected_after_manifold = (1.0 / sigma) * (rot_vec_new - rot_prior);
-
-        CAPTURE(r_after);
-        CAPTURE(expected_after_manifold);
-        // 0.1 is close enough as the expected value was calculated with linear approximation
-        REQUIRE(is_approx_equal(r_after, expected_after_manifold, 0.1));
-        
-        // The residual should be different from the linear case for non-small increments
-        Eigen::Vector3d linear_result = (1.0 / sigma) * ((pose_init.tail<3>() + dx.tail<3>()) - rot_prior);
-        
-        // For small increments, the difference should be small but detectable
-        double difference_norm = (r_after - linear_result).norm();
-        
-        // The manifold and linear results should differ (unless increment is tiny)
-        if (dx.tail<3>().norm() > 1e-6)
-        {
-            REQUIRE(difference_norm > 1e-10); // Should see some difference
-        }
-    }
-    
-    SECTION("Jacobian consistency between modes")
-    {
-        // Test that Jacobians are computed correctly for both modes
-        auto pose_linear = std::make_shared<PoseVariable>(2, pose_init, false);
-        auto pose_manifold = std::make_shared<PoseVariable>(3, pose_init, true);
-        
-        PoseOrientationPriorFactor factor_linear(2, pose_linear.get(), rot_prior, sigma, false);
-        PoseOrientationPriorFactor factor_manifold(3, pose_manifold.get(), rot_prior, sigma, true);
-        
-        std::vector<Eigen::MatrixXd> J_linear, J_manifold;
-        factor_linear.compute_jacobians(J_linear);
-        factor_manifold.compute_jacobians(J_manifold);
-        
-        REQUIRE(J_linear.size() == 1);
-        REQUIRE(J_manifold.size() == 1);
-        REQUIRE(J_linear[0].rows() == 3);
-        REQUIRE(J_linear[0].cols() == 6);
-        REQUIRE(J_manifold[0].rows() == 3);
-        REQUIRE(J_manifold[0].cols() == 6);
-        
-        // The Jacobians will differ between modes - manifold mode uses inverse right jacobian
-        // Print debug info if they differ significantly
-        Eigen::MatrixXd diff_modes = J_linear[0] - J_manifold[0];
-        double diff_modes_norm = diff_modes.norm();
-        
-        if (diff_modes_norm > kTol) {
-            std::cout << "\nPoseOrientationPriorFactor Jacobian difference between modes (norm: " << diff_modes_norm << "):\n" << diff_modes << std::endl;
-            std::cout << "Linear mode Jacobian:\n" << J_linear[0] << std::endl;
-            std::cout << "Manifold mode Jacobian:\n" << J_manifold[0] << std::endl;
-            std::cout << "pose rotation: " << pose_init.tail<3>().transpose() << std::endl;
-            std::cout << "rot_prior: " << rot_prior.transpose() << std::endl;
-        }
-        
-        // Expected Jacobian for linear mode: derivative of (rot_CW - rot_prior) w.r.t. pose
-        Eigen::MatrixXd expected_J_linear = Eigen::MatrixXd::Zero(3, 6);
-        expected_J_linear.block<3, 3>(0, 3) = (1.0 / sigma) * Eigen::Matrix3d::Identity();
-        
-        // Check linear mode matches expected
-        Eigen::MatrixXd diff_linear_expected = J_linear[0] - expected_J_linear;
-        if (diff_linear_expected.norm() > kTol) {
-            std::cout << "\nLinear mode Jacobian vs expected (norm: " << diff_linear_expected.norm() << "):\n" << diff_linear_expected << std::endl;
-            std::cout << "Linear Jacobian:\n" << J_linear[0] << std::endl;
-            std::cout << "Expected Linear:\n" << expected_J_linear << std::endl;
-        }
-        REQUIRE(is_approx_equal(J_linear[0], expected_J_linear, kTol));
-    }
-}
-
-TEST_CASE("PoseOrientationPriorFactor: convergence behavior with different do_so3_nudge modes", "[prior][orientation][so3][convergence]")
-{
-    // Setup: pose with larger initial rotation error
-    Eigen::Matrix<double, 6, 1> pose_init;
-    pose_init.head<3>() = Eigen::Vector3d::Zero();
-    pose_init.tail<3>() = Eigen::Vector3d(0.6, -0.4, 0.5); // larger initial rotation
-    
-    Eigen::Vector3d rot_prior = Eigen::Vector3d(0.023, -0.005, -0.01); // random ish prior (but close to zero)
-    double sigma = 0.1;
-    
-    // Larger increment to see manifold effects more clearly
-    Eigen::Matrix<double, 6, 1> dx = Eigen::Matrix<double, 6, 1>::Zero();
-    dx.tail<3>() = Eigen::Vector3d(-0.12, -0.08, -0.1); // move towards prior
-    
-    SECTION("Residual magnitude comparison")
-    {
-        auto pose_linear = std::make_shared<PoseVariable>(0, pose_init, false);
-        auto pose_manifold = std::make_shared<PoseVariable>(1, pose_init, true);
-        
-        PoseOrientationPriorFactor factor_linear(0, pose_linear.get(), rot_prior, sigma, false);
-        PoseOrientationPriorFactor factor_manifold(1, pose_manifold.get(), rot_prior, sigma, true);
-        
-        // Initial residuals should be identical
-        Eigen::VectorXd r_initial_linear = factor_linear.compute_residual();
-        Eigen::VectorXd r_initial_manifold = factor_manifold.compute_residual();
-        //REQUIRE(is_approx_equal(r_initial_linear, r_initial_manifold, kTol));
-        
-        double initial_cost = 0.5 * r_initial_linear.squaredNorm();
-        
-        // Apply the same increment to both
-        pose_linear->apply_increment(dx);
-        pose_manifold->apply_increment(dx);
-        
-        // Check final residuals
-        Eigen::VectorXd r_final_linear = factor_linear.compute_residual();
-        Eigen::VectorXd r_final_manifold = factor_manifold.compute_residual();
-        
-        double final_cost_linear = 0.5 * r_final_linear.squaredNorm();
-        double final_cost_manifold = 0.5 * r_final_manifold.squaredNorm();
-        
-        // Both should reduce cost, but manifold should typically be more accurate
-        REQUIRE(final_cost_linear < initial_cost);
-        REQUIRE(final_cost_manifold < initial_cost);
-        
-        // For this specific case (moving toward zero rotation), manifold should be better
-        // The exact relationship depends on the specific values, but we can at least
-        // verify that both methods work and produce different results
-        REQUIRE(std::abs(final_cost_linear - final_cost_manifold) > 1e-12);
-    }
-}
-
 TEST_CASE("PosePositionPriorFactor: analytical vs numerical Jacobians", "[prior][position][jacobian]")
 {
     // Setup
@@ -1318,7 +1106,6 @@ TEST_CASE("PoseOrientationPriorFactor: analytical vs numerical Jacobians", "[pri
         std::cout << "\nPoseOrientationPriorFactor Jacobian diff (norm: " << diff_norm << "):\n" << diff << std::endl;
         std::cout << "Analytical Jacobian:\n" << J_analytic[0] << std::endl;
         std::cout << "Numerical Jacobian:\n" << J_numeric[0] << std::endl;
-        std::cout << "do_so3_nudge: " << pose->do_so3_nudge() << std::endl;
         std::cout << "pose rotation: " << pose->rot_CW().transpose() << std::endl;
         std::cout << "rot_prior: " << rot_prior.transpose() << std::endl;
     }
@@ -1333,7 +1120,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Create original pose variable
         Eigen::Matrix<double, 6, 1> pose_init;
         pose_init << 1.0, 2.0, 3.0, 0.1, 0.2, 0.3;
-        auto original = std::make_shared<PoseVariable>(42, pose_init, true);
+        auto original = std::make_shared<PoseVariable>(42, pose_init);
         original->set_is_constant(true);
         
         // Clone the variable
@@ -1350,7 +1137,6 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         REQUIRE(is_approx_equal(cloned->pos_W(), original->pos_W()));
         REQUIRE(is_approx_equal(cloned->dcm_CW(), original->dcm_CW()));
         REQUIRE(cloned->is_constant() == original->is_constant());
-        REQUIRE(cloned->do_so3_nudge() == original->do_so3_nudge());
         
         // Verify independent modification
         Eigen::Matrix<double, 6, 1> increment;
@@ -1450,7 +1236,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
     {
         // Create original extrinsic rotation variable
         Eigen::Matrix3d dcm_CE = Eigen::AngleAxisd(M_PI/4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
-        auto original = std::make_shared<RotationVariable>(789, dcm_CE, true);
+        auto original = std::make_shared<RotationVariable>(789, dcm_CE);
         original->set_is_constant(true);
         
         // Clone the variable

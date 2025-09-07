@@ -20,14 +20,12 @@ namespace factorama
             PoseVariable* pose_var,
             InverseRangeVariable* inverse_range_variable,
             const Eigen::Vector3d &bearing_C_observed,
-            double angle_sigma = 1.0,
-            bool do_so3_nudge = true)
+            double angle_sigma = 1.0)
             : id_(id),
               pose_var_(pose_var),
               inverse_range_var_(inverse_range_variable),
               bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma),
-              do_so3_nudge_(do_so3_nudge)
+              weight_(1.0 / angle_sigma)
         {
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
             assert(inverse_range_variable != nullptr && "inverse_range_variable cannot be nullptr");
@@ -103,7 +101,6 @@ namespace factorama
         InverseRangeVariable* inverse_range_var_;
         Eigen::Vector3d bearing_C_obs_; // In camera frame, normalized
         double weight_;
-        bool do_so3_nudge_;
     };
 
 } // namespace factorama

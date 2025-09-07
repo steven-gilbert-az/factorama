@@ -84,12 +84,10 @@ namespace factorama
         PoseOrientationPriorFactor(int id,
                                    PoseVariable* pose,
                                    const Eigen::Vector3d &rotvec_prior,
-                                   double sigma = 1.0,
-                                   bool do_so3_nudge = true)
-            : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma), do_so3_nudge_(do_so3_nudge)
+                                   double sigma = 1.0)
+            : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma)
         {
             assert(pose != nullptr && "pose cannot be nullptr");
-            assert(do_so3_nudge == pose_->do_so3_nudge() && "do_so3_nudge must match pose");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
@@ -105,22 +103,12 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override
         {
-            Eigen::Vector3d res;
-            
-            if (do_so3_nudge_)
-            {
-                // Use full SO(3) manifold approach
-                // For a prior factor: r = log(dcm_current * dcm_prior^T)
-                Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
-                Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
-                Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
-                res = LogMapSO3(dcm_error);
-            }
-            else
-            {
-                // Use simple R3 vector subtraction
-                res = pose_->rot_CW() - rot_CW_prior_;
-            }
+            // Use full SO(3) manifold approach
+            // For a prior factor: r = log(dcm_current * dcm_prior^T)
+            Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
+            Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
+            Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
+            Eigen::Vector3d res = LogMapSO3(dcm_error);
             
             return weight_ * res;
         }
@@ -136,26 +124,18 @@ namespace factorama
             {
                 Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 6);
                 
-                if (do_so3_nudge_)
-                {
-                    // Use manifold Jacobian for SO(3)
-                    // For r = log(dcm_current * dcm_prior^T)
-                    // dr/d(rot_current) = Jr_inv(log(dcm_current * dcm_prior^T))
-                    Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
-                    Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
-                    Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
-                    Eigen::Vector3d rotvec_error = LogMapSO3(dcm_error);
-                    
-                    // Compute inverse right Jacobian Jr_inv of the error rotation
-                    Eigen::Matrix3d Jr_inv = compute_inverse_right_jacobian_so3(rotvec_error);
-                    J.block<3, 3>(0, 3) = weight_ * Jr_inv;
-                }
-                else
-                {
-                    // Simple linear case: r = (rotvec_current - rotvec_prior)
-                    // dr/d(rot_current) = I
-                    J.block<3, 3>(0, 3) = weight_ * Eigen::Matrix3d::Identity();
-                }
+                // Use manifold Jacobian for SO(3)
+                // For r = log(dcm_current * dcm_prior^T)
+                // dr/d(rot_current) = Jr_inv(log(dcm_current * dcm_prior^T))
+                Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
+                Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
+                Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
+                Eigen::Vector3d rotvec_error = LogMapSO3(dcm_error);
+                
+                // Compute inverse right Jacobian Jr_inv of the error rotation
+                Eigen::Matrix3d Jr_inv = compute_inverse_right_jacobian_so3(rotvec_error);
+                J.block<3, 3>(0, 3) = weight_ * Jr_inv;
+                
                 jacobians.emplace_back(J);
             }
         }
@@ -186,7 +166,6 @@ namespace factorama
         PoseVariable* pose_;
         Eigen::Vector3d rot_CW_prior_;
         double weight_;
-        bool do_so3_nudge_;
     };
 
 }

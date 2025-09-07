@@ -36,18 +36,9 @@ namespace factorama
             J_pose = Eigen::MatrixXd::Zero(3, 6);
             J_pose.block<3, 3>(0, 0) = -weight_ * d_bearing_d_pos * dcm_CW;
 
-            // Rotation part — depends on do_so3_nudge mode
-            if (do_so3_nudge_)
-            {
-                Eigen::Matrix3d skew = -skew_symmetric(pos_C);
-                J_pose.block<3, 3>(0, 3) = weight_ * d_bearing_d_pos * skew;
-            }
-            else
-            {
-                // Use simple skew-symmetric jacobian (original approach)
-                Eigen::Matrix3d skew = -dcm_CW * skew_symmetric(landmark_W - pos_W_cam);
-                J_pose.block<3, 3>(0, 3) = weight_ * d_bearing_d_pos * skew;
-            }
+            Eigen::Matrix3d skew = -skew_symmetric(pos_C);
+            J_pose.block<3, 3>(0, 3) = weight_ * d_bearing_d_pos * skew;
+
         }
 
         jacobians_out.clear();
