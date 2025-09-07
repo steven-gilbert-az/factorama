@@ -20,6 +20,7 @@ endif()
 option(GTSAM "Enable building of GTSAM example" OFF)
 option(BUILD_TESTS "Build unit tests" ON)
 option(BUILD_EXAMPLES "Build example programs" OFF)
+option(BUILD_PYTHON_BINDINGS "Build Python bindings via pybind11" OFF)
 
 # Find required packages
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
@@ -58,6 +59,9 @@ target_link_libraries(factorama
 
 # Set compile features
 target_compile_features(factorama PUBLIC cxx_std_17)
+
+# Enable position-independent code for Python bindings
+set_target_properties(factorama PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # === Optimize executable ===
 add_executable(optimize src/factorama_test/sparse_optimize.cpp)
@@ -176,3 +180,8 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/factorama-config-version.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/factorama
 )
+
+# === Python bindings ===
+if(BUILD_PYTHON_BINDINGS)
+    add_subdirectory(python_bindings/python)
+endif()

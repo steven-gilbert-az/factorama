@@ -16,20 +16,20 @@ void run_example() {
     // Camera 1: At origin, looking forward
     Eigen::Matrix<double, 6, 1> pose1_vec = Eigen::Matrix<double, 6, 1>::Zero();
     auto camera1 = std::make_shared<PoseVariable>(1, pose1_vec);
-    camera1->set_constant(true);  // Known camera positions
+    camera1->set_is_constant(true);  // Known camera positions
     
     // Camera 2: Moved to the right, still looking forward
     Eigen::Matrix<double, 6, 1> pose2_vec = Eigen::Matrix<double, 6, 1>::Zero();
     pose2_vec[0] = 2.0;  // 2 meters to the right
     auto camera2 = std::make_shared<PoseVariable>(2, pose2_vec);
-    camera2->set_constant(true);  // Known camera positions
+    camera2->set_is_constant(true);  // Known camera positions
     
     // Camera 3: Moved up and back
     Eigen::Matrix<double, 6, 1> pose3_vec = Eigen::Matrix<double, 6, 1>::Zero();
     pose3_vec[1] = 1.0;  // 1 meter up
     pose3_vec[2] = -1.0; // 1 meter back
     auto camera3 = std::make_shared<PoseVariable>(3, pose3_vec);
-    camera3->set_constant(true);  // Known camera positions
+    camera3->set_is_constant(true);  // Known camera positions
 
     std::cout << "Known camera positions:" << std::endl;
     std::cout << "  Camera 1: " << camera1->pos_W().transpose() << std::endl;
@@ -65,19 +65,19 @@ void run_example() {
     // Bearing from camera 1 to landmark 1
     Eigen::Vector3d bearing_c1_l1 = (true_landmark1 - camera1->pos_W()).normalized();
     auto factor_c1_l1 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera1, landmark1, bearing_c1_l1, bearing_sigma);
+        factor_id++, camera1.get(), landmark1.get(), bearing_c1_l1, bearing_sigma);
     graph.add_factor(factor_c1_l1);
     
     // Bearing from camera 2 to landmark 1
     Eigen::Vector3d bearing_c2_l1 = (true_landmark1 - camera2->pos_W()).normalized();
     auto factor_c2_l1 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera2, landmark1, bearing_c2_l1, bearing_sigma);
+        factor_id++, camera2.get(), landmark1.get(), bearing_c2_l1, bearing_sigma);
     graph.add_factor(factor_c2_l1);
     
     // Bearing from camera 3 to landmark 1
     Eigen::Vector3d bearing_c3_l1 = (true_landmark1 - camera3->pos_W()).normalized();
     auto factor_c3_l1 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera3, landmark1, bearing_c3_l1, bearing_sigma);
+        factor_id++, camera3.get(), landmark1.get(), bearing_c3_l1, bearing_sigma);
     graph.add_factor(factor_c3_l1);
 
     // Landmark 2 observations
@@ -87,13 +87,13 @@ void run_example() {
     // Bearing from camera 1 to landmark 2
     Eigen::Vector3d bearing_c1_l2 = (true_landmark2 - camera1->pos_W()).normalized();
     auto factor_c1_l2 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera1, landmark2, bearing_c1_l2, bearing_sigma);
+        factor_id++, camera1.get(), landmark2.get(), bearing_c1_l2, bearing_sigma);
     graph.add_factor(factor_c1_l2);
     
     // Bearing from camera 2 to landmark 2
     Eigen::Vector3d bearing_c2_l2 = (true_landmark2 - camera2->pos_W()).normalized();
     auto factor_c2_l2 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera2, landmark2, bearing_c2_l2, bearing_sigma);
+        factor_id++, camera2.get(), landmark2.get(), bearing_c2_l2, bearing_sigma);
     graph.add_factor(factor_c2_l2);
 
     std::cout << "Added bearing observations from cameras to landmarks" << std::endl;
@@ -101,7 +101,6 @@ void run_example() {
     std::cout << "Multiple rays intersect at the true landmark position" << std::endl << std::endl;
 
     // Finalize and optimize
-    graph.set_sparse_jacobians(true);
     graph.finalize_structure();
 
     // Configure optimizer

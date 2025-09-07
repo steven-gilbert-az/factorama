@@ -75,7 +75,7 @@ namespace factorama
             return VariableType::pose;
         }
         bool is_constant() const override { return is_constant_; }
-        void set_constant(bool val) { is_constant_ = val; }
+        void set_is_constant(bool val) { is_constant_ = val; }
 
         std::string name() const override
         {

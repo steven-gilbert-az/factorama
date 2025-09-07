@@ -11,7 +11,7 @@ namespace factorama
     {
     public:
         RotationPriorFactor(int id,
-                                   std::shared_ptr<RotationVariable> rotation,
+                                   RotationVariable* rotation,
                                    const Eigen::Matrix3d &dcm_AB_prior,
                                    double sigma = 1.0,
                                    bool do_so3_nudge = true)
@@ -73,7 +73,7 @@ namespace factorama
         }
 
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {rotation_};
         }
@@ -95,7 +95,7 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<RotationVariable> rotation_;
+        RotationVariable* rotation_;
         Eigen::Matrix3d dcm_AB_prior_;
         double weight_;
         bool do_so3_nudge_;

@@ -11,7 +11,7 @@ namespace factorama
     {
     public:
         PosePositionPriorFactor(int id,
-                                std::shared_ptr<PoseVariable> pose,
+                                PoseVariable* pose,
                                 const Eigen::Vector3d &pos_prior,
                                 double sigma = 1.0)
             : id_(id), pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
@@ -51,7 +51,7 @@ namespace factorama
         }
 
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_};
         }
@@ -73,7 +73,7 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_;
+        PoseVariable* pose_;
         Eigen::Vector3d pos_prior_;
         double weight_;
     };
@@ -82,7 +82,7 @@ namespace factorama
     {
     public:
         PoseOrientationPriorFactor(int id,
-                                   std::shared_ptr<PoseVariable> pose,
+                                   PoseVariable* pose,
                                    const Eigen::Vector3d &rotvec_prior,
                                    double sigma = 1.0,
                                    bool do_so3_nudge = true)
@@ -161,7 +161,7 @@ namespace factorama
         }
 
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_};
         }
@@ -183,7 +183,7 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_;
+        PoseVariable* pose_;
         Eigen::Vector3d rot_CW_prior_;
         double weight_;
         bool do_so3_nudge_;

@@ -432,7 +432,6 @@ int main(int argc, char *argv[])
         {
             graph = CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
         }
-        graph.set_sparse_jacobians(true);
         graph.finalize_structure();
 
         std::cout << "Running " << num_iterations << " Sparsiest Gauss-Newton Iterations...\n";

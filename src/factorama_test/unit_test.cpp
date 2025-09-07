@@ -38,7 +38,7 @@ TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
     Eigen::Vector3d expected_bearing_C(0.0, 0.0, 1.0);
 
     // Create factor and graph
-    auto factor = std::make_shared<BearingObservationFactor>(0, pose, landmark, expected_bearing_C, 1.0);
+    auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), expected_bearing_C, 1.0);
     FactorGraph graph;
     graph.add_variable(pose);
     graph.add_variable(landmark);
@@ -95,7 +95,7 @@ TEST_CASE("InverseRangeFactorSanityTest", "[sfm]")
     Eigen::Vector3d bearing_C_gt = dcm_CW * (landmark_pos_W - cam_pos_W).normalized();
 
     // Construct factor
-    InverseRangeBearingFactor factor(0, cam_pose, inv_range_var, bearing_C_gt);
+    InverseRangeBearingFactor factor(0, cam_pose.get(), inv_range_var.get(), bearing_C_gt);
 
     SECTION("Residual is small when guess is close")
     {
@@ -127,7 +127,7 @@ TEST_CASE("PosePositionPriorFactor: dimensions and residual")
     // double info_mag = 4.0;
     double sigma = 0.5;
 
-    PosePositionPriorFactor factor(0, pose, pos_prior, sigma);
+    PosePositionPriorFactor factor(0, pose.get(), pos_prior, sigma);
 
     SECTION("Residual dimension is correct")
     {
@@ -164,7 +164,7 @@ TEST_CASE("GenericPriorFactor: dimensions and residual with LandmarkVariable")
     // double info_mag = 4.0;
     double sigma = 0.5;
 
-    GenericPriorFactor factor(0, landmark, prior, sigma);
+    GenericPriorFactor factor(0, landmark.get(), prior, sigma);
 
     SECTION("Residual dimension is correct")
     {
@@ -205,7 +205,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         Eigen::Vector3d bearing_C = (Eigen::Vector3d(1, 0, 0)).normalized();
         double sigma = 0.1;
 
-        auto factor = std::make_shared<BearingObservationFactor>(0, pose, landmark, bearing_C, sigma);
+        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -241,7 +241,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         Eigen::Vector3d bearing_C = Eigen::Vector3d(0.6, -0.3, 0.8).normalized();
         double sigma = 0.05; // Non-unit sigma
         
-        auto factor = std::make_shared<BearingObservationFactor>(0, pose, landmark, bearing_C, sigma, true);
+        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -276,7 +276,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         Eigen::Vector3d bearing_C = Eigen::Vector3d(-0.4, 0.7, 0.6).normalized();
         double sigma = 0.2;
         
-        auto factor = std::make_shared<BearingObservationFactor>(0, pose, landmark, bearing_C, sigma, true);
+        auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), bearing_C, sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -317,7 +317,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_C = dcm_CW * (lm_pos - cam_pos_W).normalized();
 
         double sigma = 0.1;
-        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose, inv_range_var, bearing_C, sigma);
+        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -355,7 +355,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_C = dcm_CW * (lm_pos - cam_pos_W).normalized();
         
         double sigma = 0.08;
-        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose, inv_range_var, bearing_C, sigma, true);
+        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -394,7 +394,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_C = dcm_CW * (lm_pos - cam_pos_W).normalized();
         
         double sigma = 0.15;
-        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose, inv_range_var, bearing_C, sigma, true);
+        auto factor = std::make_shared<InverseRangeBearingFactor>(0, pose.get(), inv_range_var.get(), bearing_C, sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -546,7 +546,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         // Initial extrinsic rotation guess - identity
         auto extrinsic = std::make_shared<RotationVariable>(3, Eigen::Matrix3d::Identity());
 
-        PoseOrientationBetweenFactor factor(0, pose1, pose2, extrinsic);
+        PoseOrientationBetweenFactor factor(0, pose1.get(), pose2.get(), extrinsic.get());
 
         // Compute residual
         Eigen::VectorXd residual = factor.compute_residual();
@@ -558,7 +558,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         REQUIRE(residual.size() == 3);
 
         // Numeric Jacobian check for each variable
-        std::vector<std::shared_ptr<Variable>> vars = factor.variables();
+        std::vector<Variable *> vars = factor.variables();
         std::vector<Eigen::MatrixXd> analytic_jacs(3);
         factor.compute_jacobians(analytic_jacs);
 
@@ -610,7 +610,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot, true);
         
         double sigma = 0.75;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1, pose2, extrinsic_var, sigma, true);
+        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -653,7 +653,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot, true);
         
         double sigma = 0.12;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1, pose2, extrinsic_var, sigma, true);
+        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma, true);
         
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -757,7 +757,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto expected = std::make_shared<GenericVariable>(42, expected_vec);
         expected->set_is_constant(true);
 
-        GenericBetweenFactor factor(42, a, b, expected);
+        GenericBetweenFactor factor(42, a.get(), b.get(), expected.get());
 
         Eigen::VectorXd residual = factor.compute_residual();
         REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), kTol));
@@ -779,7 +779,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         expected->set_is_constant(true);
         double sigma = 1.0;
 
-        GenericBetweenFactor factor(43, a, b, expected, sigma);
+        GenericBetweenFactor factor(43, a.get(), b.get(), expected.get(), sigma);
 
         Eigen::VectorXd residual = factor.compute_residual();
         Eigen::Vector3d expected_residual = b->value() - a->value();
@@ -802,7 +802,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         expected->set_is_constant(true);
 
         double sigma = 0.5; // weight = 2.0
-        GenericBetweenFactor factor(44, a, b, expected, sigma);
+        GenericBetweenFactor factor(44, a.get(), b.get(), expected.get(), sigma);
 
         Eigen::VectorXd residual = factor.compute_residual();
         Eigen::Vector3d expected_residual = 2.0 * (b->value() - a->value());
@@ -824,7 +824,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto expected = std::make_shared<GenericVariable>(45, Eigen::Vector3d::Zero());
         expected->set_is_constant(true);
 
-        GenericBetweenFactor factor(45, a, b, expected);
+        GenericBetweenFactor factor(45, a.get(), b.get(), expected.get());
 
         std::vector<Eigen::MatrixXd> J;
         factor.compute_jacobians(J);
@@ -842,7 +842,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto expected = std::make_shared<GenericVariable>(46, Eigen::Vector3d(1.0, 2.0, 3.0));
         expected->set_is_constant(true);
 
-        GenericBetweenFactor factor(46, a, b, expected);
+        GenericBetweenFactor factor(46, a.get(), b.get(), expected.get());
 
         std::vector<Eigen::MatrixXd> J;
         factor.compute_jacobians(J);
@@ -871,7 +871,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     // --------------------------
     SECTION("Residual is zero when measurement matches")
     {
-        PosePositionBetweenFactor factor(100, pose_a, pose_b, measured, 1.0);
+        PosePositionBetweenFactor factor(100, pose_a.get(), pose_b.get(), measured.get(), 1.0);
         Eigen::VectorXd residual = factor.compute_residual();
         REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero()));
     }
@@ -886,7 +886,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
         // Perturb pose B
         pose_b->set_pos_W(Eigen::Vector3d(2, 1, 4)); // actual delta is (2,1,4)
 
-        PosePositionBetweenFactor factor(101, pose_a, pose_b, measured2, 1.0);
+        PosePositionBetweenFactor factor(101, pose_a.get(), pose_b.get(), measured2.get(), 1.0);
         Eigen::VectorXd residual = factor.compute_residual();
 
         Eigen::Vector3d expected_residual = Eigen::Vector3d(2, 1, 4) - measured_vec2; // (1,-1,1)
@@ -896,7 +896,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     // --------------------------
     SECTION("Jacobian structure and sign are correct")
     {
-        PosePositionBetweenFactor factor(102, pose_a, pose_b, measured, 1.0);
+        PosePositionBetweenFactor factor(102, pose_a.get(), pose_b.get(), measured.get(), 1.0);
 
         std::vector<Eigen::MatrixXd> J;
         factor.compute_jacobians(J);
@@ -920,8 +920,8 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     // --------------------------
     SECTION("Jacobian respects constant variables")
     {
-        pose_a->set_constant(true);
-        PosePositionBetweenFactor factor(103, pose_a, pose_b, measured, 1.0);
+        pose_a->set_is_constant(true);
+        PosePositionBetweenFactor factor(103, pose_a.get(), pose_b.get(), measured.get(), 1.0);
 
         std::vector<Eigen::MatrixXd> J;
         factor.compute_jacobians(J);
@@ -937,7 +937,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     SECTION("Residual and Jacobians respect sigma weight")
     {
         double sigma = 2.0;
-        PosePositionBetweenFactor factor(104, pose_a, pose_b, measured, sigma);
+        PosePositionBetweenFactor factor(104, pose_a.get(), pose_b.get(), measured.get(), sigma);
 
         Eigen::VectorXd residual = factor.compute_residual();
         double expected_scale = 1.0 / sigma;
@@ -970,7 +970,7 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         Eigen::Vector3d pos_prior(1.0, 2.0, 0.0);
         double sigma = 0.2;
         
-        PosePositionPriorFactor factor(0, pose, pos_prior, sigma);
+        PosePositionPriorFactor factor(0, pose.get(), pos_prior, sigma);
         
         // Check residual
         Eigen::VectorXd residual = factor.compute_residual();
@@ -999,7 +999,7 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         pose_init << pos_exact, 0.0, 0.0, 0.0; // position matches exactly
         auto pose = std::make_shared<PoseVariable>(0, pose_init);
         
-        PosePositionPriorFactor factor(0, pose, pos_exact, 1.0);
+        PosePositionPriorFactor factor(0, pose.get(), pos_exact, 1.0);
         
         Eigen::VectorXd residual = factor.compute_residual();
         REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), kTol));
@@ -1018,7 +1018,7 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         
         for (double sigma : sigma_values)
         {
-            PosePositionPriorFactor factor(0, pose, pos_prior, sigma);
+            PosePositionPriorFactor factor(0, pose.get(), pos_prior, sigma);
             
             Eigen::VectorXd residual = factor.compute_residual();
             double expected_scale = 1.0 / sigma;
@@ -1041,10 +1041,10 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         Eigen::Matrix<double, 6, 1> pose_init;
         pose_init << 1.0, 2.0, 3.0, 0.0, 0.0, 0.0;
         auto pose = std::make_shared<PoseVariable>(0, pose_init);
-        pose->set_constant(true);
+        pose->set_is_constant(true);
         
         Eigen::Vector3d pos_prior(0.0, 0.0, 0.0);
-        PosePositionPriorFactor factor(0, pose, pos_prior, 1.0);
+        PosePositionPriorFactor factor(0, pose.get(), pos_prior, 1.0);
         
         // Residual should still be computed
         Eigen::VectorXd residual = factor.compute_residual();
@@ -1079,7 +1079,7 @@ TEST_CASE("PoseOrientationPriorFactor: behavior with do_so3_nudge modes", "[prio
     {
         // Create pose variable with linear rotation updates
         auto pose_linear = std::make_shared<PoseVariable>(0, pose_init, false);
-        PoseOrientationPriorFactor factor(0, pose_linear, rot_prior, sigma, false);
+        PoseOrientationPriorFactor factor(0, pose_linear.get(), rot_prior, sigma, false);
         
         // Compute initial residual
         Eigen::VectorXd r_initial = factor.compute_residual();
@@ -1109,7 +1109,7 @@ TEST_CASE("PoseOrientationPriorFactor: behavior with do_so3_nudge modes", "[prio
     {
         // Create pose variable with manifold rotation updates
         auto pose_manifold = std::make_shared<PoseVariable>(1, pose_init, true);
-        PoseOrientationPriorFactor factor(1, pose_manifold, rot_prior, sigma, true);
+        PoseOrientationPriorFactor factor(1, pose_manifold.get(), rot_prior, sigma, true);
         
         // Compute initial residual (should be same as linear case initially)
         Eigen::VectorXd r_initial = factor.compute_residual();
@@ -1161,8 +1161,8 @@ TEST_CASE("PoseOrientationPriorFactor: behavior with do_so3_nudge modes", "[prio
         auto pose_linear = std::make_shared<PoseVariable>(2, pose_init, false);
         auto pose_manifold = std::make_shared<PoseVariable>(3, pose_init, true);
         
-        PoseOrientationPriorFactor factor_linear(2, pose_linear, rot_prior, sigma, false);
-        PoseOrientationPriorFactor factor_manifold(3, pose_manifold, rot_prior, sigma, true);
+        PoseOrientationPriorFactor factor_linear(2, pose_linear.get(), rot_prior, sigma, false);
+        PoseOrientationPriorFactor factor_manifold(3, pose_manifold.get(), rot_prior, sigma, true);
         
         std::vector<Eigen::MatrixXd> J_linear, J_manifold;
         factor_linear.compute_jacobians(J_linear);
@@ -1222,8 +1222,8 @@ TEST_CASE("PoseOrientationPriorFactor: convergence behavior with different do_so
         auto pose_linear = std::make_shared<PoseVariable>(0, pose_init, false);
         auto pose_manifold = std::make_shared<PoseVariable>(1, pose_init, true);
         
-        PoseOrientationPriorFactor factor_linear(0, pose_linear, rot_prior, sigma, false);
-        PoseOrientationPriorFactor factor_manifold(1, pose_manifold, rot_prior, sigma, true);
+        PoseOrientationPriorFactor factor_linear(0, pose_linear.get(), rot_prior, sigma, false);
+        PoseOrientationPriorFactor factor_manifold(1, pose_manifold.get(), rot_prior, sigma, true);
         
         // Initial residuals should be identical
         Eigen::VectorXd r_initial_linear = factor_linear.compute_residual();
@@ -1264,7 +1264,7 @@ TEST_CASE("PosePositionPriorFactor: analytical vs numerical Jacobians", "[prior]
     Eigen::Vector3d pos_prior(1.0, 0.0, 1.0);
     double sigma = 0.5;
     
-    auto factor = std::make_shared<PosePositionPriorFactor>(0, pose, pos_prior, sigma);
+    auto factor = std::make_shared<PosePositionPriorFactor>(0, pose.get(), pos_prior, sigma);
     
     std::vector<Eigen::MatrixXd> J_analytic;
     std::vector<Eigen::MatrixXd> J_numeric;
@@ -1294,7 +1294,7 @@ TEST_CASE("PoseOrientationPriorFactor: analytical vs numerical Jacobians", "[pri
     Eigen::Vector3d rot_prior(0.1, 0.0, 0.2);
     double sigma = 0.3;
     
-    auto factor = std::make_shared<PoseOrientationPriorFactor>(0, pose, rot_prior, sigma);
+    auto factor = std::make_shared<PoseOrientationPriorFactor>(0, pose.get(), rot_prior, sigma);
     
     std::vector<Eigen::MatrixXd> J_analytic;
     std::vector<Eigen::MatrixXd> J_numeric;
@@ -1334,7 +1334,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::Matrix<double, 6, 1> pose_init;
         pose_init << 1.0, 2.0, 3.0, 0.1, 0.2, 0.3;
         auto original = std::make_shared<PoseVariable>(42, pose_init, true);
-        original->set_constant(true);
+        original->set_is_constant(true);
         
         // Clone the variable
         auto cloned_base = original->clone();
@@ -1356,7 +1356,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::Matrix<double, 6, 1> increment;
         increment << 0.1, 0.1, 0.1, 0.01, 0.01, 0.01;
         
-        cloned->set_constant(false);
+        cloned->set_is_constant(false);
         cloned->apply_increment(increment);
         
         // Original should be unchanged
@@ -1669,15 +1669,15 @@ TEST_CASE("FactorGraph ID Collision Detection", "[factor_graph][error_handling]"
         
         // Add first factor with ID = 10
         Eigen::Vector3d bearing(0.0, 0.0, 1.0);
-        auto factor1 = std::make_shared<BearingObservationFactor>(10, pose, landmark, bearing, 1.0);
+        auto factor1 = std::make_shared<BearingObservationFactor>(10, pose.get(), landmark.get(), bearing, 1.0);
         REQUIRE_NOTHROW(graph.add_factor(factor1));
         
         // Try to add second factor with same ID = 10
-        auto factor2 = std::make_shared<BearingObservationFactor>(10, pose, landmark, bearing, 1.0);
+        auto factor2 = std::make_shared<BearingObservationFactor>(10, pose.get(), landmark.get(), bearing, 1.0);
         REQUIRE_THROWS_AS(graph.add_factor(factor2), std::runtime_error);
         
         // Different ID should work fine
-        auto factor3 = std::make_shared<BearingObservationFactor>(11, pose, landmark, bearing, 1.0);
+        auto factor3 = std::make_shared<BearingObservationFactor>(11, pose.get(), landmark.get(), bearing, 1.0);
         REQUIRE_NOTHROW(graph.add_factor(factor3));
     }
 }
@@ -1702,7 +1702,7 @@ TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computati
     
     SECTION("Perfect measurement should give near-zero residual")
     {
-        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0);
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_k, 1.0);
         
         Eigen::VectorXd residual = factor->compute_residual();
         REQUIRE(residual.size() == 2);
@@ -1713,7 +1713,7 @@ TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computati
     {
         // Introduce bearing error
         Eigen::Vector3d wrong_bearing(0.0, 0.0, 1.0); // straight ahead instead of angled
-        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, 1.0);
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, 1.0);
         
         Eigen::VectorXd residual = factor->compute_residual();
         REQUIRE(residual.size() == 2);
@@ -1724,17 +1724,17 @@ TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computati
     {
         double sigma = 0.5;
         double expected_weight = 1.0 / sigma;
-        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, sigma);
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_k, sigma);
         
         REQUIRE(std::abs(factor->weight() - expected_weight) < kTol);
         
         // Residual should be scaled by weight
         Eigen::Vector3d wrong_bearing(0.0, 0.0, 1.0);
-        auto factor_wrong = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, sigma);
+        auto factor_wrong = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, sigma);
         Eigen::VectorXd weighted_residual = factor_wrong->compute_residual();
         
         // Compare with unit weight version
-        auto factor_unit = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, wrong_bearing, 1.0);
+        auto factor_unit = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, 1.0);
         Eigen::VectorXd unit_residual = factor_unit->compute_residual();
         
         Eigen::VectorXd expected_weighted = expected_weight * unit_residual;
@@ -1756,7 +1756,7 @@ TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differ
     Eigen::Vector3d bearing_k(0.3, 0.4, 0.8);
     bearing_k.normalize();
     
-    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0);
+    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_k, 1.0);
     
     SECTION("Analytic vs numerical Jacobians should match")
     {
@@ -1843,7 +1843,7 @@ TEST_CASE("BearingProjectionFactor2D: Edge case handling for small alpha", "[bea
         Eigen::Vector3d bearing_k(0.0, 0.0, 1.0);
         
         double eps = 1e-6;
-        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0, eps);
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_k, 1.0, eps);
         
         // Should return large residual and not crash
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1867,7 +1867,7 @@ TEST_CASE("BearingProjectionFactor2D: Edge case handling for small alpha", "[bea
         Eigen::Vector3d bearing_k(0.0, 0.0, 1.0);
         
         double eps = 1e-6;
-        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_k, 1.0, eps);
+        auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_k, 1.0, eps);
         
         // Should handle gracefully
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1902,7 +1902,7 @@ TEST_CASE("BearingProjectionFactor2D: Integration test with optimization converg
     bearing_C_true.normalize();
     
     // Create factor with this "perfect" measurement
-    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose, landmark, bearing_C_true, 0.1);
+    auto factor = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), bearing_C_true, 0.1);
     
     SECTION("Single iteration should reduce residual")
     {

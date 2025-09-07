@@ -12,8 +12,8 @@ namespace factorama
     {
     public:
         BearingProjectionFactor2D(int id,
-                                  std::shared_ptr<PoseVariable> pose,
-                                  std::shared_ptr<LandmarkVariable> landmark,
+                                  PoseVariable* pose,
+                                  LandmarkVariable* landmark,
                                   const Eigen::Vector3d& bearing_C_observed,
                                   double sigma = 1.0,
                                   double along_tolerance_epsilon = 1e-6)
@@ -46,7 +46,7 @@ namespace factorama
             return FactorType::bearing_observation; // Using existing enum for now
         }
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_, landmark_};
         }
@@ -56,8 +56,8 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_;
-        std::shared_ptr<LandmarkVariable> landmark_;
+        PoseVariable* pose_;
+        LandmarkVariable* landmark_;
         Eigen::Vector3d bearing_C_observed_;                    // measurement bearing (unit)
         Eigen::Matrix<double, 3, 2> T_;        // precomputed orthonormal basis (from k)
         double weight_;

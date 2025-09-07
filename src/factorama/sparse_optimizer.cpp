@@ -102,9 +102,6 @@ namespace factorama
             throw std::runtime_error("[SparseOptimizer] No factor graph set.");
         }
         
-        // Enable sparse jacobians in the factor graph (following SPARSE METHOD 2 pattern)
-        graph_->set_sparse_jacobians(true);
-        
         // Ensure the graph structure is finalized
         // Note: We assume finalize_structure() was called externally
         // graph_->finalize_structure(); // Uncomment if needed

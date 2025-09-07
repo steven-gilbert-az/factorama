@@ -19,7 +19,6 @@ TEST_CASE("SparseOptimizer basic GN convergence", "[optimizer]")
     std::vector<Eigen::Vector3d> gt_landmark_positions;
     CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
     *graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, 1.0 - sparsity);
-    graph->set_sparse_jacobians(true);
     graph->finalize_structure();
 
     // Step 2: Configure optimizer settings
@@ -37,7 +36,7 @@ TEST_CASE("SparseOptimizer basic GN convergence", "[optimizer]")
     optimizer.optimize();
 
     // Step 4: Validate result (fill in real expectations)
-    const auto &variables = graph->get_all_variables();
+    graph->get_all_variables();
 
     // Ensure that the optimization went for at least 1 round
     CAPTURE(optimizer.current_stats_.valid);
@@ -65,7 +64,6 @@ TEST_CASE("SparseOptimizer LM convergence", "[optimizer]")
     std::vector<Eigen::Vector3d> gt_landmark_positions;
     CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
     *graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, 1.0 - sparsity);
-    graph->set_sparse_jacobians(true);
     graph->finalize_structure();
 
     // Step 2: Configure optimizer settings
@@ -83,7 +81,7 @@ TEST_CASE("SparseOptimizer LM convergence", "[optimizer]")
     optimizer.optimize();
 
     // Step 4: Validate result (fill in real expectations)
-    const auto &variables = graph->get_all_variables();
+    graph->get_all_variables();
 
     // Ensure that the optimization went for at least 1 round
     CAPTURE(optimizer.current_stats_.valid);

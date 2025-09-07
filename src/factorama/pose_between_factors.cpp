@@ -67,7 +67,7 @@ namespace factorama
                     dx(i) = epsilon;
                     pose1_copy.set_value_from_vector(pose_value + dx);
 
-                    Eigen::VectorXd r_plus = compute_residual(&pose1_copy, pose2_.get(), calibration_rotation_12_.get());
+                    Eigen::VectorXd r_plus = compute_residual(&pose1_copy, pose2_, calibration_rotation_12_);
                     auto diff = r_plus - r0;
                     J.col(i) = diff / epsilon;
                 }
@@ -88,7 +88,7 @@ namespace factorama
                     dx(i) = epsilon;
                     pose2_copy.set_value_from_vector(pose_value + dx);
 
-                    Eigen::VectorXd r_plus = compute_residual(pose1_.get(), &pose2_copy, calibration_rotation_12_.get());
+                    Eigen::VectorXd r_plus = compute_residual(pose1_, &pose2_copy, calibration_rotation_12_);
                     auto diff = r_plus - r0;
                     J.col(i) = diff / epsilon;
                 }
@@ -110,7 +110,7 @@ namespace factorama
                     Eigen::VectorXd new_value = cal_value + dx;
                     cal_copy.set_value_from_vector(new_value);
 
-                    Eigen::VectorXd r_plus = compute_residual(pose1_.get(), pose2_.get(), &cal_copy);
+                    Eigen::VectorXd r_plus = compute_residual(pose1_, pose2_, &cal_copy);
                     auto diff = r_plus - r0;
                     J.col(i) = diff / epsilon;
                 }

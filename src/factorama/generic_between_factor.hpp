@@ -10,9 +10,9 @@ namespace factorama
     {
     public:
         GenericBetweenFactor(int id,
-                             std::shared_ptr<Variable> var_a,
-                             std::shared_ptr<Variable> var_b,
-                             std::shared_ptr<Variable> measured_diff,
+                             Variable* var_a,
+                             Variable* var_b,
+                             Variable* measured_diff,
                              double sigma = 1.0)
             : id_(id), var_a_(var_a), var_b_(var_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
@@ -79,7 +79,7 @@ namespace factorama
             }
         }
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {var_a_, var_b_, measured_diff_};
         }
@@ -101,9 +101,9 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<Variable> var_a_;
-        std::shared_ptr<Variable> var_b_;
-        std::shared_ptr<Variable> measured_diff_;
+        Variable* var_a_;
+        Variable* var_b_;
+        Variable* measured_diff_;
         double weight_;
     };
 

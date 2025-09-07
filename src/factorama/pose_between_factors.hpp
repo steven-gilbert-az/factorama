@@ -12,9 +12,9 @@ namespace factorama
     {
     public:
         PosePositionBetweenFactor(int id,
-                                  std::shared_ptr<PoseVariable> pose_a,
-                                  std::shared_ptr<PoseVariable> pose_b,
-                                  std::shared_ptr<Variable> measured_diff, // expected delta: pos_b - pos_a
+                                  PoseVariable* pose_a,
+                                  PoseVariable* pose_b,
+                                  Variable* measured_diff, // expected delta: pos_b - pos_a
                                   double sigma = 1.0)
             : id_(id), pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
@@ -81,7 +81,7 @@ namespace factorama
             }
         }
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_a_, pose_b_, measured_diff_};
         }
@@ -103,9 +103,9 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_a_;
-        std::shared_ptr<PoseVariable> pose_b_;
-        std::shared_ptr<Variable> measured_diff_;
+        PoseVariable* pose_a_;
+        PoseVariable* pose_b_;
+        Variable* measured_diff_;
         double weight_;
     };
 
@@ -114,9 +114,9 @@ namespace factorama
     public:
         PoseOrientationBetweenFactor(
             int id,
-            std::shared_ptr<PoseVariable> pose1,
-            std::shared_ptr<PoseVariable> pose2,
-            std::shared_ptr<RotationVariable> calibration_rotation_12,
+            PoseVariable* pose1,
+            PoseVariable* pose2,
+            RotationVariable* calibration_rotation_12,
             double angle_sigma = 1.0,
             bool do_so3_nudge = true)
             : id_(id),
@@ -143,7 +143,7 @@ namespace factorama
         // Residual = LogMapSO3(dcm_S2W * dcm_WS1 * dcm_S1_S2)
         Eigen::VectorXd compute_residual() const override
         {
-            return compute_residual(pose1_.get(), pose2_.get(), calibration_rotation_12_.get());
+            return compute_residual(pose1_, pose2_, calibration_rotation_12_);
         }
 
         Eigen::VectorXd compute_residual(
@@ -165,7 +165,7 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose1_, pose2_, calibration_rotation_12_};
         }
@@ -181,9 +181,9 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose1_;
-        std::shared_ptr<PoseVariable> pose2_;
-        std::shared_ptr<RotationVariable> calibration_rotation_12_;
+        PoseVariable* pose1_;
+        PoseVariable* pose2_;
+        RotationVariable* calibration_rotation_12_;
         double weight_;
         bool do_so3_nudge_;
     };

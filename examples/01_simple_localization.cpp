@@ -23,7 +23,7 @@ void run_example_simple() {
     // GPS measurement 1: [2, 1, 0] with some uncertainty
     auto gps_factor_1 = std::make_shared<GenericPriorFactor>(
         factor_id++, // id
-        position_variable, // variable
+        position_variable.get(), // variable
         Eigen::Vector3d(2.0, 1.0, 0.0), // estimate value 
         0.5); // sigma
     graph.add_factor(gps_factor_1);
@@ -32,13 +32,12 @@ void run_example_simple() {
     Eigen::Vector3d gps_measurement_2(2.2, 0.8, 0.1);
     auto gps_factor_2 = std::make_shared<GenericPriorFactor>(
         factor_id++, 
-        position_variable, 
+        position_variable.get(), 
         Eigen::Vector3d(2.2, 0.8, 0.1), 
         0.8);
     graph.add_factor(gps_factor_2);
 
     // Finalize and optimize
-    graph.set_sparse_jacobians(true);
     graph.finalize_structure();
 
     // Configure optimizer
@@ -84,14 +83,14 @@ void run_example() {
     double gps_sigma = 0.5;  // 0.5 meter uncertainty
     Eigen::Vector3d gps_measurement_1(2.0, 1.0, 0.0);
     auto gps_factor_1 = std::make_shared<GenericPriorFactor>(
-        factor_id++, camera_position, gps_measurement_1, gps_sigma);
+        factor_id++, camera_position.get(), gps_measurement_1, gps_sigma);
     graph.add_factor(gps_factor_1);
     
     // GPS measurement 2: Another measurement with different uncertainty
     double gps_sigma_2 = 0.8;  // Less precise measurement
     Eigen::Vector3d gps_measurement_2(2.2, 0.8, 0.1);
     auto gps_factor_2 = std::make_shared<GenericPriorFactor>(
-        factor_id++, camera_position, gps_measurement_2, gps_sigma_2);
+        factor_id++, camera_position.get(), gps_measurement_2, gps_sigma_2);
     graph.add_factor(gps_factor_2);
 
     std::cout << "Added GPS measurements:" << std::endl;
@@ -99,7 +98,6 @@ void run_example() {
     std::cout << "  GPS 2: " << gps_measurement_2.transpose() << " (sigma: " << gps_sigma_2 << ")" << std::endl;
 
     // Finalize and optimize
-    graph.set_sparse_jacobians(true);
     graph.finalize_structure();
 
     // Configure optimizer

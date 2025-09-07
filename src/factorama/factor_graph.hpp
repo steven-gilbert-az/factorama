@@ -11,14 +11,14 @@ namespace factorama
 {
     struct VariablePlacement
     {
-        std::shared_ptr<Variable> variable;
+        Variable* variable;
         int index; // Start column in Jacobian
         int dim;   // Variable dimension
     };
 
     struct FactorPlacement
     {
-        std::shared_ptr<Factor> factor;
+        Factor* factor;
         int residual_index; // Start row in residual vector
         int residual_dim;
 
@@ -40,8 +40,8 @@ namespace factorama
         Eigen::SparseMatrix<double>& compute_sparse_jacobian_matrix();
         void compute_full_jacobian_and_residual();
 
-        std::shared_ptr<Variable> get_variable(int id) const;
-        std::vector<std::shared_ptr<Variable>> get_all_variables() const;
+        Variable* get_variable(int id) const;
+        const std::vector<std::shared_ptr<Variable>> &get_all_variables() const;
         const std::vector<std::shared_ptr<Factor>> &get_all_factors() const;
 
         Eigen::VectorXd get_variable_vector() const;
@@ -99,10 +99,6 @@ namespace factorama
         void print_variables() const;
         void print_jacobian_and_residual(bool detailed = false);
 
-        void set_sparse_jacobians(bool value){
-            do_sparse_jacobian_ = value;
-        } 
-
         // Basic stats
         int num_variables() const { return static_cast<int>(variables_vector_.size()); }
         int num_values() const { return num_values_; }
@@ -145,10 +141,12 @@ namespace factorama
 
     private:
 
-        // Main storage
-        std::unordered_map<int, std::shared_ptr<Variable>> variables_map_;
+        // Main storage - vector (like an array) and map
+        //    variables_vector_, factors_ - shared_ptr, will manage memory
+        //    variables_map_, factors_map_  - will store bare ptr, doesn't need to manage memory
+        std::unordered_map<int, Variable*> variables_map_;
         std::vector<std::shared_ptr<Variable>> variables_vector_;
-        std::unordered_map<int, std::shared_ptr<Factor>> factors_map_;
+        std::unordered_map<int, Factor*> factors_map_;
         std::vector<std::shared_ptr<Factor>> factors_;
 
         // Structure bookkeeping
@@ -166,7 +164,6 @@ namespace factorama
         Eigen::VectorXd cached_residual_;
         bool residual_valid_ = false;
 
-        bool do_sparse_jacobian_ = false;
         Eigen::SparseMatrix<double> sparse_jacobian_;
         bool sparse_jacobian_initialized_ = false;
         bool sparse_jacobian_valid_ = false;

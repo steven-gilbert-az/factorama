@@ -10,7 +10,7 @@ namespace factorama
     {
     public:
         GenericPriorFactor(int id,
-                           std::shared_ptr<Variable> variable,
+                           Variable* variable,
                            const Eigen::VectorXd &prior_value,
                            double sigma = 1.0)
             : id_(id), variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
@@ -49,7 +49,7 @@ namespace factorama
             }
         }
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {variable_};
         }
@@ -71,7 +71,7 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<Variable> variable_;
+        Variable* variable_;
         Eigen::VectorXd prior_;
         double weight_;
     };

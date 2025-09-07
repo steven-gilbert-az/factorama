@@ -17,8 +17,8 @@ namespace factorama
     public:
         InverseRangeBearingFactor(
             int id,
-            std::shared_ptr<PoseVariable> pose_var,
-            std::shared_ptr<InverseRangeVariable> inverse_range_variable,
+            PoseVariable* pose_var,
+            InverseRangeVariable* inverse_range_variable,
             const Eigen::Vector3d &bearing_C_observed,
             double angle_sigma = 1.0,
             bool do_so3_nudge = true)
@@ -39,7 +39,7 @@ namespace factorama
             return id_;
         }
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_var_, inverse_range_var_};
         }
@@ -99,8 +99,8 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_var_;
-        std::shared_ptr<InverseRangeVariable> inverse_range_var_;
+        PoseVariable* pose_var_;
+        InverseRangeVariable* inverse_range_var_;
         Eigen::Vector3d bearing_C_obs_; // In camera frame, normalized
         double weight_;
         bool do_so3_nudge_;

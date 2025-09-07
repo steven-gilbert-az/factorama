@@ -14,8 +14,8 @@ namespace factorama
     public:
         BearingObservationFactor(
             int id,
-            std::shared_ptr<PoseVariable> pose_var,
-            std::shared_ptr<LandmarkVariable> landmark_var,
+            PoseVariable* pose_var,
+            LandmarkVariable* landmark_var,
             const Eigen::Vector3d &bearing_C_observed,
             double angle_sigma = 1.0,
             bool do_so3_nudge = true)
@@ -60,7 +60,7 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const override;
 
-        std::vector<std::shared_ptr<Variable>> variables() override
+        std::vector<Variable *> variables() override
         {
             return {pose_var_, landmark_var_};
         }
@@ -77,8 +77,8 @@ namespace factorama
 
     private:
         int id_;
-        std::shared_ptr<PoseVariable> pose_var_;
-        std::shared_ptr<LandmarkVariable> landmark_var_;
+        PoseVariable* pose_var_;
+        LandmarkVariable* landmark_var_;
         Eigen::Vector3d bearing_C_obs_;
         double weight_;
         bool do_so3_nudge_;

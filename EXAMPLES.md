@@ -38,29 +38,29 @@ int main() {
     double bearing_sigma = 0.1;
     Eigen::Vector3d bearing_vector(0.0, 0.0, 1.0); // bearing 1 is noisy
     auto bearing_factor = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera_pose, landmark, bearing_vector, bearing_sigma);
+        factor_id++, camera_pose.get(), landmark.get(), bearing_vector, bearing_sigma);
 
 
     Eigen::Vector3d bearing_vector2 = landmark_pos2.normalized(); // bearing 2 can be perfect.
     auto bearing_factor2 = std::make_shared<BearingObservationFactor>(
-        factor_id++, camera_pose, landmark2, bearing_vector2, bearing_sigma);
+        factor_id++, camera_pose.get(), landmark2.get(), bearing_vector2, bearing_sigma);
         
 
     // Create landmark prior
     double landmark_sigma = 1.0;
     auto landmark_prior = std::make_shared<GenericPriorFactor>(
-        factor_id++, landmark,  Eigen::Vector3d(0.0, 0.0, 5.0), landmark_sigma);
+        factor_id++, landmark.get(),  Eigen::Vector3d(0.0, 0.0, 5.0), landmark_sigma);
 
     
     // Create Pose Position Prior
     double position_sigma = 0.5;
     auto pose_position_prior_factor = std::make_shared<PosePositionPriorFactor>(
-        factor_id++, camera_pose, Eigen::Vector3d::Zero(), position_sigma);
+        factor_id++, camera_pose.get(), Eigen::Vector3d::Zero(), position_sigma);
     
     // Create pose orientation prior
     double orientation_sigma = 0.1;
     auto pose_orientation_prior_factor = std::make_shared<PoseOrientationPriorFactor>(
-        factor_id++, camera_pose, Eigen::Vector3d::Zero(), orientation_sigma);
+        factor_id++, camera_pose.get(), Eigen::Vector3d::Zero(), orientation_sigma);
 
 
     // Build factor graph
@@ -73,7 +73,6 @@ int main() {
     graph.add_factor(pose_position_prior_factor);
     graph.add_factor(pose_orientation_prior_factor);
     graph.add_factor(landmark_prior);
-    graph.set_sparse_jacobians(true);
     graph.finalize_structure();
     
 

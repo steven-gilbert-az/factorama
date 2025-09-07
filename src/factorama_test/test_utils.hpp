@@ -151,7 +151,7 @@ namespace factorama
                 Eigen::Vector3d p_C = cam->dcm_CW() * (landmark_positions[i] - cam->pos_W());
                 Eigen::Vector3d bearing = p_C.normalized();
 
-                auto factor = std::make_shared<BearingObservationFactor>(factor_num++, cam, lm, bearing, 1.0);
+                auto factor = std::make_shared<BearingObservationFactor>(factor_num++, cam.get(), lm.get(), bearing, 1.0);
                 graph.add_factor(factor);
             }
         }
@@ -194,7 +194,7 @@ namespace factorama
 
             if (constant_pose || i == 0)
             {
-                pose->set_constant(true);
+                pose->set_is_constant(true);
             }
             else if (prior_factors)
             {
@@ -202,8 +202,8 @@ namespace factorama
                 Eigen::Vector3d pos_prior = original_cam_pose.segment<3>(0);
                 Eigen::Vector3d rot_prior = original_cam_pose.segment<3>(3);
 
-                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose, pos_prior, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose, rot_prior, noise_sigma);
+                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos_prior, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot_prior, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
@@ -233,7 +233,7 @@ namespace factorama
             if (prior_factors)
             {
                 // Create a pair of prior factors (position / orientation)
-                auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmark, original_lm_pos, noise_sigma);
+                auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmark.get(), original_lm_pos, noise_sigma);
                 graph.add_factor(landmark_prior);
             }
         }
@@ -269,7 +269,7 @@ namespace factorama
                     bearing = bearing.normalized();
                 }
 
-                auto factor = std::make_shared<BearingObservationFactor>(factor_id++, pose, lm, bearing, angle_noise_sigma);
+                auto factor = std::make_shared<BearingObservationFactor>(factor_id++, pose.get(), lm.get(), bearing, angle_noise_sigma);
                 graph.add_factor(factor);
             }
         }
@@ -310,15 +310,15 @@ namespace factorama
             auto pose = std::make_shared<PoseVariable>(var_id++, cam_pose);
             if (constant_pose || i == 0)
             {
-                pose->set_constant(true);
+                pose->set_is_constant(true);
             }
             else if (prior_factors)
             {
                 // Create a pair of prior factors (position / orientation)
                 Eigen::Vector3d pos = cam_pose.segment<3>(0);
                 Eigen::Vector3d rot = cam_pose.segment<3>(3);
-                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose, pos, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose, rot, noise_sigma);
+                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
@@ -378,7 +378,7 @@ namespace factorama
                     bearing = bearing.normalized();
                 }
 
-                auto factor = std::make_shared<InverseRangeBearingFactor>(factor_id++, pose, lm, bearing, noise_sigma);
+                auto factor = std::make_shared<InverseRangeBearingFactor>(factor_id++, pose.get(), lm.get(), bearing, noise_sigma);
                 graph.add_factor(factor);
             }
         }
@@ -421,14 +421,14 @@ namespace factorama
             }
 
             auto cam_pose_var = std::make_shared<PoseVariable>(var_id++, cam_pose);
-            cam_pose_var->set_constant(true);
+            cam_pose_var->set_is_constant(true);
             graph.add_variable(cam_pose_var);
 
             auto imu_pose_var = std::make_shared<PoseVariable>(var_id++, imu_pose);
-            imu_pose_var->set_constant(true);
+            imu_pose_var->set_is_constant(true);
             graph.add_variable(imu_pose_var);
             // Create pose between factor
-            auto factor = std::make_shared<PoseOrientationBetweenFactor>(factor_id++, cam_pose_var, imu_pose_var, extrinsic_rotation_IC, noise_sigma);
+            auto factor = std::make_shared<PoseOrientationBetweenFactor>(factor_id++, cam_pose_var.get(), imu_pose_var.get(), extrinsic_rotation_IC.get(), noise_sigma);
             graph.add_factor(factor);
         }
         return graph;
@@ -536,7 +536,7 @@ namespace factorama
 
             if (constant_pose || i == 0)
             {
-                pose->set_constant(true);
+                pose->set_is_constant(true);
             }
             else if (prior_factors)
             {
@@ -544,8 +544,8 @@ namespace factorama
                 Eigen::Vector3d pos_prior = original_cam_pose.segment<3>(0);
                 Eigen::Vector3d rot_prior = original_cam_pose.segment<3>(3);
 
-                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose, pos_prior, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose, rot_prior, noise_sigma);
+                auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos_prior, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot_prior, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
@@ -573,7 +573,7 @@ namespace factorama
             if (prior_factors)
             {
                 // Create landmark prior factor
-                auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmark, original_lm_pos, noise_sigma);
+                auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmark.get(), original_lm_pos, noise_sigma);
                 graph.add_factor(landmark_prior);
             }
         }
@@ -609,7 +609,7 @@ namespace factorama
                 }
 
                 // Use BearingProjectionFactor2D instead of BearingObservationFactor
-                auto factor = std::make_shared<BearingProjectionFactor2D>(factor_id++, pose, lm, bearing, angle_noise_sigma);
+                auto factor = std::make_shared<BearingProjectionFactor2D>(factor_id++, pose.get(), lm.get(), bearing, angle_noise_sigma);
                 graph.add_factor(factor);
             }
         }

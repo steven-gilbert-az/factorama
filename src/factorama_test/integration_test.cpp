@@ -34,7 +34,6 @@ struct OptimizationResult {
 OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSettings& settings, bool run_jacobian_test = false, double jacobian_tol = 1e-6, bool verbose = false) {
     OptimizationResult result;
     
-    graph.set_sparse_jacobians(true);
     graph.finalize_structure();
     
     if (verbose) {

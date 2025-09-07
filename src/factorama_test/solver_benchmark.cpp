@@ -119,7 +119,6 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
             );
         }
         
-        graph->set_sparse_jacobians(true);
         graph->finalize_structure();
 
         // Run the jacobian test!
