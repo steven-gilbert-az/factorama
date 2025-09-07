@@ -1,10 +1,12 @@
 #pragma once
 
 #include <Eigen/Dense>
-#include <cmath>
+
 
 namespace factorama
 {
+
+    constexpr double PI = 3.14159265358979323846;
 
     inline Eigen::Matrix3d skew_symmetric(const Eigen::Vector3d &v)
     {
@@ -54,7 +56,7 @@ namespace factorama
             return unskew(Omega);
         }
 
-        if (std::abs(theta - M_PI) < 1e-3)
+        if (std::abs(theta - PI) < 1e-3)
         {
             // For angles near π, use Eigen fallback
             Eigen::AngleAxisd aa(R);

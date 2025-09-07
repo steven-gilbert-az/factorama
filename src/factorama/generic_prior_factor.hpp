@@ -1,7 +1,6 @@
 #pragma once
 #include "factorama/types.hpp"
 #include <cassert>
-#include <cmath>
 
 namespace factorama
 {

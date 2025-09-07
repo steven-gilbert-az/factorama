@@ -420,9 +420,9 @@ TEST_CASE("SO(3) exponential and logarithmic maps round trip", "[SO3]")
         Eigen::Vector3d(0, 0.01, 0),
         Eigen::Vector3d(0, 0, 0.01),
         Eigen::Vector3d(0.1, -0.2, 0.3),
-        Eigen::Vector3d(M_PI / 2, 0, 0),
-        Eigen::Vector3d(0, M_PI / 2, 0),
-        Eigen::Vector3d(0, 0, M_PI / 2),
+        Eigen::Vector3d(PI / 2, 0, 0),
+        Eigen::Vector3d(0, PI / 2, 0),
+        Eigen::Vector3d(0, 0, PI / 2),
     };
 
     for (const auto &omega : test_omegas)
@@ -456,7 +456,7 @@ TEST_CASE("SO(3) ExpMap/LogMap π-rotation edge cases", "[SO3][EdgeCase]")
     {
 
         CAPTURE(axis);
-        Eigen::Vector3d omega = M_PI * axis;
+        Eigen::Vector3d omega = PI * axis;
         Eigen::Matrix3d R = ExpMapSO3(omega);
         Eigen::Vector3d recovered = LogMapSO3(R);
 
@@ -514,18 +514,18 @@ TEST_CASE("SO(3) near-zero rotation is stable", "[SO3][EdgeCase]")
 TEST_CASE("SO(3) LogMap behaves near 180 degrees", "[SO3][Singularity]")
 {
     // R = rotation of 180 deg around X
-    Eigen::AngleAxisd aa(M_PI, Eigen::Vector3d::UnitX());
+    Eigen::AngleAxisd aa(PI, Eigen::Vector3d::UnitX());
     Eigen::Matrix3d R = aa.toRotationMatrix();
 
     Eigen::Vector3d log_result = LogMapSO3(R);
     double angle = log_result.norm();
 
     // Should be π, axis may be +X or -X
-    bool positive_pi = std::abs(angle - M_PI) < 1e-6;
-    bool negative_pi = std::abs(angle + M_PI) < 1e-6;
+    bool positive_pi = std::abs(angle - PI) < 1e-6;
+    bool negative_pi = std::abs(angle + PI) < 1e-6;
     bool ok = positive_pi || negative_pi;
     REQUIRE(ok);
-    // REQUIRE(std::abs(angle - M_PI) < 1e-6 || std::abs(angle + M_PI) < 1e-6);
+    // REQUIRE(std::abs(angle - PI) < 1e-6 || std::abs(angle + PI) < 1e-6);
 
     Eigen::Vector3d axis = log_result.normalized();
     REQUIRE(std::abs(std::abs(axis.dot(Eigen::Vector3d::UnitX())) - 1.0) < 1e-6);
@@ -538,7 +538,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         // Setup two camera poses with identity and 90deg rotation about Z
         Eigen::Matrix3d R1 = Eigen::Matrix3d::Identity();
         Eigen::Matrix3d R2;
-        R2 = Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
+        R2 = Eigen::AngleAxisd(PI / 2, Eigen::Vector3d::UnitZ());
 
         auto pose1 = std::make_shared<PoseVariable>(1, Eigen::Vector3d::Zero(), R1);
         auto pose2 = std::make_shared<PoseVariable>(2, Eigen::Vector3d::Zero(), R2);
@@ -703,10 +703,10 @@ TEST_CASE("PoseVariable apply_increment")
 TEST_CASE("RotationVariable apply_increment")
 {
     // Initial rotation: 45 degrees about Z axis
-    Eigen::Matrix3d R_init = Eigen::AngleAxisd(M_PI / 4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
+    Eigen::Matrix3d R_init = Eigen::AngleAxisd(PI / 4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
 
     // Rotation increment: 30 degrees about Y axis
-    Eigen::Vector3d dx(0, M_PI / 6, 0);
+    Eigen::Vector3d dx(0, PI / 6, 0);
 
     // RotationVariable using SO(3) manifold
     RotationVariable rot_so3(1, R_init);
@@ -1235,7 +1235,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
     SECTION("RotationVariable clone test")
     {
         // Create original extrinsic rotation variable
-        Eigen::Matrix3d dcm_CE = Eigen::AngleAxisd(M_PI/4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
+        Eigen::Matrix3d dcm_CE = Eigen::AngleAxisd(PI/4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
         auto original = std::make_shared<RotationVariable>(789, dcm_CE);
         original->set_is_constant(true);
         

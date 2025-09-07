@@ -25,7 +25,7 @@ void CreateLargeScenario(std::vector<Eigen::Matrix<double, 6, 1>>& camera_poses,
     
     // Generate cameras in a circle
     for (int i = 0; i < num_cameras; ++i) {
-        double angle = 2.0 * M_PI * i / num_cameras;
+        double angle = 2.0 * PI * i / num_cameras;
         Eigen::Matrix<double, 6, 1> pose;
         
         // Position: circular trajectory at height
@@ -36,7 +36,7 @@ void CreateLargeScenario(std::vector<Eigen::Matrix<double, 6, 1>>& camera_poses,
         // Orientation: look toward center with slight variations
         pose[3] = 0.1 * sin(angle);     // roll
         pose[4] = 0.1 * cos(angle);     // pitch
-        pose[5] = angle + M_PI;         // yaw (face inward)
+        pose[5] = angle + PI;         // yaw (face inward)
         
         camera_poses.push_back(pose);
     }
