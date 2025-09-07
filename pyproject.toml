@@ -1,13 +1,18 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
+requires = [
+    "scikit-build-core>=0.10",  # recent version for better Windows support
+    "pybind11>=2.11",
+    "setuptools",               # needed for metadata
+    "wheel"
+]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "factorama"
 version = "1.0.0"
 description = "Factor graph optimization library with Python bindings"
-authors = [{name = "Steven Gilbert"}]
-license = {text = "MIT"}
+authors = [{ name = "Steven Gilbert" }]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -27,13 +32,26 @@ classifiers = [
 
 [tool.scikit-build]
 cmake.build-type = "Release"
-cmake.args = ["-DBUILD_PYTHON_BINDINGS=ON", "-DBUILD_TESTS=OFF"]
+cmake.args = [
+    "-DBUILD_PYTHON_BINDINGS=ON",
+    "-DBUILD_TESTS=OFF"
+]
+
+# tells scikit-build where your Python package source lives
 wheel.packages = ["python_bindings/python/factorama"]
 
 [tool.cibuildwheel]
+# Build CPython 3.8–3.12, skip 32-bit Windows and old Linux i686
 build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
 skip = ["*-win32", "*-manylinux_i686"]
 
-# Install Eigen3 before building
+# Use Python's modern build frontend explicitly
+build-frontend = "build"
+
 [tool.cibuildwheel.linux]
-before-all = "curl -L https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz | tar xz && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && make install"
+before-all = """
+curl -L https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz | tar xz
+cd eigen-3.4.0 && mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make install
+"""
