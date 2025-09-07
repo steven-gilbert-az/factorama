@@ -36,4 +36,4 @@ skip = ["*-win32", "*-manylinux_i686"]
 
 # Install Eigen3 before building
 [tool.cibuildwheel.linux]
-before-all = "yum install -y eigen3-devel || apt-get update && apt-get install -y libeigen3-dev"
+before-all = "curl -L https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz | tar xz && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && make install"
