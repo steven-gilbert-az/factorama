@@ -9,8 +9,16 @@
 #include <factorama/pose_variable.hpp>
 #include <factorama/landmark_variable.hpp>
 #include <factorama/generic_variable.hpp>
+#include <factorama/rotation_variable.hpp>
+#include <factorama/inverse_range_variable.hpp>
 #include <factorama/bearing_observation_factor.hpp>
 #include <factorama/generic_prior_factor.hpp>
+#include <factorama/inverse_range_bearing_factor.hpp>
+#include <factorama/generic_between_factor.hpp>
+#include <factorama/pose_prior_factors.hpp>
+#include <factorama/pose_between_factors.hpp>
+#include <factorama/rotation_prior_factor.hpp>
+#include <factorama/bearing_projection_factor_2d.hpp>
 
 namespace py = pybind11;
 
@@ -84,6 +92,26 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("id"), py::arg("initial_value"))
         .def("set_is_constant", &factorama::GenericVariable::set_is_constant);
 
+    py::class_<factorama::RotationVariable, std::shared_ptr<factorama::RotationVariable>, factorama::Variable>(m, "RotationVariable")
+        .def(py::init<int, const Eigen::Matrix3d&>(),
+             "Create a RotationVariable with DCM",
+             py::arg("id"), py::arg("dcm_AB"))
+        .def("dcm_AB", &factorama::RotationVariable::dcm_AB, py::return_value_policy::reference)
+        .def("rotation", &factorama::RotationVariable::rotation, py::return_value_policy::reference)
+        .def("set_is_constant", &factorama::RotationVariable::set_is_constant);
+
+    py::class_<factorama::InverseRangeVariable, std::shared_ptr<factorama::InverseRangeVariable>, factorama::Variable>(m, "InverseRangeVariable")
+        .def(py::init<int, const Eigen::Vector3d&, const Eigen::Vector3d&, double>(),
+             "Create an InverseRangeVariable",
+             py::arg("id"), py::arg("origin_pos_W"), py::arg("bearing_W"), py::arg("initial_range"))
+        .def("pos_W", &factorama::InverseRangeVariable::pos_W)
+        .def("origin_pos_W", &factorama::InverseRangeVariable::origin_pos_W, py::return_value_policy::reference)
+        .def("bearing_W", &factorama::InverseRangeVariable::bearing_W, py::return_value_policy::reference)
+        .def("inverse_range", &factorama::InverseRangeVariable::inverse_range)
+        .def_readwrite("minimum_inverse_range", &factorama::InverseRangeVariable::minimum_inverse_range_)
+        .def_readwrite("maximum_inverse_range", &factorama::InverseRangeVariable::maximum_inverse_range_)
+        .def("set_is_constant", &factorama::InverseRangeVariable::set_is_constant);
+
     // Bind factor classes
     py::class_<factorama::BearingObservationFactor, std::shared_ptr<factorama::BearingObservationFactor>, factorama::Factor>(m, "BearingObservationFactor")
         .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, 
@@ -98,6 +126,50 @@ PYBIND11_MODULE(_factorama, m) {
         .def(py::init<int, factorama::Variable*, const Eigen::VectorXd&, double>(),
              "Create a GenericPriorFactor",
              py::arg("id"), py::arg("variable"), py::arg("prior_value"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::InverseRangeBearingFactor, std::shared_ptr<factorama::InverseRangeBearingFactor>, factorama::Factor>(m, "InverseRangeBearingFactor")
+        .def(py::init<int, factorama::PoseVariable*, factorama::InverseRangeVariable*, 
+                      const Eigen::Vector3d&, double>(),
+             "Create an InverseRangeBearingFactor",
+             py::arg("id"), py::arg("pose_var"), py::arg("inverse_range_var"), 
+             py::arg("bearing_C_observed"), py::arg("angle_sigma") = 1.0)
+        .def("bearing_C_obs", &factorama::InverseRangeBearingFactor::bearing_C_obs, py::return_value_policy::reference);
+
+    py::class_<factorama::GenericBetweenFactor, std::shared_ptr<factorama::GenericBetweenFactor>, factorama::Factor>(m, "GenericBetweenFactor")
+        .def(py::init<int, factorama::Variable*, factorama::Variable*, factorama::Variable*, double>(),
+             "Create a GenericBetweenFactor",
+             py::arg("id"), py::arg("var_a"), py::arg("var_b"), py::arg("measured_diff"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::PosePositionPriorFactor, std::shared_ptr<factorama::PosePositionPriorFactor>, factorama::Factor>(m, "PosePositionPriorFactor")
+        .def(py::init<int, factorama::PoseVariable*, const Eigen::Vector3d&, double>(),
+             "Create a PosePositionPriorFactor",
+             py::arg("id"), py::arg("pose"), py::arg("pos_prior"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::PoseOrientationPriorFactor, std::shared_ptr<factorama::PoseOrientationPriorFactor>, factorama::Factor>(m, "PoseOrientationPriorFactor")
+        .def(py::init<int, factorama::PoseVariable*, const Eigen::Vector3d&, double>(),
+             "Create a PoseOrientationPriorFactor",
+             py::arg("id"), py::arg("pose"), py::arg("rotvec_prior"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::PosePositionBetweenFactor, std::shared_ptr<factorama::PosePositionBetweenFactor>, factorama::Factor>(m, "PosePositionBetweenFactor")
+        .def(py::init<int, factorama::PoseVariable*, factorama::PoseVariable*, factorama::Variable*, double>(),
+             "Create a PosePositionBetweenFactor",
+             py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_diff"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::PoseOrientationBetweenFactor, std::shared_ptr<factorama::PoseOrientationBetweenFactor>, factorama::Factor>(m, "PoseOrientationBetweenFactor")
+        .def(py::init<int, factorama::PoseVariable*, factorama::PoseVariable*, factorama::RotationVariable*, double>(),
+             "Create a PoseOrientationBetweenFactor",
+             py::arg("id"), py::arg("pose1"), py::arg("pose2"), py::arg("calibration_rotation_12"), py::arg("angle_sigma") = 1.0);
+
+    py::class_<factorama::RotationPriorFactor, std::shared_ptr<factorama::RotationPriorFactor>, factorama::Factor>(m, "RotationPriorFactor")
+        .def(py::init<int, factorama::RotationVariable*, const Eigen::Matrix3d&, double>(),
+             "Create a RotationPriorFactor",
+             py::arg("id"), py::arg("rotation"), py::arg("dcm_AB_prior"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::BearingProjectionFactor2D, std::shared_ptr<factorama::BearingProjectionFactor2D>, factorama::Factor>(m, "BearingProjectionFactor2D")
+        .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, const Eigen::Vector3d&, double, double>(),
+             "Create a BearingProjectionFactor2D",
+             py::arg("id"), py::arg("pose"), py::arg("landmark"), py::arg("bearing_C_observed"), 
+             py::arg("sigma") = 1.0, py::arg("along_tolerance_epsilon") = 1e-6);
 
     // Optimizer enums and settings
     py::enum_<factorama::OptimizerMethod>(m, "OptimizerMethod")

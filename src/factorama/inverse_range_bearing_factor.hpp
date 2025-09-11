@@ -75,11 +75,6 @@ namespace factorama
             return weight_;
         }
 
-        void set_weight(double w)
-        {
-            weight_ = w;
-        }
-
         const Eigen::Vector3d &bearing_C_obs() const
         {
             return bearing_C_obs_;

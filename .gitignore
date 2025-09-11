@@ -5,3 +5,4 @@ CLAUDE.md
 TODO.md
 dist/
 *.so
+__pycache__/
