@@ -98,27 +98,52 @@ namespace factorama
                       "FactorType: all factor names must be non-null");
     }
 
+    /// Base class for all optimization variables in the factor graph
+    /// 
+    /// Variables represent the state being optimized (poses, landmarks, etc.)
+    /// Each variable has a vector representation for efficient optimization.
     class Variable
     {
     public:
         virtual ~Variable() = default;
+        
+        /// Get the unique identifier for this variable
+        /// @return Variable ID used for indexing and identification
         virtual int id() const = 0;
-        // Dimension of the tangent space (e.g. 3 for SO(3), 6 for SE(3))
+        
+        /// Get the dimension of this variable
+        /// @return Dimension (e.g. 3 for rotations, 6 for poses)
         virtual int size() const = 0;
-        // Return the variable’s value as a tangent-space vector
+        
+        /// Get the variable's current value as a vector
+        /// @return Current variable value
         virtual const Eigen::VectorXd &value() const = 0;
-        // Set the variable from a new tangent-space vector (used by optimizer)
+        
+        /// Set the variable from a new value vector
+        /// @param x New value (used by optimizer)
         virtual void set_value_from_vector(const Eigen::VectorXd &x) = 0;
-        // Add an increment in tangent space (used by Gauss-Newton/Levenberg-Marquardt)
+        
+        /// Apply an increment to the current value
+        /// @param dx Increment to apply (used by optimization algorithms)
         virtual void apply_increment(const Eigen::VectorXd &dx) = 0;
 
-        // Metadata
+        /// Get the variable type enumeration
+        /// @return Type identifier for this variable class
         virtual VariableType::VariableTypeEnum type() const = 0;
+        
+        /// Get a human-readable name for this variable
+        /// @return String description of this variable
         virtual std::string name() const = 0;
+        
+        /// Print variable information to stdout
         virtual void print() const = 0;
+        
+        /// Check if this variable is held constant during optimization
+        /// @return True if variable should not be optimized
         virtual bool is_constant() const = 0;
 
-        // Clone method for creating deep copies (used for numerical Jacobians)
+        /// Create a deep copy of this variable
+        /// @return Shared pointer to cloned variable (used for numerical Jacobians)
         virtual std::shared_ptr<Variable> clone() const = 0;
     };
 

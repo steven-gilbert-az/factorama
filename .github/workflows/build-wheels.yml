@@ -31,3 +31,28 @@ jobs:
         with:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
+
+  upload_to_release:
+    name: Upload wheels to release
+    needs: build_wheels
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          
+      - name: Create platform archives
+        run: |
+          cd dist/
+          for platform in wheels-*; do
+            zip -r "../${platform}.zip" "$platform/"
+          done
+          ls -la ../*.zip
+          
+      - name: Upload archives to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "*.zip"
