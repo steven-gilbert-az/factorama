@@ -2,35 +2,50 @@
 """
 Setup script for Factorama Python bindings
 
-This setup.py allows installing the Python bindings using pip after building
-with CMake. It assumes the compiled extension module is already built.
+This setup.py integrates with the CMake build system and automatically
+generates type stubs for VSCode intellisense.
 """
 
 import os
 import sys
-from pybind11.setup_helpers import Pybind11Extension, build_ext
-from pybind11 import get_cmake_dir
-import pybind11
-from setuptools import setup, Extension
+import subprocess
+from setuptools import setup
+from setuptools.command.develop import develop
+from setuptools.command.install import install
 from pathlib import Path
 
-__version__ = "1.0.0"
+class PostDevelopCommand(develop):
+    """Post-installation for development mode."""
+    def run(self):
+        develop.run(self)
+        generate_stubs()
 
-# Define the extension module
-ext_modules = [
-    Pybind11Extension(
-        "factorama._factorama",
-        ["python/factorama/_factorama.cpp"],
-        include_dirs=[
-            # Path to pybind11 headers
-            pybind11.get_include(),
-            # Path to factorama headers
-            "../src",
-        ],
-        language='c++',
-        cxx_std=17,
-    ),
-]
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        install.run(self)
+        generate_stubs()
+
+def generate_stubs():
+    """Generate type stubs using pybind11-stubgen"""
+    try:
+        print("Generating type stubs...")
+        result = subprocess.run([
+            sys.executable, "-m", "pybind11_stubgen",
+            "factorama",
+            "-o", "python",
+            "--root-suffix", "",
+            "--ignore-invalid-expressions", ".*"
+        ], capture_output=True, text=True)
+
+        if result.returncode == 0:
+            print("✓ Type stubs generated successfully!")
+        else:
+            print(f"Warning: Could not generate stubs: {result.stderr}")
+    except Exception as e:
+        print(f"Warning: Could not generate stubs: {e}")
+
+__version__ = "1.0.0"
 
 setup(
     name="factorama",
@@ -43,9 +58,9 @@ setup(
     long_description_content_type="text/markdown",
     packages=["factorama"],
     package_dir={"": "python"},
-    ext_modules=ext_modules,
-    extras_require={"test": "pytest"},
-    cmdclass={"build_ext": build_ext},
+    package_data={"factorama": ["*.so", "*.pyd", "*.pyi"]},  # Include compiled extensions and stubs
+    extras_require={"test": "pytest", "stubs": "pybind11-stubgen>=0.10.0"},
+    cmdclass={"develop": PostDevelopCommand, "install": PostInstallCommand},
     zip_safe=False,
     python_requires=">=3.6",
     classifiers=[

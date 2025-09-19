@@ -1,0 +1,14 @@
+README.md
+setup.py
+python/factorama/__init__.py
+python/factorama/__init__.pyi
+python/factorama/_factorama.cpython-310-x86_64-linux-gnu.so
+python/factorama/_factorama.pyi
+python/factorama.egg-info/PKG-INFO
+python/factorama.egg-info/SOURCES.txt
+python/factorama.egg-info/dependency_links.txt
+python/factorama.egg-info/not-zip-safe
+python/factorama.egg-info/requires.txt
+python/factorama.egg-info/top_level.txt
+test/test_basic.py
+test/test_variables_and_factors.py
