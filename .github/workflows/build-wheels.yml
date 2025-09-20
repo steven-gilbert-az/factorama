@@ -5,6 +5,9 @@ on:
     tags: ['v*']  # Trigger on version tags
   workflow_dispatch:  # Manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
