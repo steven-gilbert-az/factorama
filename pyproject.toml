@@ -59,4 +59,10 @@ curl -L https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz | t
 cd eigen-3.4.0 && mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make install
+
+# Install doxygen for documentation extraction
+yum install -y doxygen || apt-get update && apt-get install -y doxygen
+
+# Ensure pybind11-mkdoc is available globally
+pip install --user "pybind11[global]"
 """
