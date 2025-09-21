@@ -62,11 +62,7 @@ make install
 
 # Install doxygen for documentation extraction
 yum install -y doxygen || (apt-get update && apt-get install -y doxygen)
-"""
 
-before-build = """
-# Install pybind11-mkdoc in the build environment
-pip install "pybind11[global]"
-which pybind11-mkdoc || echo "pybind11-mkdoc still not found"
-which doxygen || echo "doxygen still not found"
+# Install pybind11-mkdoc globally so it's available during CMake
+python3 -m pip install --break-system-packages "pybind11[global]" || pip3 install "pybind11[global]"
 """
