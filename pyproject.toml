@@ -61,8 +61,12 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make install
 
 # Install doxygen for documentation extraction
-yum install -y doxygen || apt-get update && apt-get install -y doxygen
+yum install -y doxygen || (apt-get update && apt-get install -y doxygen)
+"""
 
-# Ensure pybind11-mkdoc is available globally
-pip install --user "pybind11[global]"
+before-build = """
+# Install pybind11-mkdoc in the build environment
+pip install "pybind11[global]"
+which pybind11-mkdoc || echo "pybind11-mkdoc still not found"
+which doxygen || echo "doxygen still not found"
 """
