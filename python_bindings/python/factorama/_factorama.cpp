@@ -2,6 +2,18 @@
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
 
+// Include generated docstrings (if available)
+#ifdef __has_include
+#if __has_include("docstring.hpp")
+#include "docstring.hpp"
+#endif
+#endif
+
+// Fallback macro for when docstrings aren't available
+#ifndef DOC
+#define DOC(...) ""
+#endif
+
 // Factorama includes
 #include <factorama/types.hpp>
 #include <factorama/factor_graph.hpp>
@@ -46,8 +58,8 @@ PYBIND11_MODULE(_factorama, m) {
         .value("pose_orientation_between", factorama::FactorType::pose_orientation_between);
 
     // Bind base classes
-    py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable")
-        .def("id", &factorama::Variable::id)
+    py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable", DOC(factorama, Variable))
+        .def("id", &factorama::Variable::id, DOC(factorama, Variable, id))
         .def("size", &factorama::Variable::size)
         .def("value", &factorama::Variable::value, py::return_value_policy::reference)
         .def("set_value_from_vector", &factorama::Variable::set_value_from_vector)

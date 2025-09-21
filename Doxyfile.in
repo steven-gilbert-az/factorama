@@ -1,0 +1,55 @@
+# Doxyfile configuration for Factorama
+PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
+PROJECT_NUMBER         = "@CMAKE_PROJECT_VERSION@"
+PROJECT_BRIEF          = "A factor graph library with emphasis on simple usage"
+
+# Input configuration
+INPUT                  = @CMAKE_SOURCE_DIR@/src/factorama
+RECURSIVE              = YES
+FILE_PATTERNS          = *.hpp *.h *.cpp *.md
+EXCLUDE_PATTERNS       = */build/* */.*
+
+# Output configuration
+OUTPUT_DIRECTORY       = @CMAKE_BINARY_DIR@/docs
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+
+# Documentation extraction settings
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = YES
+
+# Source browsing
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+
+# Class and collaboration diagrams
+HAVE_DOT               = YES
+CLASS_DIAGRAMS         = YES
+COLLABORATION_GRAPH    = YES
+UML_LOOK               = YES
+TEMPLATE_RELATIONS     = YES
+
+# Style configuration
+HTML_THEME             = Awesome
+HTML_COLORSTYLE        = LIGHT
+
+# Search functionality
+SEARCHENGINE           = YES
+SERVER_BASED_SEARCH    = NO
+
+# Warnings
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_DOC_ERROR      = YES
+
+# Other settings
+OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_FOR_FORTRAN   = NO
+OPTIMIZE_OUTPUT_JAVA   = NO

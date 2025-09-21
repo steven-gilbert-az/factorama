@@ -6,3 +6,7 @@ TODO.md
 dist/
 *.so
 __pycache__/
+
+# Documentation
+docs/
+Doxyfile

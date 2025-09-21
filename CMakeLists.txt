@@ -16,11 +16,21 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Size optimization for Release builds only
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # add_compile_options(-ffunction-sections)
+    add_compile_options(-ffunction-sections -fdata-sections)
+    add_link_options(-Wl,--gc-sections -s)
+    message(STATUS "Adding size optimization flags to Release build")
+endif()
+
 # Options
 option(GTSAM "Enable building of GTSAM example" OFF)
 option(BUILD_TESTS "Build unit tests" ON)
 option(BUILD_EXAMPLES "Build example programs" OFF)
 option(BUILD_PYTHON_BINDINGS "Build Python bindings via pybind11" OFF)
+option(BUILD_DOCS "Build documentation with Doxygen" OFF)
+
 
 # Find required packages
 # Try to find system Eigen first
@@ -53,9 +63,14 @@ target_sources(factorama
         src/factorama/bearing_observation_factor.cpp
         src/factorama/bearing_projection_factor_2d.cpp
         src/factorama/factor_graph.cpp
-        src/factorama/inverse_range_bearing_factor.cpp  
+        src/factorama/generic_between_factor.cpp
+        src/factorama/inverse_range_bearing_factor.cpp
+        src/factorama/inverse_range_variable.cpp
+        src/factorama/pose_prior_factors.cpp
+        src/factorama/pose_variable.cpp
         src/factorama/sparse_optimizer.cpp
         src/factorama/pose_between_factors.cpp
+        src/factorama/random_utils.cpp
 )
 
 # Set include directories for the library
@@ -200,4 +215,53 @@ install(FILES
 # === Python bindings ===
 if(BUILD_PYTHON_BINDINGS)
     add_subdirectory(python_bindings/python)
+endif()
+
+# === Documentation ===
+if(BUILD_DOCS)
+    find_package(Doxygen REQUIRED)
+
+    if(Doxygen_FOUND)
+        # Configure Doxyfile
+        configure_file(${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+
+        # Add Doxygen target
+        add_custom_target(doxygen
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generating Doxygen XML"
+            VERBATIM
+        )
+
+        # Find Sphinx
+        find_program(SPHINX_EXECUTABLE sphinx-build)
+        if(SPHINX_EXECUTABLE)
+            # Add Sphinx target
+            add_custom_target(sphinx
+                COMMAND ${SPHINX_EXECUTABLE} -b html
+                    ${CMAKE_SOURCE_DIR}/docs
+                    ${CMAKE_BINARY_DIR}/docs/sphinx
+                DEPENDS doxygen
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Building unified documentation with Sphinx"
+                VERBATIM
+            )
+
+            # Main docs target builds both
+            add_custom_target(docs DEPENDS sphinx)
+
+            message(STATUS "Documentation targets configured:")
+            message(STATUS "  'make doxygen' - Generate Doxygen XML")
+            message(STATUS "  'make sphinx'  - Build unified docs with Sphinx")
+            message(STATUS "  'make docs'    - Build complete documentation")
+            message(STATUS "Unified docs will be in: ${CMAKE_BINARY_DIR}/docs/sphinx/")
+        else()
+            # Fallback to Doxygen only
+            add_custom_target(docs DEPENDS doxygen)
+            message(STATUS "Sphinx not found. Install with: pip install sphinx breathe sphinx-rtd-theme")
+            message(STATUS "Doxygen-only documentation will be in: ${CMAKE_BINARY_DIR}/docs/html/")
+        endif()
+    else()
+        message(WARNING "Doxygen not found. Documentation will not be built.")
+    endif()
 endif()

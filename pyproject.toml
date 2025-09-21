@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "scikit-build-core>=0.10",  # recent version for better Windows support
-    "pybind11>=2.11",
+    "pybind11[global]>=2.11",   # includes base pybind11 + mkdoc tools
     "setuptools",               # needed for metadata
     "wheel"
 ]
@@ -37,7 +37,8 @@ classifiers = [
 cmake.build-type = "Release"
 cmake.args = [
     "-DBUILD_PYTHON_BINDINGS=ON",
-    "-DBUILD_TESTS=OFF"
+    "-DBUILD_TESTS=OFF",
+    "-DBUILD_DOCS=ON"
 ]
 
 # tells scikit-build where your Python package source lives
@@ -52,6 +53,7 @@ skip = ["*-win32", "*-manylinux_i686"]
 build-frontend = "build"
 
 [tool.cibuildwheel.linux]
+# NOTE: CMakeLists.txt already handles Eigen via FetchContent - this could potentially be removed
 before-all = """
 curl -L https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz | tar xz
 cd eigen-3.4.0 && mkdir build && cd build
