@@ -2,7 +2,6 @@
 requires = [
     "scikit-build-core>=0.10",  # recent version for better Windows support
     "pybind11[global]>=2.11",   # includes base pybind11 + mkdoc tools
-    "setuptools",               # needed for metadata
     "wheel"
 ]
 build-backend = "scikit_build_core.build"
@@ -48,6 +47,4 @@ wheel.packages = ["python_bindings/python/factorama"]
 build = ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*"]
 skip = ["*-win32", "*-manylinux_i686"]
 
-# Use Python's modern build frontend explicitly
-build-frontend = "build"
 

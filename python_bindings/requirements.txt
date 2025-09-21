@@ -1,4 +1,0 @@
-numpy>=1.15.0
-pybind11>=2.6.0
-pytest>=6.0.0
-pybind11-stubgen>=0.10.0
