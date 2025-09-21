@@ -61,7 +61,8 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make install
 
 # Install doxygen for documentation extraction
-yum install -y doxygen || (apt-get update && apt-get install -y doxygen)
+# Try package manager first, fall back to direct RPM if repos are broken
+yum install -y doxygen || (curl -L http://vault.centos.org/7.9.2009/os/x86_64/Packages/doxygen-1.8.5-4.el7.x86_64.rpm -o doxygen.rpm && rpm -i doxygen.rpm)
 
 # Install pybind11-mkdoc globally so it's available during CMake
 python3 -m pip install --break-system-packages "pybind11[global]" || pip3 install "pybind11[global]"
