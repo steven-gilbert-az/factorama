@@ -17,7 +17,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Size optimization for Release builds only
-if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # add_compile_options(-ffunction-sections)
     add_compile_options(-ffunction-sections -fdata-sections)
     add_link_options(-Wl,--gc-sections -s)
