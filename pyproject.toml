@@ -37,8 +37,7 @@ classifiers = [
 cmake.build-type = "Release"
 cmake.args = [
     "-DBUILD_PYTHON_BINDINGS=ON",
-    "-DBUILD_TESTS=OFF",
-    "-DBUILD_DOCS=ON"
+    "-DBUILD_TESTS=OFF"
 ]
 
 # tells scikit-build where your Python package source lives
