@@ -1,6 +1,0 @@
-
-[stubs]
-pybind11-stubgen>=0.10.0
-
-[test]
-pytest
