@@ -4,9 +4,26 @@
 
 namespace factorama
 {
+    /**
+     * @brief Generic N-dimensional linear variable
+     *
+     * Flexible variable type that can represent arbitrary vector quantities.
+     * Uses simple linear updates (no special manifold operations like poses).
+     *
+     * @code
+     * Eigen::VectorXd initial_bias(3);
+     * initial_bias << 0.1, -0.05, 0.02;
+     * auto bias_var = std::make_shared<GenericVariable>(1, initial_bias);
+     * @endcode
+     */
     class GenericVariable : public Variable
     {
     public:
+        /**
+         * @brief Construct generic variable with initial value
+         * @param id Unique variable identifier
+         * @param initial_value Initial vector value (any dimension > 0)
+         */
         GenericVariable(int id, const Eigen::VectorXd &initial_value)
             : id_(id), value_(initial_value)
         {

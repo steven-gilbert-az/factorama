@@ -4,9 +4,25 @@
 
 namespace factorama
 {
+    /**
+     * @brief 3D landmark variable in Euclidean space
+     *
+     * Represents 3D world landmarks as simple position vectors. Commonly used
+     * for bundle adjustment problems with camera observations.
+     *
+     * @code
+     * Eigen::Vector3d landmark_pos(0.0, 1.0, 6.0);
+     * auto landmark = std::make_shared<LandmarkVariable>(2, landmark_pos);
+     * @endcode
+     */
     class LandmarkVariable : public Variable
     {
     public:
+        /**
+         * @brief Construct landmark variable with initial 3D position
+         * @param id Unique variable identifier
+         * @param pos_W_init Initial position in world frame
+         */
         LandmarkVariable(int id, const Eigen::Vector3d &pos_W_init)
             : id_(id), pos_W_(pos_W_init) {}
 
@@ -41,12 +57,19 @@ namespace factorama
             return "Landmark" + std::to_string(id());
         }
 
-        // Utility: return 3D position in world frame
+        /**
+         * @brief Get 3D position in world frame
+         * @return Position vector
+         */
         Eigen::Vector3d pos_W() const
         {
             return pos_W_;
         }
 
+        /**
+         * @brief Set 3D position in world frame
+         * @param pos New position vector
+         */
         void set_pos_W(Eigen::Vector3d pos)
         {
             pos_W_ = pos;

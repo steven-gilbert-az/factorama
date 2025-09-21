@@ -8,13 +8,32 @@
 namespace factorama
 {
 
+    /**
+     * @brief Position-only relative constraint between pose variables
+     *
+     * Constrains the position difference between two poses to match a measured difference variable.
+     * Only affects the translation components of poses, ignoring rotation.
+     *
+     * @code
+     * auto position_constraint = std::make_shared<PosePositionBetweenFactor>(
+     *     factor_id++, pose_a, pose_b, measured_delta_variable, sigma);
+     * @endcode
+     */
     class PosePositionBetweenFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct position between factor
+         * @param id Unique factor identifier
+         * @param pose_a First pose variable
+         * @param pose_b Second pose variable
+         * @param measured_diff Variable representing measured position difference (pos_b - pos_a)
+         * @param sigma Standard deviation of measurement
+         */
         PosePositionBetweenFactor(int id,
                                   PoseVariable* pose_a,
                                   PoseVariable* pose_b,
-                                  Variable* measured_diff, // expected delta: pos_b - pos_a
+                                  Variable* measured_diff,
                                   double sigma = 1.0)
             : id_(id), pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
@@ -109,9 +128,29 @@ namespace factorama
         double weight_;
     };
 
+    /**
+     * @brief Orientation-only relative constraint between pose variables
+     *
+     * Constrains the rotation difference between two poses to match a calibration rotation variable.
+     * Only affects the rotation components of poses, ignoring translation. Commonly used for
+     * camera-IMU calibration where relative orientation is known or estimated.
+     *
+     * @code
+     * auto orientation_constraint = std::make_shared<PoseOrientationBetweenFactor>(
+     *     factor_id++, pose1, pose2, calibration_rotation, angle_sigma);
+     * @endcode
+     */
     class PoseOrientationBetweenFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct orientation between factor
+         * @param id Unique factor identifier
+         * @param pose1 First pose variable
+         * @param pose2 Second pose variable
+         * @param calibration_rotation_12 Rotation variable representing relative rotation
+         * @param angle_sigma Represents the standard deviation to apply to the strength of the rotational constraint (radians)
+         */
         PoseOrientationBetweenFactor(
             int id,
             PoseVariable* pose1,

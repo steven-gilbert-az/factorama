@@ -7,69 +7,42 @@
 namespace factorama
 {
 
+    /**
+     * @brief Prior constraint on camera position
+     *
+     * Applies a prior constraint to the position component of a PoseVariable.
+     * Useful for anchoring poses or incorporating GPS measurements.
+     *
+     * @code
+     * double position_sigma = 0.5;
+     * auto pose_position_prior = std::make_shared<PosePositionPriorFactor>(
+     *     factor_id++, camera_pose, Eigen::Vector3d::Zero(), position_sigma);
+     * @endcode
+     */
     class PosePositionPriorFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct position prior factor
+         * @param id Unique factor identifier
+         * @param pose Camera pose variable
+         * @param pos_prior Prior position in world frame
+         * @param sigma Standard deviation of position measurement
+         */
         PosePositionPriorFactor(int id,
                                 PoseVariable* pose,
                                 const Eigen::Vector3d &pos_prior,
-                                double sigma = 1.0)
-            : id_(id), pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
-        {
-            assert(pose != nullptr && "pose cannot be nullptr");
-            assert(sigma > 0.0 && "Sigma must be greater than zero");
-        }
+                                double sigma = 1.0);
 
-        int id() const override
-        {
-            return id_;
-        }
+        int id() const override { return id_; }
+        int residual_size() const override { return 3; }
+        double weight() const override { return weight_; }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_position_prior; }
 
-        int residual_size() const override
-        {
-            return 3;
-        }
-
-        Eigen::VectorXd compute_residual() const override
-        {
-            Eigen::Vector3d res = pose_->pos_W() - pos_prior_;
-            return weight_ * res;
-        }
-
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
-        {
-            if (pose_->is_constant())
-            {
-                jacobians.emplace_back();
-            }
-            else
-            {
-                Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 6);
-                J.block<3, 3>(0, 0) = weight_ * Eigen::Matrix3d::Identity();
-                jacobians.emplace_back(J);
-            }
-        }
-
-
-        std::vector<Variable *> variables() override
-        {
-            return {pose_};
-        }
-
-        double weight() const override
-        {
-            return weight_;
-        }
-
-        std::string name() const override
-        {
-            return "PosePositionPriorFactor(" + pose_->name() + ")";
-        }
-
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_position_prior;
-        }
+        Eigen::VectorXd compute_residual() const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        std::vector<Variable *> variables() override;
+        std::string name() const override;
 
     private:
         int id_;
@@ -78,88 +51,42 @@ namespace factorama
         double weight_;
     };
 
+    /**
+     * @brief Prior constraint on camera orientation
+     *
+     * Applies a prior constraint to the rotation component of a PoseVariable.
+     * Useful for incorporating IMU measurements or known orientations.
+     *
+     * @code
+     * double orientation_sigma = 0.1;
+     * auto pose_orientation_prior = std::make_shared<PoseOrientationPriorFactor>(
+     *     factor_id++, camera_pose, Eigen::Vector3d::Zero(), orientation_sigma);
+     * @endcode
+     */
     class PoseOrientationPriorFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct orientation prior factor
+         * @param id Unique factor identifier
+         * @param pose Camera pose variable
+         * @param rotvec_prior Prior rotation as rodrigues vector
+         * @param sigma Standard deviation of angular measurement (radians)
+         */
         PoseOrientationPriorFactor(int id,
                                    PoseVariable* pose,
                                    const Eigen::Vector3d &rotvec_prior,
-                                   double sigma = 1.0)
-            : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma)
-        {
-            assert(pose != nullptr && "pose cannot be nullptr");
-            assert(sigma > 0.0 && "Sigma must be greater than zero");
-        }
+                                   double sigma = 1.0);
 
-        int id() const override
-        {
-            return id_;
-        }
+        int id() const override { return id_; }
+        int residual_size() const override { return 3; }
+        double weight() const override { return weight_; }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_orientation_prior; }
 
-        int residual_size() const override
-        {
-            return 3;
-        }
-
-        Eigen::VectorXd compute_residual() const override
-        {
-            // Use full SO(3) manifold approach
-            // For a prior factor: r = log(dcm_current * dcm_prior^T)
-            Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
-            Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
-            Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
-            Eigen::Vector3d res = LogMapSO3(dcm_error);
-            
-            return weight_ * res;
-        }
-
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
-        {
-            if (pose_->is_constant())
-            {
-                // constant variable - empty jacobian
-                jacobians.emplace_back(Eigen::MatrixXd());
-            }
-            else
-            {
-                Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 6);
-                
-                // Use manifold Jacobian for SO(3)
-                // For r = log(dcm_current * dcm_prior^T)
-                // dr/d(rot_current) = Jr_inv(log(dcm_current * dcm_prior^T))
-                Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
-                Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
-                Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
-                Eigen::Vector3d rotvec_error = LogMapSO3(dcm_error);
-                
-                // Compute inverse right Jacobian Jr_inv of the error rotation
-                Eigen::Matrix3d Jr_inv = compute_inverse_right_jacobian_so3(rotvec_error);
-                J.block<3, 3>(0, 3) = weight_ * Jr_inv;
-                
-                jacobians.emplace_back(J);
-            }
-        }
-
-
-        std::vector<Variable *> variables() override
-        {
-            return {pose_};
-        }
-
-        double weight() const override
-        {
-            return weight_;
-        }
-
-        std::string name() const override
-        {
-            return "PoseOrientationPriorFactor(" + pose_->name() + ")";
-        }
-
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_orientation_prior;
-        }
+        Eigen::VectorXd compute_residual() const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        std::vector<Variable *> variables() override;
+        std::string name() const override;
 
     private:
         int id_;

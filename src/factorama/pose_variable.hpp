@@ -8,123 +8,84 @@
 
 namespace factorama
 {
+    /**
+     * @brief 6-DOF camera pose variable with SE(3) parameterization
+     *
+     * Represents camera poses as 6-element vectors: [tx, ty, tz, rx, ry, rz]
+     * where translation is in world frame and rotation uses rodrigues vector (axis * angle) representation.
+     * The pose transforms points from world to camera frame.
+     *
+     * @code
+     * Eigen::Matrix<double, 6, 1> pose_vec = Eigen::Matrix<double, 6, 1>::Zero();
+     * auto camera_pose = std::make_shared<PoseVariable>(1, pose_vec);
+     * @endcode
+     */
     class PoseVariable : public Variable
     {
     public:
-        PoseVariable(int id, const Eigen::Matrix<double, 6, 1> &pose_CW_init)
-            : id_(id), pose_CW_(pose_CW_init) {}
+        /**
+         * @brief Construct pose variable from 6-element vector
+         * @param id Unique variable identifier
+         * @param pose_CW_init Initial pose as [tx, ty, tz, rx, ry, rz]
+         */
+        PoseVariable(int id, const Eigen::Matrix<double, 6, 1> &pose_CW_init);
 
-        PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW)
-        {
-            id_ = id;
-            pose_CW_ = Eigen::VectorXd(6);
-            pose_CW_.segment<3>(0) = pos_W;
-
-            Eigen::AngleAxisd aa(dcm_CW);
-            pose_CW_.segment<3>(3) = aa.axis() * aa.angle();
-        }
-
-        int size() const override { return 6; }
-
-        const Eigen::VectorXd &value() const override { return pose_CW_; }
-
-        void set_value_from_vector(const Eigen::VectorXd &x) override
-        {
-            pose_CW_ = x;
-        }
-
-        void apply_increment(const Eigen::VectorXd &dx) override
-        {
-            if (dx.size() != size())
-            {
-                throw std::runtime_error("apply_increment(): size mismatch");
-            }
-
-            // Translation increment: linear add
-            pose_CW_.segment<3>(0) += dx.segment<3>(0);
-
-            // Rotation increment:
-            // Current rotation as matrix
-            Eigen::Matrix3d R = dcm_CW();
-
-            // Increment rotation vector (tangent space)
-            Eigen::Vector3d delta_rot = dx.segment<3>(3);
-
-            // Apply incremental rotation on manifold: R_new = exp(delta_rot) * R
-            Eigen::Matrix3d R_new = ExpMapSO3(delta_rot) * R; // right - multiply perturbation convention
-
-            // Update rotation vector (log map)
-            Eigen::Vector3d rot_vec_new = LogMapSO3(R_new);
-
-            pose_CW_.segment<3>(3) = rot_vec_new;
-        }
+        /**
+         * @brief Construct pose variable from position and DCM (rotation matrix)
+         * @param id Unique variable identifier
+         * @param pos_W Camera position in world frame
+         * @param dcm_CW DCM (rotation matrix) from world to camera frame
+         */
+        PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW);
 
         int id() const override { return id_; }
-
-        VariableType::VariableTypeEnum type() const override
-        {
-            return VariableType::pose;
-        }
+        int size() const override { return 6; }
+        const Eigen::VectorXd &value() const override { return pose_CW_; }
+        VariableType::VariableTypeEnum type() const override { return VariableType::pose; }
         bool is_constant() const override { return is_constant_; }
         void set_is_constant(bool val) { is_constant_ = val; }
 
-        std::string name() const override
-        {
-            return "Pose" + std::to_string(id());
-        }
+        /**
+         * @brief Get camera position in world frame
+         * @return 3D position vector
+         */
+        Eigen::Vector3d pos_W() const { return pose_CW_.segment<3>(0); }
 
-        // Utility: extract translation component (camera position in world frame)
-        Eigen::Vector3d pos_W() const
-        {
-            return pose_CW_.segment<3>(0); // [tx, ty, tz]
-        }
+        /**
+         * @brief Get rotation rodrigues vector
+         * @return 3D rodrigues vector (axis * angle)
+         */
+        Eigen::Vector3d rot_CW() const { return pose_CW_.segment<3>(3); }
 
-        Eigen::Vector3d rot_CW() const
-        {
-            return pose_CW_.segment<3>(3);
-        }
+        void set_value_from_vector(const Eigen::VectorXd &x) override;
+        void apply_increment(const Eigen::VectorXd &dx) override;
+        std::string name() const override;
 
-        // Utility: extract rotation matrix dcm_CW (from world to camera frame)
-        Eigen::Matrix3d dcm_CW() const
-        {
-            Eigen::Vector3d rot_CW_tmp = rot_CW(); // [rx, ry, rz]
-            double angle = rot_CW_tmp.norm();
+        /**
+         * @brief Get DCM (rotation matrix) from rodrigues vector
+         * @return 3x3 rotation matrix from world to camera frame
+         */
+        Eigen::Matrix3d dcm_CW() const;
 
-            if (angle < 1e-8)
-            {
-                return Eigen::Matrix3d::Identity();
-            }
+        /**
+         * @brief Set pose from 6-element vector
+         * @param pose New pose as [tx, ty, tz, rx, ry, rz]
+         */
+        void set_pose_vector(Eigen::Matrix<double, 6, 1> pose);
 
-            Eigen::Vector3d axis = rot_CW_tmp / angle;
-            return Eigen::AngleAxisd(angle, axis).toRotationMatrix();
-        }
+        /**
+         * @brief Set camera position in world frame
+         * @param pos_W New 3D position vector
+         */
+        void set_pos_W(const Eigen::Vector3d &pos_W);
 
-        void set_pose_vector(Eigen::Matrix<double, 6, 1> pose)
-        {
-            pose_CW_ = pose;
-        }
-
-        void set_pos_W(const Eigen::Vector3d &pos_W)
-        {
-            pose_CW_.segment<3>(0) = pos_W;
-        }
-
-        void set_dcm_CW(const Eigen::Matrix3d &dcm_CW)
-        {
-            Eigen::AngleAxisd aa(dcm_CW);
-            pose_CW_.segment<3>(3) = aa.axis() * aa.angle();
-        }
-
-        void print() const override
-        {
-            std::cout << name() << std::endl;
-            std::cout << "pos:" << pos_W() << std::endl;
-            std::cout << "dcm_CW: " << dcm_CW() << std::endl;
-        }
-
-        std::shared_ptr<Variable> clone() const override {
-            return std::make_shared<PoseVariable>(*this);
-        }
+        /**
+         * @brief Set rotation from DCM (rotation matrix)
+         * @param dcm_CW New rotation matrix from world to camera frame
+         */
+        void set_dcm_CW(const Eigen::Matrix3d &dcm_CW);
+        void print() const override;
+        std::shared_ptr<Variable> clone() const override;
 
     private:
         int id_;

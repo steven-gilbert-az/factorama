@@ -3,12 +3,14 @@
 #include <vector>
 #include <memory>
 #include <type_traits>
-#include <iostream>
 #include <Eigen/Sparse>
 #include "factorama/types.hpp"
 
 namespace factorama
 {
+    /**
+     * @brief Internal structure tracking variable placement in the optimization problem
+     */
     struct VariablePlacement
     {
         Variable* variable;
@@ -16,6 +18,9 @@ namespace factorama
         int dim;   // Variable dimension
     };
 
+    /**
+     * @brief Internal structure tracking factor placement in the optimization problem
+     */
     struct FactorPlacement
     {
         Factor* factor;
@@ -26,26 +31,101 @@ namespace factorama
         std::vector<int> variable_dims;
     };
 
+    /**
+     * @brief Central container for factor graph optimization problems
+     *
+     * FactorGraph manages variables (poses, landmarks, etc.) and factors (constraints, measurements)
+     * for non-linear least squares optimization. Call finalize_structure() after adding all
+     * variables and factors, then use with SparseOptimizer for solving.
+     *
+     * @code
+     * FactorGraph graph;
+     * graph.add_variable(pose_var);
+     * graph.add_factor(measurement_factor);
+     * graph.finalize_structure();
+     * @endcode
+     */
     class FactorGraph
     {
     public:
         FactorGraph() = default;
 
+        /**
+         * @brief Add a variable to the factor graph
+         * @param variable Shared pointer to any Variable subclass (PoseVariable, LandmarkVariable, etc.)
+         */
         void add_variable(const std::shared_ptr<Variable> &variable);
+
+        /**
+         * @brief Add a factor (constraint/measurement) to the factor graph
+         * @param factor Shared pointer to any Factor subclass (BearingObservationFactor, PriorFactor, etc.)
+         */
         void add_factor(const std::shared_ptr<Factor> &factor);
 
+        /**
+         * @brief Finalize the graph structure for optimization
+         * Must be called after adding all variables and factors, before optimization
+         */
         void finalize_structure();
+
+        /**
+         * @brief Compute residual vector for all factors
+         * @return Reference to computed residual vector
+         */
         Eigen::VectorXd &compute_full_residual_vector();
+
+        /**
+         * @brief Compute dense Jacobian matrix
+         * @return Reference to computed Jacobian matrix
+         */
         Eigen::MatrixXd &compute_full_jacobian_matrix();
+
+        /**
+         * @brief Compute sparse Jacobian matrix (more efficient for large problems)
+         * @return Reference to computed sparse Jacobian matrix
+         */
         Eigen::SparseMatrix<double>& compute_sparse_jacobian_matrix();
+
+        /**
+         * @brief Compute both Jacobian and residual in one call
+         */
         void compute_full_jacobian_and_residual();
 
+        /**
+         * @brief Get variable by ID
+         * @param id Variable ID
+         * @return Pointer to variable or nullptr if not found
+         */
         Variable* get_variable(int id) const;
+
+        /**
+         * @brief Get all variables in the graph
+         * @return Vector of shared pointers to all variables
+         */
         const std::vector<std::shared_ptr<Variable>> &get_all_variables() const;
+
+        /**
+         * @brief Get all factors in the graph
+         * @return Vector of shared pointers to all factors
+         */
         const std::vector<std::shared_ptr<Factor>> &get_all_factors() const;
 
+        /**
+         * @brief Get current variable values as a single vector
+         * @return Concatenated vector of all variable values
+         */
         Eigen::VectorXd get_variable_vector() const;
+
+        /**
+         * @brief Set all variable values from a concatenated vector
+         * @param x Vector containing new values for all variables
+         */
         void set_variable_values_from_vector(const Eigen::VectorXd &x);
+
+        /**
+         * @brief Apply optimization increment to all variables
+         * @param dx Increment vector (typically from optimizer)
+         */
         void apply_increment(const Eigen::VectorXd &dx);
 
         // Safe public access to cached results

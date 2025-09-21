@@ -6,10 +6,28 @@
 
 namespace factorama
 {
-    // TODO: add unit tests for this factor
+    /**
+     * @brief Prior constraint for rotation variables using SO(3) manifold
+     *
+     * Applies manifold-aware prior constraints to RotationVariable instances.
+     * Uses proper SO(3) manifold operations.
+     *
+     * @code
+     * Eigen::Matrix3d prior_rotation = Eigen::Matrix3d::Identity();
+     * auto rotation_prior = std::make_shared<RotationPriorFactor>(
+     *     factor_id++, rotation_var, prior_rotation, sigma);
+     * @endcode
+     */
     class RotationPriorFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct rotation prior factor
+         * @param id Unique factor identifier
+         * @param rotation Target rotation variable
+         * @param dcm_AB_prior Prior rotation matrix
+         * @param sigma Standard deviation of angular prior (radians)
+         */
         RotationPriorFactor(int id,
                                    RotationVariable* rotation,
                                    const Eigen::Matrix3d &dcm_AB_prior,

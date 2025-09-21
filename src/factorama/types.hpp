@@ -147,15 +147,43 @@ namespace factorama
         virtual std::shared_ptr<Variable> clone() const = 0;
     };
 
+    /**
+     * @brief Base class for all constraints and measurements in the factor graph
+     *
+     * Factors represent relationships between variables (measurements, priors, relative constraints).
+     * Each factor contributes a residual vector and jacobians to the optimization problem.
+     */
     class Factor
     {
     public:
         virtual ~Factor() = default;
         virtual int id() const = 0;
+
+        /**
+         * @brief Get the dimension of this factor's residual vector
+         * @return Number of residual elements this factor contributes
+         */
         virtual int residual_size() const = 0;
+
+        /**
+         * @brief Compute the residual vector for current variable values
+         * @return Residual vector
+         */
         virtual Eigen::VectorXd compute_residual() const = 0;
+
+        /**
+         * @brief Compute jacobians with respect to connected variables
+         * @param jacobians Output vector of jacobian matrices (one per variable).
+         *                  Empty (0x0) matrices indicate constant variables by convention.
+         */
         virtual void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const = 0;
+
+        /**
+         * @brief Get pointers to all variables this factor depends on
+         * @return Vector of variable pointers in jacobian order
+         */
         virtual std::vector<Variable *> variables() = 0;
+
         virtual double weight() const = 0;
         virtual std::string name() const = 0;
         virtual FactorType::FactorTypeEnum type() const = 0;

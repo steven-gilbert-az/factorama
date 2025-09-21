@@ -8,12 +8,25 @@
 namespace factorama
 {
 
-    // The RotationVariable is assumed to track a rotation
-    // (i.e DCM - direction cosine matrix) between pose B and pose A
-    // 
+    /**
+     * @brief Rotation-only variable for extrinsic calibration
+     *
+     * Represents rotations between coordinate frames using SO(3) manifold operations.
+     * Commonly used for camera-IMU calibration where only relative orientation matters.
+     *
+     * @code
+     * Eigen::Matrix3d initial_rotation = Eigen::Matrix3d::Identity();
+     * auto rotation_var = std::make_shared<RotationVariable>(1, initial_rotation);
+     * @endcode
+     */
     class RotationVariable : public Variable
     {
     public:
+        /**
+         * @brief Construct rotation variable from DCM
+         * @param id Unique variable identifier
+         * @param dcm_AB Rotation matrix from frame A to frame B
+         */
         RotationVariable(int id, const Eigen::Matrix3d &dcm_AB)
             : id_(id), dcm_AB_(dcm_AB)
         {

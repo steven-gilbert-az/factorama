@@ -8,9 +8,30 @@
 
 namespace factorama
 {
+    /**
+     * @brief 2D bearing projection factor for camera measurements
+     *
+     * Projects bearing differences onto the tangent plane of the observed bearing direction.
+     * Provides a 2D residual instead of the full 3D residual from BearingObservationFactor.
+     *
+     * @code
+     * Eigen::Vector3d bearing_vector(0.0, 0.0, 1.0);
+     * auto bearing_factor = std::make_shared<BearingProjectionFactor2D>(
+     *     factor_id++, camera_pose, landmark, bearing_vector, sigma);
+     * @endcode
+     */
     class BearingProjectionFactor2D : public Factor
     {
     public:
+        /**
+         * @brief Construct 2D bearing projection factor
+         * @param id Unique factor identifier
+         * @param pose Camera pose variable
+         * @param landmark 3D landmark variable
+         * @param bearing_C_observed Unit bearing vector in camera frame
+         * @param sigma Standard deviation of angular measurement (radians)
+         * @param along_tolerance_epsilon Tolerance for numerical stability
+         */
         BearingProjectionFactor2D(int id,
                                   PoseVariable* pose,
                                   LandmarkVariable* landmark,

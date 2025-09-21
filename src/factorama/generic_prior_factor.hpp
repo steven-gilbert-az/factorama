@@ -5,9 +5,28 @@
 namespace factorama
 {
 
+    /**
+     * @brief Generic linear prior constraint for linear variable types
+     *
+     * Applies linear prior constraints by penalizing deviations from expected values.
+     * Use only with linear variables (LandmarkVariable, GenericVariable) - not for
+     * rotations or poses which require manifold-aware constraints.
+     *
+     * @code
+     * auto landmark_prior = std::make_shared<GenericPriorFactor>(
+     *     factor_id++, landmark, Eigen::Vector3d(0.0, 0.0, 5.0), 1.0);
+     * @endcode
+     */
     class GenericPriorFactor : public Factor
     {
     public:
+        /**
+         * @brief Construct generic prior factor
+         * @param id Unique factor identifier
+         * @param variable Target variable for prior constraint
+         * @param prior_value Expected value for the variable
+         * @param sigma Standard deviation of prior measurement
+         */
         GenericPriorFactor(int id,
                            Variable* variable,
                            const Eigen::VectorXd &prior_value,

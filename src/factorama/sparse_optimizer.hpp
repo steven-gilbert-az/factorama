@@ -6,12 +6,21 @@
 namespace factorama
 {
 
+  /**
+   * @brief Optimization algorithm selection
+   */
   enum class OptimizerMethod
   {
-    GaussNewton,
-    LevenbergMarquardt
+    GaussNewton,        ///< Gauss-Newton method (faster, requires good initialization)
+    LevenbergMarquardt  ///< Levenberg-Marquardt method (more robust, handles poor initialization)
   };
 
+  /**
+   * @brief Configuration settings for sparse optimization
+   *
+   * Controls convergence criteria, algorithm selection, and damping parameters.
+   * See README.md for detailed usage examples.
+   */
   struct OptimizerSettings
   {
     // Algorithm to use (GN or LM)
@@ -46,32 +55,60 @@ namespace factorama
     bool check_rank_deficiency = false;
   };
 
+  /**
+   * @brief Runtime statistics from optimization iterations
+   *
+   * Tracks convergence metrics and algorithm state during optimization.
+   */
   struct OptimizerStats
   {
-    bool valid = false;
-    double chi2 = -1.0;
-    double delta_norm = -1.0;
-    double residual_norm = -1.0;
-    int current_iteration = 0;
-    int rank = -1;
+    bool valid = false;                  ///< Whether these statistics are valid
+    double chi2 = -1.0;                  ///< Chi-squared cost (||residual||^2)
+    double delta_norm = -1.0;            ///< Norm of optimization step
+    double residual_norm = -1.0;         ///< Norm of residual vector
+    int current_iteration = 0;           ///< Current iteration number
+    int rank = -1;                       ///< Matrix rank (if computed)
 
-    // Levenberg-Marquardt only
-    double damping_parameter = 1e-3; // aka lambda
+    double damping_parameter = 1e-3;     ///< Levenberg-Marquardt damping parameter (lambda)
   };
 
+  /**
+   * @brief Sparse non-linear least squares optimizer
+   *
+   * Implements Gauss-Newton and Levenberg-Marquardt algorithms using Eigen's sparse
+   * linear algebra. Designed to work with FactorGraph for bundle adjustment and SLAM problems.
+   *
+   * @code
+   * SparseOptimizer optimizer;
+   * OptimizerSettings settings;
+   * settings.method = OptimizerMethod::LevenbergMarquardt;
+   * optimizer.setup(graph_ptr, settings);
+   * optimizer.optimize();
+   * @endcode
+   */
   class SparseOptimizer
   {
   public:
     SparseOptimizer() = default;
 
-    // Setup with factor graph and settings
+    /**
+     * @brief Configure optimizer with factor graph and settings
+     * @param graph_ptr Shared pointer to finalized FactorGraph
+     * @param settings Optimization configuration (algorithm, tolerances, etc.)
+     */
     void setup(std::shared_ptr<FactorGraph> graph_ptr,
                const OptimizerSettings &settings);
 
-    // Run full optimization
+    /**
+     * @brief Run optimization until convergence or max iterations
+     * Updates variable values in the associated FactorGraph
+     */
     void optimize();
 
-    // Access the current settings
+    /**
+     * @brief Get current optimizer settings
+     * @return Reference to optimization settings
+     */
     const OptimizerSettings &settings() const { return settings_; }
 
     OptimizerStats initial_stats_;

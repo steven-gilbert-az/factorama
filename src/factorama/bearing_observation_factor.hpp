@@ -7,11 +7,33 @@
 namespace factorama
 {
 
+    /**
+     * @brief Bearing observation factor for camera measurements
+     *
+     * Represents directional measurements from cameras to 3D landmarks. The factor
+     * constrains the predicted bearing (from camera pose to landmark) to match
+     * the observed bearing direction in the camera frame.
+     *
+     * @code
+     * Eigen::Vector3d bearing_vector(0.0, 0.0, 1.0);
+     * double bearing_sigma = 0.1;
+     * auto bearing_factor = std::make_shared<BearingObservationFactor>(
+     *     factor_id++, camera_pose, landmark, bearing_vector, bearing_sigma);
+     * @endcode
+     */
     class BearingObservationFactor : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_CAMERA = 1e-9;
 
     public:
+        /**
+         * @brief Construct bearing observation factor
+         * @param id Unique factor identifier
+         * @param pose_var Camera pose variable
+         * @param landmark_var 3D landmark variable
+         * @param bearing_C_observed Unit bearing vector in camera frame
+         * @param angle_sigma Standard deviation of angular measurement (radians)
+         */
         BearingObservationFactor(
             int id,
             PoseVariable* pose_var,
