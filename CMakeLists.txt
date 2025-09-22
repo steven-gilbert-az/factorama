@@ -25,7 +25,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 endif()
 
 # Options
-option(GTSAM "Enable building of GTSAM example" OFF)
 option(BUILD_TESTS "Build unit tests" ON)
 option(BUILD_EXAMPLES "Build example programs" OFF)
 option(BUILD_PYTHON_BINDINGS "Build Python bindings via pybind11" OFF)
@@ -92,9 +91,6 @@ target_compile_features(factorama PUBLIC cxx_std_17)
 # Enable position-independent code for Python bindings
 set_target_properties(factorama PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-
-
-
 # === Examples ===
 if(BUILD_EXAMPLES)
 
@@ -106,24 +102,6 @@ if(BUILD_EXAMPLES)
     
     add_executable(example2 examples/02_landmark_triangulation.cpp)
     target_link_libraries(example2 PRIVATE factorama)
-endif()
-
-
-# === GTSAM support ===
-if(GTSAM)
-    message(STATUS "Building GTSAM benchmark test...")
-    
-    find_package(GTSAM REQUIRED)
-    
-    add_executable(gtsam_benchmark src/factorama_test/gtsam_benchmark.cpp)
-    
-    target_link_libraries(gtsam_benchmark
-        PRIVATE
-            gtsam
-            factorama
-    )
-    
-    target_compile_features(gtsam_benchmark PRIVATE cxx_std_17)
 endif()
 
 # === Tests ===
