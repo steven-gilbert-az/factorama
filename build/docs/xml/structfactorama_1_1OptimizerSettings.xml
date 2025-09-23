@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structfactorama_1_1OptimizerSettings" kind="struct" language="C++" prot="public">
+    <compoundname>factorama::OptimizerSettings</compoundname>
+    <includes refid="sparse__optimizer_8hpp" local="no">sparse_optimizer.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a601bbaacad6b591ca66dee4195d7dbe9" prot="public" static="no" mutable="no">
+        <type>OptimizerMethod</type>
+        <definition>OptimizerMethod factorama::OptimizerSettings::method</definition>
+        <argsstring></argsstring>
+        <name>method</name>
+        <initializer>= OptimizerMethod::GaussNewton</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="27" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1ab8df40d232998bad4bb8b811731ee356" prot="public" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t factorama::OptimizerSettings::max_num_iterations</definition>
+        <argsstring></argsstring>
+        <name>max_num_iterations</name>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="30" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a0e7ef3ce90108d24194ec54653e91496" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::step_tolerance</definition>
+        <argsstring></argsstring>
+        <name>step_tolerance</name>
+        <initializer>= 1e-6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="33" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1afeabb55a5e822007bfb0050502ec5fe2" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::residual_tolerance</definition>
+        <argsstring></argsstring>
+        <name>residual_tolerance</name>
+        <initializer>= 1e-6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="36" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a1cbd3dad7da45fd6b2cb79cc4ba544e7" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::initial_lambda</definition>
+        <argsstring></argsstring>
+        <name>initial_lambda</name>
+        <initializer>= 1e-3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="39" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a0787e3f703ba0fb107740cc1d601262f" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::max_lambda</definition>
+        <argsstring></argsstring>
+        <name>max_lambda</name>
+        <initializer>= 1e5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="42" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1ac5120208d6b53f79c253b7ea4b94ed24" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::lambda_up_factor</definition>
+        <argsstring></argsstring>
+        <name>lambda_up_factor</name>
+        <initializer>= 10.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="45" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a74077bd165f046499cad8a98c2c1dc73" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::lambda_down_factor</definition>
+        <argsstring></argsstring>
+        <name>lambda_down_factor</name>
+        <initializer>= 0.1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="46" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a77d9a8ba8d0146fe29b215dbe7d3b1f4" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerSettings::learning_rate</definition>
+        <argsstring></argsstring>
+        <name>learning_rate</name>
+        <initializer>= 1.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="49" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1a76bdfc172a9e1473525a51cc207708f2" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::OptimizerSettings::verbose</definition>
+        <argsstring></argsstring>
+        <name>verbose</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="52" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerSettings_1ae2deb7be0946d51078479fd74d690d0b" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::OptimizerSettings::check_rank_deficiency</definition>
+        <argsstring></argsstring>
+        <name>check_rank_deficiency</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="55" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Configuration settings for sparse optimization. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Controls convergence criteria, algorithm selection, and damping parameters. See README.md for detailed usage examples. </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::OptimizerSettings</label>
+        <link refid="structfactorama_1_1OptimizerSettings"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="24" column="3" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="25" bodyend="56"/>
+    <listofallmembers>
+      <member refid="structfactorama_1_1OptimizerSettings_1ae2deb7be0946d51078479fd74d690d0b" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>check_rank_deficiency</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a1cbd3dad7da45fd6b2cb79cc4ba544e7" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>initial_lambda</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a74077bd165f046499cad8a98c2c1dc73" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>lambda_down_factor</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1ac5120208d6b53f79c253b7ea4b94ed24" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>lambda_up_factor</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a77d9a8ba8d0146fe29b215dbe7d3b1f4" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>learning_rate</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a0787e3f703ba0fb107740cc1d601262f" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>max_lambda</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1ab8df40d232998bad4bb8b811731ee356" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>max_num_iterations</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a601bbaacad6b591ca66dee4195d7dbe9" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>method</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1afeabb55a5e822007bfb0050502ec5fe2" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>residual_tolerance</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a0e7ef3ce90108d24194ec54653e91496" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>step_tolerance</name></member>
+      <member refid="structfactorama_1_1OptimizerSettings_1a76bdfc172a9e1473525a51cc207708f2" prot="public" virt="non-virtual"><scope>factorama::OptimizerSettings</scope><name>verbose</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

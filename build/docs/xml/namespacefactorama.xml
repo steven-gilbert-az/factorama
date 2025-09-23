@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacefactorama" kind="namespace" language="C++">
+    <compoundname>factorama</compoundname>
+    <innerclass refid="classfactorama_1_1BearingObservationFactor" prot="public">factorama::BearingObservationFactor</innerclass>
+    <innerclass refid="classfactorama_1_1BearingProjectionFactor2D" prot="public">factorama::BearingProjectionFactor2D</innerclass>
+    <innerclass refid="structfactorama_1_1VariablePlacement" prot="public">factorama::VariablePlacement</innerclass>
+    <innerclass refid="structfactorama_1_1FactorPlacement" prot="public">factorama::FactorPlacement</innerclass>
+    <innerclass refid="classfactorama_1_1FactorGraph" prot="public">factorama::FactorGraph</innerclass>
+    <innerclass refid="classfactorama_1_1GenericBetweenFactor" prot="public">factorama::GenericBetweenFactor</innerclass>
+    <innerclass refid="classfactorama_1_1GenericPriorFactor" prot="public">factorama::GenericPriorFactor</innerclass>
+    <innerclass refid="classfactorama_1_1GenericVariable" prot="public">factorama::GenericVariable</innerclass>
+    <innerclass refid="classfactorama_1_1InverseRangeBearingFactor" prot="public">factorama::InverseRangeBearingFactor</innerclass>
+    <innerclass refid="classfactorama_1_1InverseRangeVariable" prot="public">factorama::InverseRangeVariable</innerclass>
+    <innerclass refid="classfactorama_1_1RobustKernel" prot="public">factorama::RobustKernel</innerclass>
+    <innerclass refid="classfactorama_1_1HuberKernel" prot="public">factorama::HuberKernel</innerclass>
+    <innerclass refid="classfactorama_1_1LandmarkVariable" prot="public">factorama::LandmarkVariable</innerclass>
+    <innerclass refid="classfactorama_1_1PosePositionBetweenFactor" prot="public">factorama::PosePositionBetweenFactor</innerclass>
+    <innerclass refid="classfactorama_1_1PoseOrientationBetweenFactor" prot="public">factorama::PoseOrientationBetweenFactor</innerclass>
+    <innerclass refid="classfactorama_1_1PosePositionPriorFactor" prot="public">factorama::PosePositionPriorFactor</innerclass>
+    <innerclass refid="classfactorama_1_1PoseOrientationPriorFactor" prot="public">factorama::PoseOrientationPriorFactor</innerclass>
+    <innerclass refid="classfactorama_1_1PoseVariable" prot="public">factorama::PoseVariable</innerclass>
+    <innerclass refid="classfactorama_1_1RotationPriorFactor" prot="public">factorama::RotationPriorFactor</innerclass>
+    <innerclass refid="classfactorama_1_1RotationVariable" prot="public">factorama::RotationVariable</innerclass>
+    <innerclass refid="structfactorama_1_1OptimizerSettings" prot="public">factorama::OptimizerSettings</innerclass>
+    <innerclass refid="structfactorama_1_1OptimizerStats" prot="public">factorama::OptimizerStats</innerclass>
+    <innerclass refid="classfactorama_1_1SparseOptimizer" prot="public">factorama::SparseOptimizer</innerclass>
+    <innerclass refid="classfactorama_1_1Variable" prot="public">factorama::Variable</innerclass>
+    <innerclass refid="classfactorama_1_1Factor" prot="public">factorama::Factor</innerclass>
+    <innernamespace refid="namespacefactorama_1_1FactorType">factorama::FactorType</innernamespace>
+    <innernamespace refid="namespacefactorama_1_1VariableType">factorama::VariableType</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="sparse__optimizer_8hpp_1a6a666c04e4198c2942a31a3d78855f8a" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>OptimizerMethod</name>
+        <enumvalue id="sparse__optimizer_8hpp_1a6a666c04e4198c2942a31a3d78855f8aacc95c01723a70c4c65342563761add9a" prot="public">
+          <name>GaussNewton</name>
+          <briefdescription>
+<para>Gauss-Newton method (faster, requires good initialization) </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sparse__optimizer_8hpp_1a6a666c04e4198c2942a31a3d78855f8aa3c79a69d29a5914fd29deed2f514578e" prot="public">
+          <name>LevenbergMarquardt</name>
+          <briefdescription>
+<para>Levenberg-Marquardt method (more robust, handles poor initialization) </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Optimization algorithm selection. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="12" column="3" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="13" bodyend="16"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="inverse__range__variable_8hpp_1a713e83f8469e68367951c45a23a854c4" prot="public" static="no">
+        <type>std::shared_ptr&lt; InverseRangeVariable &gt;</type>
+        <definition>using factorama::InverseRangeVariablePtr = typedef std::shared_ptr&lt;InverseRangeVariable&gt;</definition>
+        <argsstring></argsstring>
+        <name>InverseRangeVariablePtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="49" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="random__utils_8hpp_1adcde2f1159ef3718fb7b5c7ed29ff52b" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr double</type>
+        <definition>constexpr double factorama::PI</definition>
+        <argsstring></argsstring>
+        <name>PI</name>
+        <initializer>= 3.14159265358979323846</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" line="8" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" bodystart="8" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="numerical__jacobian_8hpp_1abfc87ff298d8bc1ab6b6a0202eef64ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename FactorT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void factorama::ComputeNumericalJacobians</definition>
+        <argsstring>(FactorT &amp;factor, std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians_out, double epsilon=1e-6)</argsstring>
+        <name>ComputeNumericalJacobians</name>
+        <param>
+          <type>FactorT &amp;</type>
+          <declname>factor</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians_out</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>1e-6</defval>
+        </param>
+        <briefdescription>
+<para>Computes numerical jacobians for any factor using central differences. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This generic template function computes jacobians by perturbing each variable parameter and observing the change in residual. It works with any factor type that provides the required interface.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>factor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The factor to compute jacobians for (will be temporarily modified) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>jacobians_out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector containing one jacobian per variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>epsilon</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Perturbation step size for numerical differentiation</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Behavior:<itemizedlist>
+<listitem><para>Uses central differences: (f(x+ε) - f(x-ε)) / (2ε) for better accuracy</para>
+</listitem><listitem><para>Handles constant variables by returning empty (0x0) matrices as signals</para>
+</listitem><listitem><para>Always returns same number of jacobians as factor.variables().size()</para>
+</listitem><listitem><para>Jacobians are ordered to match the factor&apos;s variables() ordering</para>
+</listitem><listitem><para>Restores all variables to original values after computation (&quot;soft const&quot;)</para>
+</listitem></itemizedlist>
+</para>
+<para>Requirements:<itemizedlist>
+<listitem><para>FactorT must provide: variables(), compute_residual(), residual_size()</para>
+</listitem><listitem><para>Variables must support: is_constant(), apply_increment(), set_value_from_vector() </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/numerical_jacobian.hpp" line="32" column="6" bodyfile="/home/sgilbert/repos/factorama/src/factorama/numerical_jacobian.hpp" bodystart="32" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="random__utils_8cpp_1a88af81a2fd8b33c7add33657ec8ed978" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Matrix3d</type>
+        <definition>Eigen::Matrix3d factorama::skew_symmetric</definition>
+        <argsstring>(const Eigen::Vector3d &amp;v)</argsstring>
+        <name>skew_symmetric</name>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>Create skew-symmetric matrix from 3D vector. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" line="8" column="17" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" bodystart="8" bodyend="15" declfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" declline="11" declcolumn="21"/>
+      </memberdef>
+      <memberdef kind="function" id="random__utils_8cpp_1ac9ebfff890c067c24b1562c68b880939" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::unskew</definition>
+        <argsstring>(const Eigen::Matrix3d &amp;m)</argsstring>
+        <name>unskew</name>
+        <param>
+          <type>const Eigen::Matrix3d &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+<para>Unskew (vee operator) — recovers vector from skew-symmetric matrix. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" line="17" column="17" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" bodystart="17" bodyend="22" declfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" declline="14" declcolumn="21"/>
+      </memberdef>
+      <memberdef kind="function" id="random__utils_8cpp_1a38e4222e3baa93e6d9a02e7308904243" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Matrix3d</type>
+        <definition>Eigen::Matrix3d factorama::ExpMapSO3</definition>
+        <argsstring>(const Eigen::Vector3d &amp;omega)</argsstring>
+        <name>ExpMapSO3</name>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>omega</declname>
+        </param>
+        <briefdescription>
+<para>Exponential map from so(3) to SO(3) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" line="24" column="17" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" bodystart="24" bodyend="38" declfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" declline="17" declcolumn="21"/>
+      </memberdef>
+      <memberdef kind="function" id="random__utils_8cpp_1aeee2b08e727f6d99089f1206cb697b4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::LogMapSO3</definition>
+        <argsstring>(const Eigen::Matrix3d &amp;R)</argsstring>
+        <name>LogMapSO3</name>
+        <param>
+          <type>const Eigen::Matrix3d &amp;</type>
+          <declname>R</declname>
+        </param>
+        <briefdescription>
+<para>Logarithm map from SO(3) to so(3) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" line="40" column="17" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" bodystart="40" bodyend="64" declfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" declline="20" declcolumn="21"/>
+      </memberdef>
+      <memberdef kind="function" id="random__utils_8cpp_1a3e6196688c30be80f0660be2f25a813e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Matrix3d</type>
+        <definition>Eigen::Matrix3d factorama::compute_inverse_right_jacobian_so3</definition>
+        <argsstring>(const Eigen::Vector3d &amp;omega)</argsstring>
+        <name>compute_inverse_right_jacobian_so3</name>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>omega</declname>
+        </param>
+        <briefdescription>
+<para>Compute the inverse right Jacobian for SO(3) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" line="66" column="17" bodyfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp" bodystart="66" bodyend="91" declfile="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp" declline="23" declcolumn="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_observation_factor.cpp" line="4" column="1"/>
+  </compounddef>
+</doxygen>

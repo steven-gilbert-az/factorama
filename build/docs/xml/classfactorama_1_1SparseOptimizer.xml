@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1SparseOptimizer" kind="class" language="C++" prot="public">
+    <compoundname>factorama::SparseOptimizer</compoundname>
+    <includes refid="sparse__optimizer_8hpp" local="no">sparse_optimizer.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1ac93869feb8f661662682d23337ffd585" prot="public" static="no" mutable="no">
+        <type><ref refid="structfactorama_1_1OptimizerStats" kindref="compound">OptimizerStats</ref></type>
+        <definition>OptimizerStats factorama::SparseOptimizer::initial_stats_</definition>
+        <argsstring></argsstring>
+        <name>initial_stats_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="114" column="20" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1a983d1e42be3c4f9dbaa7628df109a69e" prot="public" static="no" mutable="no">
+        <type><ref refid="structfactorama_1_1OptimizerStats" kindref="compound">OptimizerStats</ref></type>
+        <definition>OptimizerStats factorama::SparseOptimizer::current_stats_</definition>
+        <argsstring></argsstring>
+        <name>current_stats_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="115" column="20" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="115" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1a68a51d249b0f284ede67befe8f20232c" prot="private" static="no" mutable="no">
+        <type><ref refid="structfactorama_1_1OptimizerSettings" kindref="compound">OptimizerSettings</ref></type>
+        <definition>OptimizerSettings factorama::SparseOptimizer::settings_</definition>
+        <argsstring></argsstring>
+        <name>settings_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="119" column="23" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1af47d028e7fc60a16f308c29eee92f6b8" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;FactorGraph&gt; factorama::SparseOptimizer::graph_</definition>
+        <argsstring></argsstring>
+        <name>graph_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="120" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1a4bb734ef6177aa8962866baea096869a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::SparseOptimizer::jacobian_pattern_initialized_</definition>
+        <argsstring></argsstring>
+        <name>jacobian_pattern_initialized_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="125" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1a9b31d40144f10b570e2691fd5760627d" prot="private" static="no" mutable="no">
+        <type>Eigen::SparseMatrix&lt; double &gt;</type>
+        <definition>Eigen::SparseMatrix&lt;double&gt; factorama::SparseOptimizer::J_pattern_</definition>
+        <argsstring></argsstring>
+        <name>J_pattern_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="126" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1SparseOptimizer_1a4a8e163e34dbf0b6a9865506933dd5cc" prot="private" static="no" mutable="no">
+        <type>Eigen::SimplicialLDLT&lt; Eigen::SparseMatrix&lt; double &gt; &gt;</type>
+        <definition>Eigen::SimplicialLDLT&lt;Eigen::SparseMatrix&lt;double&gt; &gt; factorama::SparseOptimizer::sparse_solver_</definition>
+        <argsstring></argsstring>
+        <name>sparse_solver_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="129" column="27" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1a78a0ee7f4997dcd009a1faea900ae9bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>factorama::SparseOptimizer::SparseOptimizer</definition>
+        <argsstring>()=default</argsstring>
+        <name>SparseOptimizer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="92" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1ad15a5a0ce22b90dd44033a673fb16f50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::SparseOptimizer::setup</definition>
+        <argsstring>(std::shared_ptr&lt; FactorGraph &gt; graph_ptr, const OptimizerSettings &amp;settings)</argsstring>
+        <name>setup</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref> &gt;</type>
+          <declname>graph_ptr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structfactorama_1_1OptimizerSettings" kindref="compound">OptimizerSettings</ref> &amp;</type>
+          <declname>settings</declname>
+        </param>
+        <briefdescription>
+<para>Configure optimizer with factor graph and settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph_ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shared pointer to finalized <ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>settings</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Optimization configuration (algorithm, tolerances, etc.) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="99" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.cpp" bodystart="92" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1aa7d5cfd8421aafe805d8d9784ddc387c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::SparseOptimizer::optimize</definition>
+        <argsstring>()</argsstring>
+        <name>optimize</name>
+        <briefdescription>
+<para>Run optimization until convergence or max iterations Updates variable values in the associated <ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="106" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.cpp" bodystart="99" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1aab031c9cd17115c1e351daf6468887e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="structfactorama_1_1OptimizerSettings" kindref="compound">OptimizerSettings</ref> &amp;</type>
+        <definition>const OptimizerSettings&amp; factorama::SparseOptimizer::settings</definition>
+        <argsstring>() const</argsstring>
+        <name>settings</name>
+        <briefdescription>
+<para>Get current optimizer settings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to optimization settings </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="112" column="29" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="112" bodyend="112"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1ae4ad4fbfcf03783d088c47ad0fee652b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::SparseOptimizer::single_step_gauss_newton</definition>
+        <argsstring>()</argsstring>
+        <name>single_step_gauss_newton</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="132" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.cpp" bodystart="10" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1a869cc8d3ddab55428e984118fb8ebea5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::SparseOptimizer::single_step_levenberg_marquardt</definition>
+        <argsstring>()</argsstring>
+        <name>single_step_levenberg_marquardt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="133" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.cpp" bodystart="219" bodyend="386"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1a4cf3e1888dcc9ee6d21306ee61590094" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool factorama::SparseOptimizer::check_convergence</definition>
+        <argsstring>()</argsstring>
+        <name>check_convergence</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="136" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1SparseOptimizer_1a40fe168f0e3975bd9a764155a608ac56" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::SparseOptimizer::print_iteration_summary</definition>
+        <argsstring>()</argsstring>
+        <name>print_iteration_summary</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="137" column="10"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Sparse non-linear least squares optimizer. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Implements Gauss-Newton and Levenberg-Marquardt algorithms using Eigen&apos;s sparse linear algebra. Designed to work with <ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref> for bundle adjustment and SLAM problems.</para>
+<para><programlisting><codeline><highlight class="normal">SparseOptimizer<sp/>optimizer;</highlight></codeline>
+<codeline><highlight class="normal">OptimizerSettings<sp/>settings;</highlight></codeline>
+<codeline><highlight class="normal">settings.method<sp/>=<sp/>OptimizerMethod::LevenbergMarquardt;</highlight></codeline>
+<codeline><highlight class="normal">optimizer.setup(graph_ptr,<sp/>settings);</highlight></codeline>
+<codeline><highlight class="normal">optimizer.optimize();</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::SparseOptimizer</label>
+        <link refid="classfactorama_1_1SparseOptimizer"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+current_stats_</edgelabel>
+          <edgelabel>+initial_stats_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::OptimizerStats</label>
+        <link refid="structfactorama_1_1OptimizerStats"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="89" column="3" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="90" bodyend="138"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1SparseOptimizer_1a4cf3e1888dcc9ee6d21306ee61590094" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>check_convergence</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a983d1e42be3c4f9dbaa7628df109a69e" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>current_stats_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1af47d028e7fc60a16f308c29eee92f6b8" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>graph_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1ac93869feb8f661662682d23337ffd585" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>initial_stats_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a9b31d40144f10b570e2691fd5760627d" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>J_pattern_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a4bb734ef6177aa8962866baea096869a" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>jacobian_pattern_initialized_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1aa7d5cfd8421aafe805d8d9784ddc387c" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>optimize</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a40fe168f0e3975bd9a764155a608ac56" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>print_iteration_summary</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1aab031c9cd17115c1e351daf6468887e3" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>settings</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a68a51d249b0f284ede67befe8f20232c" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>settings_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1ad15a5a0ce22b90dd44033a673fb16f50" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>setup</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1ae4ad4fbfcf03783d088c47ad0fee652b" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>single_step_gauss_newton</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a869cc8d3ddab55428e984118fb8ebea5" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>single_step_levenberg_marquardt</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a4a8e163e34dbf0b6a9865506933dd5cc" prot="private" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>sparse_solver_</name></member>
+      <member refid="classfactorama_1_1SparseOptimizer_1a78a0ee7f4997dcd009a1faea900ae9bc" prot="public" virt="non-virtual"><scope>factorama::SparseOptimizer</scope><name>SparseOptimizer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

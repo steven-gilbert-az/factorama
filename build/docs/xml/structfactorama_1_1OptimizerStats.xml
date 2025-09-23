@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structfactorama_1_1OptimizerStats" kind="struct" language="C++" prot="public">
+    <compoundname>factorama::OptimizerStats</compoundname>
+    <includes refid="sparse__optimizer_8hpp" local="no">sparse_optimizer.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1aa073003975e407a4dc66b28953cf1769" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::OptimizerStats::valid</definition>
+        <argsstring></argsstring>
+        <name>valid</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+<para>Whether these statistics are valid. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="65" column="10" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1a34cfa9289f239fa7506131b9ca8c1d42" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerStats::chi2</definition>
+        <argsstring></argsstring>
+        <name>chi2</name>
+        <initializer>= -1.0</initializer>
+        <briefdescription>
+<para>Chi-squared cost (||residual||^2) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="66" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1a90b833299d6d98b919f9c57f28b02263" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerStats::delta_norm</definition>
+        <argsstring></argsstring>
+        <name>delta_norm</name>
+        <initializer>= -1.0</initializer>
+        <briefdescription>
+<para>Norm of optimization step. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="67" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1a18c0db782ff3773ed8aec404896d9d74" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerStats::residual_norm</definition>
+        <argsstring></argsstring>
+        <name>residual_norm</name>
+        <initializer>= -1.0</initializer>
+        <briefdescription>
+<para>Norm of residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="68" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1afb72bb369bc730b7195f0c1e87f6f63a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::OptimizerStats::current_iteration</definition>
+        <argsstring></argsstring>
+        <name>current_iteration</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+<para>Current iteration number. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="69" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1a30cf1729c3b868ada6afa9c7aabb9756" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::OptimizerStats::rank</definition>
+        <argsstring></argsstring>
+        <name>rank</name>
+        <initializer>= -1</initializer>
+        <briefdescription>
+<para>Matrix rank (if computed) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="70" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1OptimizerStats_1a4af8e445953a9c71a831774aed1b686c" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::OptimizerStats::damping_parameter</definition>
+        <argsstring></argsstring>
+        <name>damping_parameter</name>
+        <initializer>= 1e-3</initializer>
+        <briefdescription>
+<para>Levenberg-Marquardt damping parameter (lambda) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="72" column="12" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Runtime statistics from optimization iterations. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Tracks convergence metrics and algorithm state during optimization. </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::OptimizerStats</label>
+        <link refid="structfactorama_1_1OptimizerStats"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" line="63" column="3" bodyfile="/home/sgilbert/repos/factorama/src/factorama/sparse_optimizer.hpp" bodystart="64" bodyend="73"/>
+    <listofallmembers>
+      <member refid="structfactorama_1_1OptimizerStats_1a34cfa9289f239fa7506131b9ca8c1d42" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>chi2</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1afb72bb369bc730b7195f0c1e87f6f63a" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>current_iteration</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1a4af8e445953a9c71a831774aed1b686c" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>damping_parameter</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1a90b833299d6d98b919f9c57f28b02263" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>delta_norm</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1a30cf1729c3b868ada6afa9c7aabb9756" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>rank</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1a18c0db782ff3773ed8aec404896d9d74" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>residual_norm</name></member>
+      <member refid="structfactorama_1_1OptimizerStats_1aa073003975e407a4dc66b28953cf1769" prot="public" virt="non-virtual"><scope>factorama::OptimizerStats</scope><name>valid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

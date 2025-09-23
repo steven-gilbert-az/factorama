@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1Factor" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>factorama::Factor</compoundname>
+    <derivedcompoundref refid="classfactorama_1_1BearingObservationFactor" prot="public" virt="non-virtual">factorama::BearingObservationFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1BearingProjectionFactor2D" prot="public" virt="non-virtual">factorama::BearingProjectionFactor2D</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1GenericBetweenFactor" prot="public" virt="non-virtual">factorama::GenericBetweenFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1GenericPriorFactor" prot="public" virt="non-virtual">factorama::GenericPriorFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1InverseRangeBearingFactor" prot="public" virt="non-virtual">factorama::InverseRangeBearingFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1PoseOrientationBetweenFactor" prot="public" virt="non-virtual">factorama::PoseOrientationBetweenFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1PoseOrientationPriorFactor" prot="public" virt="non-virtual">factorama::PoseOrientationPriorFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1PosePositionBetweenFactor" prot="public" virt="non-virtual">factorama::PosePositionBetweenFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1PosePositionPriorFactor" prot="public" virt="non-virtual">factorama::PosePositionPriorFactor</derivedcompoundref>
+    <derivedcompoundref refid="classfactorama_1_1RotationPriorFactor" prot="public" virt="non-virtual">factorama::RotationPriorFactor</derivedcompoundref>
+    <includes refid="types_8hpp" local="no">types.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual factorama::Factor::~Factor</definition>
+        <argsstring>()=default</argsstring>
+        <name>~Factor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="159" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int factorama::Factor::id</definition>
+        <argsstring>() const =0</argsstring>
+        <name>id</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a1cc0313b68ede4a6009618f0e580ca4f">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a930fab24a1e24f54e067cd9f778b650e">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1ab2f5bf7ae6f25c79346a5655f7b57603">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1ad3848f73c1aaac545890c67338ad901b">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a77869ff6967be447daf94c36d980d481">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1a037a3876c30a2a5da65d58ab30004333">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1a37d7b38d41c971a77f670e33ceb909d5">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1aba65e106c7ac06a2e35c38a1f41fe8a4">id</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1a07d03d29555a9951f4fb555cccd57273">id</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="160" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int factorama::Factor::residual_size</definition>
+        <argsstring>() const =0</argsstring>
+        <name>residual_size</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a0541688134bf2e7db9392cbd88231a11">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a82764d2bf2db5e843e72e3f843197ae7">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1a147645ddfcd92ea097158bd9f9bd9c83">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1a5b107338dc945353def3650dc27dd9e8">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a1714484d0d46da11fca3c460c3fad099">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1af3dd243b65d56b6be2ed7d391162f08b">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1af31fd33c022d1343c36887de378491c7">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1a09a817619bfa5b03aa4f2c62fee7260a">residual_size</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1a7336f3a800967612ace95caa1ab68f85">residual_size</reimplementedby>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="166" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>virtual Eigen::VectorXd factorama::Factor::compute_residual</definition>
+        <argsstring>() const =0</argsstring>
+        <name>compute_residual</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a47fd969dcbc0602ccede0e0ceb0ec19e">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a4c12a7b24c95adca0907389f28da8a5d">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1a7425ac21837d1fc02c9574cca519da8a">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1abdfd2403b6354a9dd3c2e8ca655387ba">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1ac911950911fa05a8ba11930c12968cc0">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1a2445dffa4f7bbdaafc032965672b810a">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1aa67aeaaff68d4cc8d449f14593d970c3">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1ab017d6bc43787ef91da54c3a82942bb8">compute_residual</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1a7cf005b32a51b82df3b1fe4a567980c2">compute_residual</reimplementedby>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="172" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void factorama::Factor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const =0</argsstring>
+        <name>compute_jacobians</name>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1ab9d7912a09468b49825219b1ac35d071">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1a7108791dc9712768f48b66483469fada">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1ab5badf2b3f332ae95549f37a54952389">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a1cbd1fec3f42422d262ec04625a8d1d4">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1a3893ce4a168c83f57f22ee734ca354fc">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1aabb9a422b1bda7fc6acc84a94d8eafeb">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1ae25a73780ec7284069551011b2b86892">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1a027f0bf3e093f92926dbbeb96fc00d14">compute_jacobians</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a3c8ca5cf2656d735691447c60b338cde">compute_jacobians</reimplementedby>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="179" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>virtual std::vector&lt;Variable *&gt; factorama::Factor::variables</definition>
+        <argsstring>()=0</argsstring>
+        <name>variables</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1af86d7bddc339272461e244e0005bed80">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a79bfbf83ceb86914c92b6dfd1d712ff4">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1ab9b2e51f72b16bc2e08b4484e4114015">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1ae3233693d1d25b48c2a1947d959c1ea5">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a88701d973a3a1fceefbb0ff5b931f5f2">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1ab69c59e55a27a08de605f33d130e1374">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1a33490f34c4a8ae3780e003ab15db07dc">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1af18710f08da52460cd51df57039fb13a">variables</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1acb65e0cb1ab7057ff35f9611ecd2d411">variables</reimplementedby>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="185" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>double</type>
+        <definition>virtual double factorama::Factor::weight</definition>
+        <argsstring>() const =0</argsstring>
+        <name>weight</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a4d6d4ed5af44ab330347197841bc9ce7">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a2da41505dde012961cd872c4db4dad10">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1afafb47c42c2f27cc4db380baf28aa4dd">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1a707f115019d183add6710cef4919c80c">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a8f0bcff443a28d2dbf2a4ec778e69a5a">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1a7d640a73cdf2ff7a593ed927fe8bfc16">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1a22306add959f824c3715649e96697134">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1a8f21747fef84082489f9df3acb2955a7">weight</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1ac8ed98e2fe7b975d30b5ee22a347e339">weight</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="187" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string factorama::Factor::name</definition>
+        <argsstring>() const =0</argsstring>
+        <name>name</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1a9cf2ad639b828042c16c129e3b8664fc">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a6e32bca648beab4eb11b726d1be67631">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1ae39608f6c1b795d31609767b249f322f">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1ae4d0e5351b399ed5cf32394aba9dd4d0">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1ae4765100bab81e9e4fc71848e04048be">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1ad3231ee19b0dca54870b111050b2f912">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1a6c8faf2eff50dcd44ca553918a2bb35b">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1af8bbbb737749a3d5f35c3c5bdba1ecf4">name</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1a6ef6eb0f662baaab1b115eff0ab68de0">name</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="188" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>virtual FactorType::FactorTypeEnum factorama::Factor::type</definition>
+        <argsstring>() const =0</argsstring>
+        <name>type</name>
+        <reimplementedby refid="classfactorama_1_1BearingObservationFactor_1af698d3d06add23ec48d8fa27920e5f7c">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1BearingProjectionFactor2D_1a91962709dc80eb6dd202eed9818a70ea">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericBetweenFactor_1a2296c432524fc9e9d634730a542383f8">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1GenericPriorFactor_1a2433f93c71904b2a76b0ab26b2148219">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionBetweenFactor_1a6ddda6073586f9b33e558dfe1055e9e1">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationBetweenFactor_1a9a10bab2c444c33ad266c6507a2ed509">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PosePositionPriorFactor_1a10ea2c197c14d7c36300956befb55a55">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1PoseOrientationPriorFactor_1abfe79bc44b3c2161d4d68c39bfb71d2f">type</reimplementedby>
+        <reimplementedby refid="classfactorama_1_1RotationPriorFactor_1ae812ac1a5ddb1734ffd896b8a4e46a0c">type</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="189" column="44"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Base class for all constraints and measurements in the factor graph. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Factors represent relationships between variables (measurements, priors, relative constraints). Each factor contributes a residual vector and jacobians to the optimization problem. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="4">
+        <label>factorama::GenericBetweenFactor</label>
+        <link refid="classfactorama_1_1GenericBetweenFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>factorama::PoseOrientationPriorFactor</label>
+        <link refid="classfactorama_1_1PoseOrientationPriorFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>factorama::PosePositionPriorFactor</label>
+        <link refid="classfactorama_1_1PosePositionPriorFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>factorama::GenericPriorFactor</label>
+        <link refid="classfactorama_1_1GenericPriorFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>factorama::PoseOrientationBetweenFactor</label>
+        <link refid="classfactorama_1_1PoseOrientationBetweenFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>factorama::RotationPriorFactor</label>
+        <link refid="classfactorama_1_1RotationPriorFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="3">
+        <label>factorama::BearingProjectionFactor2D</label>
+        <link refid="classfactorama_1_1BearingProjectionFactor2D"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::BearingObservationFactor</label>
+        <link refid="classfactorama_1_1BearingObservationFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>factorama::PosePositionBetweenFactor</label>
+        <link refid="classfactorama_1_1PosePositionBetweenFactor"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="156" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="157" bodyend="190"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803" prot="public" virt="pure-virtual"><scope>factorama::Factor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::Factor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

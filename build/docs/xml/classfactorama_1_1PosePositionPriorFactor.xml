@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1PosePositionPriorFactor" kind="class" language="C++" prot="public">
+    <compoundname>factorama::PosePositionPriorFactor</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+    <includes refid="pose__prior__factors_8hpp" local="no">pose_prior_factors.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionPriorFactor_1a56547c0d8740b016f8e866b3343b07f6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::PosePositionPriorFactor::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="48" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionPriorFactor_1af52bc0d488bd8e81e4eaaed1697f83c8" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+        <definition>PoseVariable* factorama::PosePositionPriorFactor::pose_</definition>
+        <argsstring></argsstring>
+        <name>pose_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="49" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionPriorFactor_1ae1f66d60730aee6bcb4f1a62f2707969" prot="private" static="no" mutable="no">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::PosePositionPriorFactor::pos_prior_</definition>
+        <argsstring></argsstring>
+        <name>pos_prior_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="50" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionPriorFactor_1a0de71378beae0d43ff21416985c0091a" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::PosePositionPriorFactor::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="51" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1aa87abc3fb304bd7bf880d65ecb8e2f20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>factorama::PosePositionPriorFactor::PosePositionPriorFactor</definition>
+        <argsstring>(int id, PoseVariable *pose, const Eigen::Vector3d &amp;pos_prior, double sigma=1.0)</argsstring>
+        <name>PosePositionPriorFactor</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+          <declname>pose</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>pos_prior</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+<para>Construct position prior factor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique factor identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pose</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Camera pose variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pos_prior</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Prior position in world frame </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sigma</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Standard deviation of position measurement </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="32" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp" bodystart="8" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1a37d7b38d41c971a77f670e33ceb909d5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::PosePositionPriorFactor::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="37" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="37" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1af31fd33c022d1343c36887de378491c7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::PosePositionPriorFactor::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <reimplements refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f">residual_size</reimplements>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="38" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1a22306add959f824c3715649e96697134" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double factorama::PosePositionPriorFactor::weight</definition>
+        <argsstring>() const override</argsstring>
+        <name>weight</name>
+        <reimplements refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803">weight</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="39" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="39" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1a10ea2c197c14d7c36300956befb55a55" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::PosePositionPriorFactor::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="40" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1aa67aeaaff68d4cc8d449f14593d970c3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::PosePositionPriorFactor::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <reimplements refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412">compute_residual</reimplements>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="42" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp" bodystart="18" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1aabb9a422b1bda7fc6acc84a94d8eafeb" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::PosePositionPriorFactor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <reimplements refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a">compute_jacobians</reimplements>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="43" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp" bodystart="24" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1a33490f34c4a8ae3780e003ab15db07dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt; Variable * &gt; factorama::PosePositionPriorFactor::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <reimplements refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357">variables</reimplements>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="44" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp" bodystart="38" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionPriorFactor_1a6c8faf2eff50dcd44ca553918a2bb35b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::PosePositionPriorFactor::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="45" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp" bodystart="43" bodyend="46"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Prior constraint on camera position. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Applies a prior constraint to the position component of a <ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref>. Useful for anchoring poses or incorporating GPS measurements.</para>
+<para><programlisting><codeline><highlight class="normal">double<sp/>position_sigma<sp/>=<sp/>0.5;</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>pose_position_prior<sp/>=<sp/>std::make_shared&lt;PosePositionPriorFactor&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>factor_id++,<sp/>camera_pose,<sp/>Eigen::Vector3d::Zero(),<sp/>position_sigma);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::PosePositionPriorFactor</label>
+        <link refid="classfactorama_1_1PosePositionPriorFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::PosePositionPriorFactor</label>
+        <link refid="classfactorama_1_1PosePositionPriorFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" line="22" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp" bodystart="23" bodyend="52"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1aabb9a422b1bda7fc6acc84a94d8eafeb" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1aa67aeaaff68d4cc8d449f14593d970c3" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a37d7b38d41c971a77f670e33ceb909d5" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a56547c0d8740b016f8e866b3343b07f6" prot="private" virt="non-virtual"><scope>factorama::PosePositionPriorFactor</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a6c8faf2eff50dcd44ca553918a2bb35b" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1ae1f66d60730aee6bcb4f1a62f2707969" prot="private" virt="non-virtual"><scope>factorama::PosePositionPriorFactor</scope><name>pos_prior_</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1af52bc0d488bd8e81e4eaaed1697f83c8" prot="private" virt="non-virtual"><scope>factorama::PosePositionPriorFactor</scope><name>pose_</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1aa87abc3fb304bd7bf880d65ecb8e2f20" prot="public" virt="non-virtual"><scope>factorama::PosePositionPriorFactor</scope><name>PosePositionPriorFactor</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1af31fd33c022d1343c36887de378491c7" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a10ea2c197c14d7c36300956befb55a55" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a33490f34c4a8ae3780e003ab15db07dc" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a22306add959f824c3715649e96697134" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1PosePositionPriorFactor_1a0de71378beae0d43ff21416985c0091a" prot="private" virt="non-virtual"><scope>factorama::PosePositionPriorFactor</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::PosePositionPriorFactor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,5 @@
+add_test( [==[SparseOptimizer basic GN convergence]==] /home/sgilbert/repos/factorama/build2/optimizer_test [==[SparseOptimizer basic GN convergence]==]  )
+set_tests_properties( [==[SparseOptimizer basic GN convergence]==] PROPERTIES WORKING_DIRECTORY /home/sgilbert/repos/factorama/build2 SKIP_RETURN_CODE 4)
+add_test( [==[SparseOptimizer LM convergence]==] /home/sgilbert/repos/factorama/build2/optimizer_test [==[SparseOptimizer LM convergence]==]  )
+set_tests_properties( [==[SparseOptimizer LM convergence]==] PROPERTIES WORKING_DIRECTORY /home/sgilbert/repos/factorama/build2 SKIP_RETURN_CODE 4)
+set( optimizer_test_TESTS [==[SparseOptimizer basic GN convergence]==] [==[SparseOptimizer LM convergence]==])

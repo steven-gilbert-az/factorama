@@ -1,0 +1,4 @@
+<map id="factorama::RotationPriorFactor" name="factorama::RotationPriorFactor">
+<area shape="rect" id="node1" title="Prior constraint for rotation variables using SO(3) manifold." alt="" coords="5,248,188,457"/>
+<area shape="rect" id="node2" href="$classfactorama_1_1Factor.html" title="Base class for all constraints and measurements in the factor graph." alt="" coords="10,5,183,200"/>
+</map>

@@ -1,0 +1,410 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1InverseRangeVariable" kind="class" language="C++" prot="public">
+    <compoundname>factorama::InverseRangeVariable</compoundname>
+    <basecompoundref refid="classfactorama_1_1Variable" prot="public" virt="non-virtual">factorama::Variable</basecompoundref>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a44fac2b7f2a2175967f49c78420d16d6" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::InverseRangeVariable::minimum_inverse_range_</definition>
+        <argsstring></argsstring>
+        <name>minimum_inverse_range_</name>
+        <initializer>= 1e-6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="20" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1aa85de4b8dc71a33fc9fea77835668314" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::InverseRangeVariable::maximum_inverse_range_</definition>
+        <argsstring></argsstring>
+        <name>maximum_inverse_range_</name>
+        <initializer>= 1e3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="21" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a3089aee769eb79241d4949c3741c7549" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::InverseRangeVariable::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="42" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a33bcdaaf65d56226aeb95721a5a00626" prot="private" static="no" mutable="no">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::InverseRangeVariable::origin_pos_W_</definition>
+        <argsstring></argsstring>
+        <name>origin_pos_W_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="43" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a129ceb193efbf58472390d203f19e1ab" prot="private" static="no" mutable="no">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::InverseRangeVariable::bearing_W_</definition>
+        <argsstring></argsstring>
+        <name>bearing_W_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="44" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a9c1ebd567f2c7f1ab3c8e0cf94c93a9d" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::InverseRangeVariable::inverse_range_value_</definition>
+        <argsstring></argsstring>
+        <name>inverse_range_value_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="45" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeVariable_1a11efd0428f5562e4a70ba41717d0c682" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::InverseRangeVariable::is_constant_</definition>
+        <argsstring></argsstring>
+        <name>is_constant_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="46" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a6e199e59158765317aff1056efec85ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>factorama::InverseRangeVariable::InverseRangeVariable</definition>
+        <argsstring>(int variable_id, const Eigen::Vector3d &amp;origin_pos_W, const Eigen::Vector3d &amp;bearing_W, double initial_range)</argsstring>
+        <name>InverseRangeVariable</name>
+        <param>
+          <type>int</type>
+          <declname>variable_id</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>origin_pos_W</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>bearing_W</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>initial_range</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="14" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="9" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a581aae4322111c0871e504cc1bdc8aad" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::InverseRangeVariable::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="23" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="23" bodyend="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1adf3e5cf591a276e3f6db889da2e4d176" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::InverseRangeVariable::size</definition>
+        <argsstring>() const override</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="24" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="24" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a49aeac029c7b7e5752323b4283e13616" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::VectorXd &amp;</type>
+        <definition>const Eigen::VectorXd&amp; factorama::InverseRangeVariable::value</definition>
+        <argsstring>() const override</argsstring>
+        <name>value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="25" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="25" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1ae8156ecfffe4e40d8e5d0c74b83b0231" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::Vector3d &amp;</type>
+        <definition>const Eigen::Vector3d&amp; factorama::InverseRangeVariable::origin_pos_W</definition>
+        <argsstring>() const</argsstring>
+        <name>origin_pos_W</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="26" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="26" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1ac2038e785853be0607335cf9712167bd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::Vector3d &amp;</type>
+        <definition>const Eigen::Vector3d&amp; factorama::InverseRangeVariable::bearing_W</definition>
+        <argsstring>() const</argsstring>
+        <name>bearing_W</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="27" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="27" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a01e55e1d9cac27062a970b3f2796a88f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>VariableType::VariableTypeEnum</type>
+        <definition>VariableType::VariableTypeEnum factorama::InverseRangeVariable::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="28" column="40" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="28" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a619a34cc31f588df5379e319efca6a7d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool factorama::InverseRangeVariable::is_constant</definition>
+        <argsstring>() const override</argsstring>
+        <name>is_constant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="29" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a1000cfdbc9ce7089e62219da8baa0d15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeVariable::set_is_constant</definition>
+        <argsstring>(bool val)</argsstring>
+        <name>set_is_constant</name>
+        <param>
+          <type>bool</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="30" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="30" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a3019f7a12533ae7ba3386bd44a4348fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double factorama::InverseRangeVariable::inverse_range</definition>
+        <argsstring>() const</argsstring>
+        <name>inverse_range</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="31" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="31" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1aed1c0b027616038e6348549513793a92" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeVariable::clip_inverse_range</definition>
+        <argsstring>()</argsstring>
+        <name>clip_inverse_range</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="33" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="22" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a35619c892ea120d2fc1040eea21feec6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeVariable::set_value_from_vector</definition>
+        <argsstring>(const Eigen::VectorXd &amp;x) override</argsstring>
+        <name>set_value_from_vector</name>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="34" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="29" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1adf46c7cdd5f2936007014f52bc54b8aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeVariable::apply_increment</definition>
+        <argsstring>(const Eigen::VectorXd &amp;dx) override</argsstring>
+        <name>apply_increment</name>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>dx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="35" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="35" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a42432684a735e8216e98b8ca7c6fc403" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::InverseRangeVariable::pos_W</definition>
+        <argsstring>() const</argsstring>
+        <name>pos_W</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="36" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="45" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a08da5ab8542989ff03887e4f907455c2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::InverseRangeVariable::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="37" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1a0c6adabbbc426770cf91870a294f7dcc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeVariable::print</definition>
+        <argsstring>() const override</argsstring>
+        <name>print</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="38" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="61" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeVariable_1ac25ad82d291496399edfc60db06d8878" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt;</type>
+        <definition>std::shared_ptr&lt; Variable &gt; factorama::InverseRangeVariable::clone</definition>
+        <argsstring>() const override</argsstring>
+        <name>clone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="39" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.cpp" bodystart="69" bodyend="72"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::InverseRangeVariable</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::InverseRangeVariable</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" line="11" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_variable.hpp" bodystart="12" bodyend="47"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1InverseRangeVariable_1adf46c7cdd5f2936007014f52bc54b8aa" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>apply_increment</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1ac2038e785853be0607335cf9712167bd" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>bearing_W</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a129ceb193efbf58472390d203f19e1ab" prot="private" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>bearing_W_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1aed1c0b027616038e6348549513793a92" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>clip_inverse_range</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1ac25ad82d291496399edfc60db06d8878" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>clone</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a581aae4322111c0871e504cc1bdc8aad" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>id</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a3089aee769eb79241d4949c3741c7549" prot="private" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a3019f7a12533ae7ba3386bd44a4348fc" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>inverse_range</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a9c1ebd567f2c7f1ab3c8e0cf94c93a9d" prot="private" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>inverse_range_value_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a6e199e59158765317aff1056efec85ba" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>InverseRangeVariable</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a619a34cc31f588df5379e319efca6a7d" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>is_constant</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a11efd0428f5562e4a70ba41717d0c682" prot="private" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>is_constant_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1aa85de4b8dc71a33fc9fea77835668314" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>maximum_inverse_range_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a44fac2b7f2a2175967f49c78420d16d6" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>minimum_inverse_range_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a08da5ab8542989ff03887e4f907455c2" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>name</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1ae8156ecfffe4e40d8e5d0c74b83b0231" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>origin_pos_W</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a33bcdaaf65d56226aeb95721a5a00626" prot="private" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>origin_pos_W_</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a42432684a735e8216e98b8ca7c6fc403" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>pos_W</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a0c6adabbbc426770cf91870a294f7dcc" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>print</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a1000cfdbc9ce7089e62219da8baa0d15" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>set_is_constant</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a35619c892ea120d2fc1040eea21feec6" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>set_value_from_vector</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1adf3e5cf591a276e3f6db889da2e4d176" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>size</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a01e55e1d9cac27062a970b3f2796a88f" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>type</name></member>
+      <member refid="classfactorama_1_1InverseRangeVariable_1a49aeac029c7b7e5752323b4283e13616" prot="public" virt="non-virtual"><scope>factorama::InverseRangeVariable</scope><name>value</name></member>
+      <member refid="classfactorama_1_1Variable_1a9cb114fda9cfde5f5c7f18b605ac1f4c" prot="public" virt="virtual"><scope>factorama::InverseRangeVariable</scope><name>~Variable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

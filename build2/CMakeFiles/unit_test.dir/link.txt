@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--gc-sections -s CMakeFiles/unit_test.dir/src/factorama_test/unit_test.cpp.o -o unit_test  libfactorama.a /usr/local/lib/libCatch2Main.a /usr/local/lib/libCatch2.a 

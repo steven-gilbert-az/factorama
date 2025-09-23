@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_8c8ce1236dbcfe2b80fefeec4bb8ba0c" kind="dir">
+    <compoundname>/home/sgilbert/repos/factorama/src/factorama</compoundname>
+    <innerfile refid="bearing__observation__factor_8cpp">bearing_observation_factor.cpp</innerfile>
+    <innerfile refid="bearing__observation__factor_8hpp">bearing_observation_factor.hpp</innerfile>
+    <innerfile refid="bearing__projection__factor__2d_8cpp">bearing_projection_factor_2d.cpp</innerfile>
+    <innerfile refid="bearing__projection__factor__2d_8hpp">bearing_projection_factor_2d.hpp</innerfile>
+    <innerfile refid="factor__graph_8cpp">factor_graph.cpp</innerfile>
+    <innerfile refid="factor__graph_8hpp">factor_graph.hpp</innerfile>
+    <innerfile refid="generic__between__factor_8cpp">generic_between_factor.cpp</innerfile>
+    <innerfile refid="generic__between__factor_8hpp">generic_between_factor.hpp</innerfile>
+    <innerfile refid="generic__prior__factor_8hpp">generic_prior_factor.hpp</innerfile>
+    <innerfile refid="generic__variable_8hpp">generic_variable.hpp</innerfile>
+    <innerfile refid="inverse__range__bearing__factor_8cpp">inverse_range_bearing_factor.cpp</innerfile>
+    <innerfile refid="inverse__range__bearing__factor_8hpp">inverse_range_bearing_factor.hpp</innerfile>
+    <innerfile refid="inverse__range__variable_8cpp">inverse_range_variable.cpp</innerfile>
+    <innerfile refid="inverse__range__variable_8hpp">inverse_range_variable.hpp</innerfile>
+    <innerfile refid="kernels_8hpp">kernels.hpp</innerfile>
+    <innerfile refid="landmark__variable_8hpp">landmark_variable.hpp</innerfile>
+    <innerfile refid="numerical__jacobian_8hpp">numerical_jacobian.hpp</innerfile>
+    <innerfile refid="pose__between__factors_8cpp">pose_between_factors.cpp</innerfile>
+    <innerfile refid="pose__between__factors_8hpp">pose_between_factors.hpp</innerfile>
+    <innerfile refid="pose__prior__factors_8cpp">pose_prior_factors.cpp</innerfile>
+    <innerfile refid="pose__prior__factors_8hpp">pose_prior_factors.hpp</innerfile>
+    <innerfile refid="pose__variable_8cpp">pose_variable.cpp</innerfile>
+    <innerfile refid="pose__variable_8hpp">pose_variable.hpp</innerfile>
+    <innerfile refid="random__utils_8cpp">random_utils.cpp</innerfile>
+    <innerfile refid="random__utils_8hpp">random_utils.hpp</innerfile>
+    <innerfile refid="rotation__prior__factor_8hpp">rotation_prior_factor.hpp</innerfile>
+    <innerfile refid="rotation__variable_8hpp">rotation_variable.hpp</innerfile>
+    <innerfile refid="sparse__optimizer_8cpp">sparse_optimizer.cpp</innerfile>
+    <innerfile refid="sparse__optimizer_8hpp">sparse_optimizer.hpp</innerfile>
+    <innerfile refid="types_8hpp">types.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/"/>
+  </compounddef>
+</doxygen>

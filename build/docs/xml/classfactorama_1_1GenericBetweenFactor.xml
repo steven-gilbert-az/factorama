@@ -1,0 +1,344 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1GenericBetweenFactor" kind="class" language="C++" prot="public">
+    <compoundname>factorama::GenericBetweenFactor</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+    <includes refid="generic__between__factor_8hpp" local="no">generic_between_factor.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1GenericBetweenFactor_1ab5f4114424155e371047bf655611fb2b" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::GenericBetweenFactor::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="48" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericBetweenFactor_1abbe1883e65607bdb4eaff2ab2af53cdc" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable* factorama::GenericBetweenFactor::var_a_</definition>
+        <argsstring></argsstring>
+        <name>var_a_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="49" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericBetweenFactor_1a50ac7543cd0744e42b75eae725fa47cb" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable* factorama::GenericBetweenFactor::var_b_</definition>
+        <argsstring></argsstring>
+        <name>var_b_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="50" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericBetweenFactor_1ac06caa65fe3af00e87c163e1caa7632e" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable* factorama::GenericBetweenFactor::measured_diff_</definition>
+        <argsstring></argsstring>
+        <name>measured_diff_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="51" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericBetweenFactor_1abae164ddc0d1d6de2bc33f1e59d66c27" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::GenericBetweenFactor::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="52" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1a1317a1486cd90f8f828ac48356e7bd11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>factorama::GenericBetweenFactor::GenericBetweenFactor</definition>
+        <argsstring>(int id, Variable *var_a, Variable *var_b, Variable *measured_diff, double sigma=1.0)</argsstring>
+        <name>GenericBetweenFactor</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+          <declname>var_a</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+          <declname>var_b</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+          <declname>measured_diff</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+<para>Construct generic between factor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique factor identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>var_a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>var_b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>measured_diff</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> representing measured difference (var_b - var_a) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sigma</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Standard deviation of measurement </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="31" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.cpp" bodystart="7" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1ab2f5bf7ae6f25c79346a5655f7b57603" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericBetweenFactor::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="37" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="37" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1a147645ddfcd92ea097158bd9f9bd9c83" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericBetweenFactor::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <reimplements refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f">residual_size</reimplements>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="38" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1afafb47c42c2f27cc4db380baf28aa4dd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double factorama::GenericBetweenFactor::weight</definition>
+        <argsstring>() const override</argsstring>
+        <name>weight</name>
+        <reimplements refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803">weight</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="39" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="39" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1a2296c432524fc9e9d634730a542383f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::GenericBetweenFactor::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="40" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1a7425ac21837d1fc02c9574cca519da8a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::GenericBetweenFactor::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <reimplements refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412">compute_residual</reimplements>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="42" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.cpp" bodystart="26" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1a7108791dc9712768f48b66483469fada" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::GenericBetweenFactor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <reimplements refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a">compute_jacobians</reimplements>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="43" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.cpp" bodystart="33" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1ab9b2e51f72b16bc2e08b4484e4114015" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt; Variable * &gt; factorama::GenericBetweenFactor::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <reimplements refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357">variables</reimplements>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="44" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.cpp" bodystart="67" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericBetweenFactor_1ae39608f6c1b795d31609767b249f322f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::GenericBetweenFactor::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="45" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.cpp" bodystart="72" bodyend="75"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Generic linear relative constraint between variables. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Constrains the linear difference between two variables to match a measured difference variable. Use only with linear variables (<ref refid="classfactorama_1_1LandmarkVariable" kindref="compound">LandmarkVariable</ref>, <ref refid="classfactorama_1_1GenericVariable" kindref="compound">GenericVariable</ref>) - not for rotations or poses which require manifold-aware constraints.</para>
+<para><programlisting><codeline><highlight class="normal">auto<sp/>relative_constraint<sp/>=<sp/>std::make_shared&lt;GenericBetweenFactor&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>factor_id++,<sp/>var_a,<sp/>var_b,<sp/>measured_diff_variable,<sp/>sigma);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::GenericBetweenFactor</label>
+        <link refid="classfactorama_1_1GenericBetweenFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::GenericBetweenFactor</label>
+        <link refid="classfactorama_1_1GenericBetweenFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" line="20" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_between_factor.hpp" bodystart="21" bodyend="53"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a7108791dc9712768f48b66483469fada" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a7425ac21837d1fc02c9574cca519da8a" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a1317a1486cd90f8f828ac48356e7bd11" prot="public" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>GenericBetweenFactor</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1ab2f5bf7ae6f25c79346a5655f7b57603" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1ab5f4114424155e371047bf655611fb2b" prot="private" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1ac06caa65fe3af00e87c163e1caa7632e" prot="private" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>measured_diff_</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1ae39608f6c1b795d31609767b249f322f" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a147645ddfcd92ea097158bd9f9bd9c83" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a2296c432524fc9e9d634730a542383f8" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1abbe1883e65607bdb4eaff2ab2af53cdc" prot="private" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>var_a_</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1a50ac7543cd0744e42b75eae725fa47cb" prot="private" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>var_b_</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1ab9b2e51f72b16bc2e08b4484e4114015" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1afafb47c42c2f27cc4db380baf28aa4dd" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1GenericBetweenFactor_1abae164ddc0d1d6de2bc33f1e59d66c27" prot="private" virt="non-virtual"><scope>factorama::GenericBetweenFactor</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::GenericBetweenFactor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

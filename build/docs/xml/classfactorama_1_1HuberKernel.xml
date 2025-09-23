@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1HuberKernel" kind="class" language="C++" prot="public">
+    <compoundname>factorama::HuberKernel</compoundname>
+    <basecompoundref refid="classfactorama_1_1RobustKernel" prot="public" virt="non-virtual">factorama::RobustKernel</basecompoundref>
+    <includes refid="kernels_8hpp" local="no">kernels.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1HuberKernel_1aeb1c4913d094a983b157a17906ca1169" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::HuberKernel::delta_</definition>
+        <argsstring></argsstring>
+        <name>delta_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="35" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1HuberKernel_1a6fb453dcca060dcbb05653daa8c77bb9" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::HuberKernel::HuberKernel</definition>
+        <argsstring>(double delta)</argsstring>
+        <name>HuberKernel</name>
+        <param>
+          <type>double</type>
+          <declname>delta</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="38" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1HuberKernel_1ab9c1eb38216305b688902ec5691e85bb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::HuberKernel::apply_to_residual</definition>
+        <argsstring>(const Eigen::VectorXd &amp;residual) override</argsstring>
+        <name>apply_to_residual</name>
+        <reimplements refid="classfactorama_1_1RobustKernel_1a4169e2f4a032112a1e0e5ba6b9ff098d">apply_to_residual</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>residual</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply robust weighting to residual vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="40" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="40" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1HuberKernel_1a72e9daf8cbc76337e5cac90562946bf7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::HuberKernel::apply_to_jacobians</definition>
+        <argsstring>(const Eigen::VectorXd &amp;residual, std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) override</argsstring>
+        <name>apply_to_jacobians</name>
+        <reimplements refid="classfactorama_1_1RobustKernel_1a266bf9751d00727d8d1d8d86078c55fc">apply_to_jacobians</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>residual</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply robust weighting to jacobians with proper chain rule. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="49" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="49" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1HuberKernel_1a527fd3b8155d4dafa45ad01dde220d71" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double factorama::HuberKernel::delta</definition>
+        <argsstring>() const</argsstring>
+        <name>delta</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="67" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="67" bodyend="67"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Huber robust kernel - linear for small residuals, quadratic for large ones. Loss function: rho(r) = r^2/2 if ||r|| &lt;= delta, delta*||r|| - delta^2/2 otherwise </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::HuberKernel</label>
+        <link refid="classfactorama_1_1HuberKernel"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::RobustKernel</label>
+        <link refid="classfactorama_1_1RobustKernel"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::HuberKernel</label>
+        <link refid="classfactorama_1_1HuberKernel"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::RobustKernel</label>
+        <link refid="classfactorama_1_1RobustKernel"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="32" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="33" bodyend="68"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1HuberKernel_1a72e9daf8cbc76337e5cac90562946bf7" prot="public" virt="virtual"><scope>factorama::HuberKernel</scope><name>apply_to_jacobians</name></member>
+      <member refid="classfactorama_1_1HuberKernel_1ab9c1eb38216305b688902ec5691e85bb" prot="public" virt="virtual"><scope>factorama::HuberKernel</scope><name>apply_to_residual</name></member>
+      <member refid="classfactorama_1_1HuberKernel_1a527fd3b8155d4dafa45ad01dde220d71" prot="public" virt="non-virtual"><scope>factorama::HuberKernel</scope><name>delta</name></member>
+      <member refid="classfactorama_1_1HuberKernel_1aeb1c4913d094a983b157a17906ca1169" prot="private" virt="non-virtual"><scope>factorama::HuberKernel</scope><name>delta_</name></member>
+      <member refid="classfactorama_1_1HuberKernel_1a6fb453dcca060dcbb05653daa8c77bb9" prot="public" virt="non-virtual"><scope>factorama::HuberKernel</scope><name>HuberKernel</name></member>
+      <member refid="classfactorama_1_1RobustKernel_1a3fb3dd1bcb262177ed80140477c69f62" prot="public" virt="virtual"><scope>factorama::HuberKernel</scope><name>~RobustKernel</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

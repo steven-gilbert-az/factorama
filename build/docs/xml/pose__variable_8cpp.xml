@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="pose__variable_8cpp" kind="file" language="C++">
+    <compoundname>pose_variable.cpp</compoundname>
+    <includes refid="pose__variable_8hpp" local="yes">pose_variable.hpp</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">memory</includes>
+    <incdepgraph>
+      <node id="4">
+        <label>Eigen/Geometry</label>
+      </node>
+      <node id="11">
+        <label>factorama/random_utils.hpp</label>
+        <link refid="random__utils_8hpp_source"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Eigen/Core</label>
+      </node>
+      <node id="5">
+        <label>string</label>
+      </node>
+      <node id="8">
+        <label>Eigen/Dense</label>
+      </node>
+      <node id="7">
+        <label>factorama/types.hpp</label>
+        <link refid="types_8hpp_source"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_variable.cpp</label>
+        <link refid="pose__variable_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>vector</label>
+      </node>
+      <node id="6">
+        <label>iostream</label>
+      </node>
+      <node id="2">
+        <label>pose_variable.hpp</label>
+        <link refid="pose__variable_8hpp_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespacefactorama">factorama</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;pose_variable.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">factorama</highlight></codeline>
+<codeline lineno="6"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8" refid="classfactorama_1_1PoseVariable_1a26eabce7c6d28a8555c6582d68b23a40" refkind="member"><highlight class="normal"><ref refid="classfactorama_1_1PoseVariable_1a26eabce7c6d28a8555c6582d68b23a40" kindref="member">PoseVariable::PoseVariable</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Matrix&lt;double,<sp/>6,<sp/>1&gt;<sp/>&amp;pose_CW_init)</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>id_(id),<sp/>pose_CW_(pose_CW_init)<sp/>{}</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11" refid="classfactorama_1_1PoseVariable_1a9833e5b41e985d1e9e52af514ace97c0" refkind="member"><highlight class="normal"><ref refid="classfactorama_1_1PoseVariable_1a26eabce7c6d28a8555c6582d68b23a40" kindref="member">PoseVariable::PoseVariable</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Vector3d<sp/>pos_W,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Matrix3d<sp/>dcm_CW)</highlight></codeline>
+<codeline lineno="12"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/>id_<sp/>=<sp/><ref refid="classfactorama_1_1PoseVariable_1aa5d5ee45f6c2d06eb4544c87079e580c" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_<sp/>=<sp/>Eigen::VectorXd(6);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(0)<sp/>=<sp/><ref refid="classfactorama_1_1PoseVariable_1ad9c683be25b08c0e4059367495b7da50" kindref="member">pos_W</ref>;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::AngleAxisd<sp/>aa(<ref refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" kindref="member">dcm_CW</ref>);</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(3)<sp/>=<sp/>aa.axis()<sp/>*<sp/>aa.angle();</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="classfactorama_1_1PoseVariable_1ad2af4a33ef1a15584c664db1dc3c66ea" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1ad2af4a33ef1a15584c664db1dc3c66ea" kindref="member">PoseVariable::set_value_from_vector</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::VectorXd<sp/>&amp;x)</highlight></codeline>
+<codeline lineno="22"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_<sp/>=<sp/>x;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26" refid="classfactorama_1_1PoseVariable_1af9b67c17786bc816777e96b7bfdcac2f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1af9b67c17786bc816777e96b7bfdcac2f" kindref="member">PoseVariable::apply_increment</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::VectorXd<sp/>&amp;dx)</highlight></codeline>
+<codeline lineno="27"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(dx.size()<sp/>!=<sp/><ref refid="classfactorama_1_1PoseVariable_1a87e68cab3d075f3cf7e1e84ddf2ec776" kindref="member">size</ref>())</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/>std::runtime_error(</highlight><highlight class="stringliteral">&quot;apply_increment():<sp/>size<sp/>mismatch&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Translation<sp/>increment:<sp/>linear<sp/>add</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(0)<sp/>+=<sp/>dx.segment&lt;3&gt;(0);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Rotation<sp/>increment:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Current<sp/>rotation<sp/>as<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix3d<sp/>R<sp/>=<sp/><ref refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" kindref="member">dcm_CW</ref>();</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Increment<sp/>rotation<sp/>vector<sp/>(tangent<sp/>space)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>delta_rot<sp/>=<sp/>dx.segment&lt;3&gt;(3);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Apply<sp/>incremental<sp/>rotation<sp/>on<sp/>manifold:<sp/>R_new<sp/>=<sp/>exp(delta_rot)<sp/>*<sp/>R</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix3d<sp/>R_new<sp/>=<sp/>ExpMapSO3(delta_rot)<sp/>*<sp/>R;<sp/></highlight><highlight class="comment">//<sp/>right<sp/>-<sp/>multiply<sp/>perturbation<sp/>convention</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update<sp/>rotation<sp/>vector<sp/>(log<sp/>map)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>rot_vec_new<sp/>=<sp/>LogMapSO3(R_new);</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(3)<sp/>=<sp/>rot_vec_new;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="classfactorama_1_1PoseVariable_1a46388642b5aea4ce0c6209ac64391627" refkind="member"><highlight class="normal">std::string<sp/><ref refid="classfactorama_1_1PoseVariable_1a46388642b5aea4ce0c6209ac64391627" kindref="member">PoseVariable::name</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="53"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;Pose&quot;</highlight><highlight class="normal"><sp/>+<sp/>std::to_string(</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">());</highlight></codeline>
+<codeline lineno="55"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" refkind="member"><highlight class="normal">Eigen::Matrix3d<sp/><ref refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" kindref="member">PoseVariable::dcm_CW</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="58"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>rot_CW_tmp<sp/>=<sp/><ref refid="classfactorama_1_1PoseVariable_1ab5399256d33b1070f4bab2f85751c9e0" kindref="member">rot_CW</ref>();<sp/></highlight><highlight class="comment">//<sp/>[rx,<sp/>ry,<sp/>rz]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angle<sp/>=<sp/>rot_CW_tmp.norm();</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(angle<sp/>&lt;<sp/>1e-8)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Eigen::Matrix3d::Identity();</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>axis<sp/>=<sp/>rot_CW_tmp<sp/>/<sp/>angle;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Eigen::AngleAxisd(angle,<sp/>axis).toRotationMatrix();</highlight></codeline>
+<codeline lineno="69"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="classfactorama_1_1PoseVariable_1af65d53179b17511c749c88ba93fed04d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1af65d53179b17511c749c88ba93fed04d" kindref="member">PoseVariable::set_pose_vector</ref>(Eigen::Matrix&lt;double,<sp/>6,<sp/>1&gt;<sp/>pose)</highlight></codeline>
+<codeline lineno="72"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_<sp/>=<sp/>pose;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="classfactorama_1_1PoseVariable_1aba4377b13ac42db4b08c39dabcb3ac0d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1aba4377b13ac42db4b08c39dabcb3ac0d" kindref="member">PoseVariable::set_pos_W</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Vector3d<sp/>&amp;pos_W)</highlight></codeline>
+<codeline lineno="77"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(0)<sp/>=<sp/><ref refid="classfactorama_1_1PoseVariable_1ad9c683be25b08c0e4059367495b7da50" kindref="member">pos_W</ref>;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="classfactorama_1_1PoseVariable_1a7cf0d697893b3b27d54205037a3fb771" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1a7cf0d697893b3b27d54205037a3fb771" kindref="member">PoseVariable::set_dcm_CW</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Matrix3d<sp/>&amp;dcm_CW)</highlight></codeline>
+<codeline lineno="82"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::AngleAxisd<sp/>aa(<ref refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" kindref="member">dcm_CW</ref>);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>pose_CW_.segment&lt;3&gt;(3)<sp/>=<sp/>aa.axis()<sp/>*<sp/>aa.angle();</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="classfactorama_1_1PoseVariable_1a20c3adb7a0f1ae61ff3209a63011e32e" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classfactorama_1_1PoseVariable_1a20c3adb7a0f1ae61ff3209a63011e32e" kindref="member">PoseVariable::print</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="88"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/><ref refid="classfactorama_1_1PoseVariable_1a46388642b5aea4ce0c6209ac64391627" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;pos:&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="classfactorama_1_1PoseVariable_1ad9c683be25b08c0e4059367495b7da50" kindref="member">pos_W</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;dcm_CW:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="classfactorama_1_1PoseVariable_1af665dda39a73bb4026939b7b77f7368e" kindref="member">dcm_CW</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="classfactorama_1_1PoseVariable_1a3e3792d2092f61135945be51df4dc9f5" refkind="member"><highlight class="normal">std::shared_ptr&lt;Variable&gt;<sp/><ref refid="classfactorama_1_1PoseVariable_1a3e3792d2092f61135945be51df4dc9f5" kindref="member">PoseVariable::clone</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="95"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>std::make_shared&lt;PoseVariable&gt;(*</highlight><highlight class="keyword">this</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>factorama</highlight></codeline>
+    </programlisting>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/pose_variable.cpp"/>
+  </compounddef>
+</doxygen>

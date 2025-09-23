@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1RobustKernel" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>factorama::RobustKernel</compoundname>
+    <derivedcompoundref refid="classfactorama_1_1HuberKernel" prot="public" virt="non-virtual">factorama::HuberKernel</derivedcompoundref>
+    <includes refid="kernels_8hpp" local="no">kernels.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1RobustKernel_1a3fb3dd1bcb262177ed80140477c69f62" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual factorama::RobustKernel::~RobustKernel</definition>
+        <argsstring>()=default</argsstring>
+        <name>~RobustKernel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="13" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RobustKernel_1a4169e2f4a032112a1e0e5ba6b9ff098d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>virtual Eigen::VectorXd factorama::RobustKernel::apply_to_residual</definition>
+        <argsstring>(const Eigen::VectorXd &amp;residual)=0</argsstring>
+        <name>apply_to_residual</name>
+        <reimplementedby refid="classfactorama_1_1HuberKernel_1ab9c1eb38216305b688902ec5691e85bb">apply_to_residual</reimplementedby>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>residual</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply robust weighting to residual vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="18" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RobustKernel_1a266bf9751d00727d8d1d8d86078c55fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void factorama::RobustKernel::apply_to_jacobians</definition>
+        <argsstring>(const Eigen::VectorXd &amp;residual, std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians)=0</argsstring>
+        <name>apply_to_jacobians</name>
+        <reimplementedby refid="classfactorama_1_1HuberKernel_1a72e9daf8cbc76337e5cac90562946bf7">apply_to_jacobians</reimplementedby>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>residual</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply robust weighting to jacobians with proper chain rule. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="23" column="22"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Base class for robust kernels that downweight outliers in factor graph optimization. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>factorama::HuberKernel</label>
+        <link refid="classfactorama_1_1HuberKernel"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>factorama::RobustKernel</label>
+        <link refid="classfactorama_1_1RobustKernel"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::RobustKernel</label>
+        <link refid="classfactorama_1_1RobustKernel"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" line="10" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/kernels.hpp" bodystart="11" bodyend="26"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1RobustKernel_1a266bf9751d00727d8d1d8d86078c55fc" prot="public" virt="pure-virtual"><scope>factorama::RobustKernel</scope><name>apply_to_jacobians</name></member>
+      <member refid="classfactorama_1_1RobustKernel_1a4169e2f4a032112a1e0e5ba6b9ff098d" prot="public" virt="pure-virtual"><scope>factorama::RobustKernel</scope><name>apply_to_residual</name></member>
+      <member refid="classfactorama_1_1RobustKernel_1a3fb3dd1bcb262177ed80140477c69f62" prot="public" virt="virtual"><scope>factorama::RobustKernel</scope><name>~RobustKernel</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

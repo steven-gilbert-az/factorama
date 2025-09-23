@@ -1,0 +1,393 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1RotationVariable" kind="class" language="C++" prot="public">
+    <compoundname>factorama::RotationVariable</compoundname>
+    <basecompoundref refid="classfactorama_1_1Variable" prot="public" virt="non-virtual">factorama::Variable</basecompoundref>
+    <includes refid="rotation__variable_8hpp" local="no">rotation_variable.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1RotationVariable_1a01d67e8eb3585c3abc1f05ba7ad560ca" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::RotationVariable::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="90" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1RotationVariable_1a5d95188f17ba3accee0183200e206afe" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::RotationVariable::value_</definition>
+        <argsstring></argsstring>
+        <name>value_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="91" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1RotationVariable_1abd29383fd2b2a23df3b87f3b4abebe6f" prot="private" static="no" mutable="no">
+        <type>Eigen::Matrix3d</type>
+        <definition>Eigen::Matrix3d factorama::RotationVariable::dcm_AB_</definition>
+        <argsstring></argsstring>
+        <name>dcm_AB_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="92" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1RotationVariable_1aa60def2848ef5fc66967bbf1d90e81fa" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::RotationVariable::is_constant_</definition>
+        <argsstring></argsstring>
+        <name>is_constant_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="93" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1af7baa5ed8ab4d29bf577ddce675a99fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::RotationVariable::RotationVariable</definition>
+        <argsstring>(int id, const Eigen::Matrix3d &amp;dcm_AB)</argsstring>
+        <name>RotationVariable</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>const Eigen::Matrix3d &amp;</type>
+          <declname>dcm_AB</declname>
+        </param>
+        <briefdescription>
+<para>Construct rotation variable from DCM. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique variable identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dcm_AB</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Rotation matrix from frame A to frame B </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="30" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="30" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a5ba093bfc99ca7922601aafa9c3d9fdc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::RotationVariable::size</definition>
+        <argsstring>() const override</argsstring>
+        <name>size</name>
+        <reimplements refid="classfactorama_1_1Variable_1a005902228611fa232af7111ff63f430c">size</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the dimension of this variable <simplesect kind="return"><para>Dimension (e.g. 3 for rotations, 6 for poses) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="36" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="36" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1aa36b27ebbe316c36f14d71a677277c07" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::RotationVariable::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Variable_1a9cd7ea51b78756d07ef25d2c11995013">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the unique identifier for this variable <simplesect kind="return"><para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> ID used for indexing and identification </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="38" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="38" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a2adcf4f49587bf7cc4f0250e1075cc27" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>VariableType::VariableTypeEnum</type>
+        <definition>virtual VariableType::VariableTypeEnum factorama::RotationVariable::type</definition>
+        <argsstring>() const</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Variable_1a731965d199987b363b709923ce981775">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable type enumeration <simplesect kind="return"><para>Type identifier for this variable class </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="43" column="48" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="43" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1ac3025dbbd7b32ab87cb28acffd322774" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool factorama::RotationVariable::is_constant</definition>
+        <argsstring>() const override</argsstring>
+        <name>is_constant</name>
+        <reimplements refid="classfactorama_1_1Variable_1a0f666510d6716b87b8d37b05672dbcf8">is_constant</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check if this variable is held constant during optimization <simplesect kind="return"><para>True if variable should not be optimized </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="48" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="48" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1aaa2a495f9b808a81958820e507f61097" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::RotationVariable::set_is_constant</definition>
+        <argsstring>(bool val)</argsstring>
+        <name>set_is_constant</name>
+        <param>
+          <type>bool</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="49" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="49" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1ad08549860e67f19403d3700f30b8a301" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::RotationVariable::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Variable_1a3cf558931879db0ae920db384d84a912">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a human-readable name for this variable <simplesect kind="return"><para>String description of this variable </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="51" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="51" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1ad33b00dce3a00b5b7d81fd63905206bf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>const Eigen::VectorXd &amp;</type>
+        <definition>const Eigen::VectorXd&amp; factorama::RotationVariable::value</definition>
+        <argsstring>() const override</argsstring>
+        <name>value</name>
+        <reimplements refid="classfactorama_1_1Variable_1a672c1578b06070f9ca09d8ab4296dcbf">value</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable&apos;s current value as a vector <simplesect kind="return"><para>Current variable value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="56" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a43cca1df59188d9583e0915f3f7ef584" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::RotationVariable::set_value_from_vector</definition>
+        <argsstring>(const Eigen::VectorXd &amp;x) override</argsstring>
+        <name>set_value_from_vector</name>
+        <reimplements refid="classfactorama_1_1Variable_1acb8f048e444d8c9971ec38ed36fe810f">set_value_from_vector</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the variable from a new value vector <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New value (used by optimizer) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="61" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="61" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1adc2251efd6d15c849c18a4711b9b9253" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::RotationVariable::apply_increment</definition>
+        <argsstring>(const Eigen::VectorXd &amp;dx) override</argsstring>
+        <name>apply_increment</name>
+        <reimplements refid="classfactorama_1_1Variable_1a131e1fa8a893b4fb88d4468186be576b">apply_increment</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>dx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply an increment to the current value <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Increment to apply (used by optimization algorithms) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="67" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="67" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a6da40b71e3fc5dac2de9bf6ad3659e94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Eigen::Matrix3d &amp;</type>
+        <definition>Eigen::Matrix3d&amp; factorama::RotationVariable::dcm_AB</definition>
+        <argsstring>()</argsstring>
+        <name>dcm_AB</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="73" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="73" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a81dc1520b241438ef57aa375fd11ad31" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::RotationVariable::print</definition>
+        <argsstring>() const override</argsstring>
+        <name>print</name>
+        <reimplements refid="classfactorama_1_1Variable_1a8b5b9746857ca2e90a8b0b2b08bd6e5f">print</reimplements>
+        <briefdescription>
+<para>Print variable information to stdout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="77" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="77" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1af5af13bf091cdb824030bf854459a325" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::Matrix3d &amp;</type>
+        <definition>const Eigen::Matrix3d&amp; factorama::RotationVariable::rotation</definition>
+        <argsstring>() const</argsstring>
+        <name>rotation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="83" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="83" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1RotationVariable_1a5ee9f85717209befa75a53e68ef35153" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Variable&gt; factorama::RotationVariable::clone</definition>
+        <argsstring>() const override</argsstring>
+        <name>clone</name>
+        <reimplements refid="classfactorama_1_1Variable_1affceff3238526e0ab3ca7ccddb0e6558">clone</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a deep copy of this variable <simplesect kind="return"><para>Shared pointer to cloned variable (used for numerical Jacobians) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="85" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="85" bodyend="87"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Rotation-only variable for extrinsic calibration. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Represents rotations between coordinate frames using SO(3) manifold operations. Commonly used for camera-IMU calibration where only relative orientation matters.</para>
+<para><programlisting><codeline><highlight class="normal">Eigen::Matrix3d<sp/>initial_rotation<sp/>=<sp/>Eigen::Matrix3d::Identity();</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>rotation_var<sp/>=<sp/>std::make_shared&lt;RotationVariable&gt;(1,<sp/>initial_rotation);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::RotationVariable</label>
+        <link refid="classfactorama_1_1RotationVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::RotationVariable</label>
+        <link refid="classfactorama_1_1RotationVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" line="22" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp" bodystart="23" bodyend="94"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1RotationVariable_1adc2251efd6d15c849c18a4711b9b9253" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>apply_increment</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a5ee9f85717209befa75a53e68ef35153" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>clone</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a6da40b71e3fc5dac2de9bf6ad3659e94" prot="public" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>dcm_AB</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1abd29383fd2b2a23df3b87f3b4abebe6f" prot="private" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>dcm_AB_</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1aa36b27ebbe316c36f14d71a677277c07" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>id</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a01d67e8eb3585c3abc1f05ba7ad560ca" prot="private" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1ac3025dbbd7b32ab87cb28acffd322774" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>is_constant</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1aa60def2848ef5fc66967bbf1d90e81fa" prot="private" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>is_constant_</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1ad08549860e67f19403d3700f30b8a301" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>name</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a81dc1520b241438ef57aa375fd11ad31" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>print</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1af5af13bf091cdb824030bf854459a325" prot="public" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>rotation</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1af7baa5ed8ab4d29bf577ddce675a99fb" prot="public" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>RotationVariable</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1aaa2a495f9b808a81958820e507f61097" prot="public" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>set_is_constant</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a43cca1df59188d9583e0915f3f7ef584" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>set_value_from_vector</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a5ba093bfc99ca7922601aafa9c3d9fdc" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>size</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a2adcf4f49587bf7cc4f0250e1075cc27" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>type</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1ad33b00dce3a00b5b7d81fd63905206bf" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>value</name></member>
+      <member refid="classfactorama_1_1RotationVariable_1a5d95188f17ba3accee0183200e206afe" prot="private" virt="non-virtual"><scope>factorama::RotationVariable</scope><name>value_</name></member>
+      <member refid="classfactorama_1_1Variable_1a9cb114fda9cfde5f5c7f18b605ac1f4c" prot="public" virt="virtual"><scope>factorama::RotationVariable</scope><name>~Variable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

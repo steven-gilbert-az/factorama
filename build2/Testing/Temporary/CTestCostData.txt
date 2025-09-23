@@ -1,0 +1,30 @@
+BasicResidualSanityTest 1 0.00134558
+InverseRangeFactorSanityTest 1 0.00138863
+PosePositionPriorFactor: dimensions and residual 1 0.00199582
+GenericPriorFactor: dimensions and residual with LandmarkVariable 1 0.00107011
+BearingObservationFactor: analytical Jacobian matches numerical 1 0.00277334
+InverseRangeBearingFactor: analytical Jacobian matches numerical 1 0.00110816
+SO(3) exponential and logarithmic maps round trip 1 0.000977773
+SO(3) ExpMap produces orthonormal matrix 1 0.00136224
+SO(3) ExpMap/LogMap π-rotation edge cases 1 0.00109608
+SO(3) near-zero rotation is stable 1 0.00113529
+SO(3) LogMap behaves near 180 degrees 1 0.000997234
+PoseOrientationBetweenFactor residual and jacobian numeric check 1 0.00114696
+PoseVariable apply_increment 1 0.00125566
+RotationVariable apply_increment 1 0.00125677
+GenericBetweenFactor residuals and jacobians with LandmarkVariable 1 0.00106187
+PosePositionBetweenFactor computes correct residuals and jacobians 1 0.00116404
+PosePositionPriorFactor: comprehensive behavior tests 1 0.00100828
+PosePositionPriorFactor: analytical vs numerical Jacobians 1 0.00114056
+PoseOrientationPriorFactor: analytical vs numerical Jacobians 1 0.00105265
+Variable clone() method behaves correctly 1 0.00104065
+FactorGraph apply_increment 1 0.00103966
+FactorGraph ID Collision Detection 1 0.000991722
+BearingProjectionFactor2D: Basic functionality and residual computation 1 0.000977167
+BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation 1 0.00109783
+BearingProjectionFactor2D: Edge case handling for small alpha 1 0.00114565
+BearingProjectionFactor2D: Integration test with optimization convergence 1 0.00111294
+Consolidated Integration Tests 1 0.00431463
+SparseOptimizer basic GN convergence 1 0.00120379
+SparseOptimizer LM convergence 1 0.00103964
+---

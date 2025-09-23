@@ -1,0 +1,308 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1InverseRangeBearingFactor" kind="class" language="C++" prot="public">
+    <compoundname>factorama::InverseRangeBearingFactor</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a949bdb8f9c7ecafd93fccaad2f2618f1" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr double</type>
+        <definition>constexpr double factorama::InverseRangeBearingFactor::MIN_DISTANCE_FROM_CAMERA</definition>
+        <argsstring></argsstring>
+        <name>MIN_DISTANCE_FROM_CAMERA</name>
+        <initializer>= 1e-9</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="14" column="33" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a460b2ab56fc44809fedf95e48848667c" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr double</type>
+        <definition>constexpr double factorama::InverseRangeBearingFactor::MIN_INVERSE_RANGE</definition>
+        <argsstring></argsstring>
+        <name>MIN_INVERSE_RANGE</name>
+        <initializer>= 1e-9</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="15" column="33" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a5f671c475928d76fd856e3cf782a1540" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::InverseRangeBearingFactor::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="94" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a35641d2e6f565e8434e3f802ef1c04e8" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+        <definition>PoseVariable* factorama::InverseRangeBearingFactor::pose_var_</definition>
+        <argsstring></argsstring>
+        <name>pose_var_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="95" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a7a7f72a7b5fe2bed025bb4d6b9681f8d" prot="private" static="no" mutable="no">
+        <type>InverseRangeVariable *</type>
+        <definition>InverseRangeVariable* factorama::InverseRangeBearingFactor::inverse_range_var_</definition>
+        <argsstring></argsstring>
+        <name>inverse_range_var_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="96" column="30" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a514ea47230259f3ff4d8f7af02370f44" prot="private" static="no" mutable="no">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::InverseRangeBearingFactor::bearing_C_obs_</definition>
+        <argsstring></argsstring>
+        <name>bearing_C_obs_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="97" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1InverseRangeBearingFactor_1a96585c2949e45ddf93f0bdcbca02a3a2" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::InverseRangeBearingFactor::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="98" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a207668305d08a02de36abe943929cbe7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::InverseRangeBearingFactor::InverseRangeBearingFactor</definition>
+        <argsstring>(int id, PoseVariable *pose_var, InverseRangeVariable *inverse_range_variable, const Eigen::Vector3d &amp;bearing_C_observed, double angle_sigma=1.0)</argsstring>
+        <name>InverseRangeBearingFactor</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+          <declname>pose_var</declname>
+        </param>
+        <param>
+          <type>InverseRangeVariable *</type>
+          <declname>inverse_range_variable</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>bearing_C_observed</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angle_sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="18" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="18" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a42a46e32bf3b6e609822075af876f8fd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::InverseRangeBearingFactor::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="35" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="35" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a68a9cbd656e8aab9825fd8b1b513e53d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt;Variable *&gt; factorama::InverseRangeBearingFactor::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="40" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="40" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a285df4fd81433c86f306177d499d9483" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::InverseRangeBearingFactor::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="45" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="45" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1ad1ffa60212f3663a00587e5d0825d966" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::InverseRangeBearingFactor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="65" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.cpp" bodystart="7" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1aa5ad54b230e0d26b1da9703edd89014b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::InverseRangeBearingFactor::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="67" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="67" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a373fb959275678508a801549782a326f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double factorama::InverseRangeBearingFactor::weight</definition>
+        <argsstring>() const</argsstring>
+        <name>weight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="73" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="73" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a5e48a46519745c734a8f254a4014af8f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::Vector3d &amp;</type>
+        <definition>const Eigen::Vector3d&amp; factorama::InverseRangeBearingFactor::bearing_C_obs</definition>
+        <argsstring>() const</argsstring>
+        <name>bearing_C_obs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="78" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="78" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1a62ebee88a9e2de906065f8dfec241ae7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::InverseRangeBearingFactor::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="83" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="83" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1InverseRangeBearingFactor_1aabf97dcf373d6abcb8894670f2d92e10" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::InverseRangeBearingFactor::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="88" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="88" bodyend="91"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::InverseRangeBearingFactor</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::InverseRangeBearingFactor</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" line="12" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp" bodystart="13" bodyend="99"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a5e48a46519745c734a8f254a4014af8f" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>bearing_C_obs</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a514ea47230259f3ff4d8f7af02370f44" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>bearing_C_obs_</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1ad1ffa60212f3663a00587e5d0825d966" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a285df4fd81433c86f306177d499d9483" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a42a46e32bf3b6e609822075af876f8fd" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a5f671c475928d76fd856e3cf782a1540" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a7a7f72a7b5fe2bed025bb4d6b9681f8d" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>inverse_range_var_</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a207668305d08a02de36abe943929cbe7" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>InverseRangeBearingFactor</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a949bdb8f9c7ecafd93fccaad2f2618f1" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>MIN_DISTANCE_FROM_CAMERA</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a460b2ab56fc44809fedf95e48848667c" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>MIN_INVERSE_RANGE</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a62ebee88a9e2de906065f8dfec241ae7" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a35641d2e6f565e8434e3f802ef1c04e8" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>pose_var_</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1aa5ad54b230e0d26b1da9703edd89014b" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1aabf97dcf373d6abcb8894670f2d92e10" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a68a9cbd656e8aab9825fd8b1b513e53d" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a373fb959275678508a801549782a326f" prot="public" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1InverseRangeBearingFactor_1a96585c2949e45ddf93f0bdcbca02a3a2" prot="private" virt="non-virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::InverseRangeBearingFactor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

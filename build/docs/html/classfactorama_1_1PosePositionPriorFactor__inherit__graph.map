@@ -1,0 +1,4 @@
+<map id="factorama::PosePositionPriorFactor" name="factorama::PosePositionPriorFactor">
+<area shape="rect" id="node1" title="Prior constraint on camera position." alt="" coords="5,248,216,457"/>
+<area shape="rect" id="node2" href="$classfactorama_1_1Factor.html" title="Base class for all constraints and measurements in the factor graph." alt="" coords="24,5,197,200"/>
+</map>

@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1GenericPriorFactor" kind="class" language="C++" prot="public">
+    <compoundname>factorama::GenericPriorFactor</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+    <includes refid="generic__prior__factor_8hpp" local="no">generic_prior_factor.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1GenericPriorFactor_1a400a4ee3ae0823aa105480189bcb6db5" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::GenericPriorFactor::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="91" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericPriorFactor_1a5a200e32b8256292c32d624fc08cf06c" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable* factorama::GenericPriorFactor::variable_</definition>
+        <argsstring></argsstring>
+        <name>variable_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="92" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericPriorFactor_1a29a0352e3b4edf16b599cc3f157c8085" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::GenericPriorFactor::prior_</definition>
+        <argsstring></argsstring>
+        <name>prior_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="93" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericPriorFactor_1a92054416b407d79f8018b39c8cd798ae" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::GenericPriorFactor::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="94" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1a306e3b52c07ec8e04da5247a87acaf8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::GenericPriorFactor::GenericPriorFactor</definition>
+        <argsstring>(int id, Variable *variable, const Eigen::VectorXd &amp;prior_value, double sigma=1.0)</argsstring>
+        <name>GenericPriorFactor</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+          <declname>variable</declname>
+        </param>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>prior_value</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+<para>Construct generic prior factor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique factor identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>variable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Target variable for prior constraint </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prior_value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Expected value for the variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sigma</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Standard deviation of prior measurement </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="30" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="30" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1ad3848f73c1aaac545890c67338ad901b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericPriorFactor::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="41" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="41" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1a5b107338dc945353def3650dc27dd9e8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericPriorFactor::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <reimplements refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f">residual_size</reimplements>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="46" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="46" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1abdfd2403b6354a9dd3c2e8ca655387ba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::GenericPriorFactor::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <reimplements refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412">compute_residual</reimplements>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="51" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="51" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1ab5badf2b3f332ae95549f37a54952389" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::GenericPriorFactor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <reimplements refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a">compute_jacobians</reimplements>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="57" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="57" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1ae3233693d1d25b48c2a1947d959c1ea5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt;Variable *&gt; factorama::GenericPriorFactor::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <reimplements refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357">variables</reimplements>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="70" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="70" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1a707f115019d183add6710cef4919c80c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double factorama::GenericPriorFactor::weight</definition>
+        <argsstring>() const override</argsstring>
+        <name>weight</name>
+        <reimplements refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803">weight</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="75" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="75" bodyend="78"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1ae4d0e5351b399ed5cf32394aba9dd4d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::GenericPriorFactor::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="80" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="80" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericPriorFactor_1a2433f93c71904b2a76b0ab26b2148219" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::GenericPriorFactor::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="85" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="85" bodyend="88"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Generic linear prior constraint for linear variable types. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Applies linear prior constraints by penalizing deviations from expected values. Use only with linear variables (<ref refid="classfactorama_1_1LandmarkVariable" kindref="compound">LandmarkVariable</ref>, <ref refid="classfactorama_1_1GenericVariable" kindref="compound">GenericVariable</ref>) - not for rotations or poses which require manifold-aware constraints.</para>
+<para><programlisting><codeline><highlight class="normal">auto<sp/>landmark_prior<sp/>=<sp/>std::make_shared&lt;GenericPriorFactor&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>factor_id++,<sp/>landmark,<sp/>Eigen::Vector3d(0.0,<sp/>0.0,<sp/>5.0),<sp/>1.0);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::GenericPriorFactor</label>
+        <link refid="classfactorama_1_1GenericPriorFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::GenericPriorFactor</label>
+        <link refid="classfactorama_1_1GenericPriorFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" line="20" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_prior_factor.hpp" bodystart="21" bodyend="95"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1GenericPriorFactor_1ab5badf2b3f332ae95549f37a54952389" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1abdfd2403b6354a9dd3c2e8ca655387ba" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a306e3b52c07ec8e04da5247a87acaf8f" prot="public" virt="non-virtual"><scope>factorama::GenericPriorFactor</scope><name>GenericPriorFactor</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1ad3848f73c1aaac545890c67338ad901b" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a400a4ee3ae0823aa105480189bcb6db5" prot="private" virt="non-virtual"><scope>factorama::GenericPriorFactor</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1ae4d0e5351b399ed5cf32394aba9dd4d0" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a29a0352e3b4edf16b599cc3f157c8085" prot="private" virt="non-virtual"><scope>factorama::GenericPriorFactor</scope><name>prior_</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a5b107338dc945353def3650dc27dd9e8" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a2433f93c71904b2a76b0ab26b2148219" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a5a200e32b8256292c32d624fc08cf06c" prot="private" virt="non-virtual"><scope>factorama::GenericPriorFactor</scope><name>variable_</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1ae3233693d1d25b48c2a1947d959c1ea5" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a707f115019d183add6710cef4919c80c" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1GenericPriorFactor_1a92054416b407d79f8018b39c8cd798ae" prot="private" virt="non-virtual"><scope>factorama::GenericPriorFactor</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::GenericPriorFactor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

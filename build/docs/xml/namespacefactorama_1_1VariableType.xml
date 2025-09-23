@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacefactorama_1_1VariableType" kind="namespace" language="C++">
+    <compoundname>factorama::VariableType</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256" prot="public" static="no" strong="no">
+        <type></type>
+        <name>VariableTypeEnum</name>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256af17efa420761c048cc44ebff664d5e89" prot="public">
+          <name>none</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256a34e12a15637aa811b02b92194926f4f3" prot="public">
+          <name>pose</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256afdd0a801017d65213e57b574c79ff8ed" prot="public">
+          <name>landmark</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256a6d001d05173d97c19311cd470d085f1a" prot="public">
+          <name>inverse_range_landmark</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256a4e06756a089aa100d6d31ba1315f1538" prot="public">
+          <name>extrinsic_rotation</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256ac4ac51a6946276077e7d9bbf0baa7e72" prot="public">
+          <name>generic</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1adf5227d5e11fccfa1112a6f3a502f256aa1957376eaf98f16b2fe6ef1ab737d1a" prot="public">
+          <name>num_variable_types</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="10" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="11" bodyend="19"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="types_8hpp_1a76d3fa0a5cf238c48a9beefd11c1ab88" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr auto</type>
+        <definition>constexpr auto factorama::VariableType::variable_names</definition>
+        <argsstring></argsstring>
+        <name>variable_names</name>
+        <initializer>= get_variable_names()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="34" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="types_8hpp_1a871b677cfc303168bb645a6e78efed6e" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr std::array&lt; const char *, num_variable_types &gt;</type>
+        <definition>static constexpr std::array&lt;const char *, num_variable_types&gt; factorama::VariableType::get_variable_names</definition>
+        <argsstring>()</argsstring>
+        <name>get_variable_names</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="22" column="37" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="22" bodyend="32"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="8" column="5"/>
+  </compounddef>
+</doxygen>

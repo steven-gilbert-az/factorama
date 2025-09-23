@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="structfactorama_1_1FactorPlacement" kind="struct" language="C++" prot="public">
+    <compoundname>factorama::FactorPlacement</compoundname>
+    <includes refid="factor__graph_8hpp" local="no">factor_graph.hpp</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structfactorama_1_1FactorPlacement_1a790889abaf3dcbd7f4218092acdfae0d" prot="public" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> *</type>
+        <definition>Factor* factorama::FactorPlacement::factor</definition>
+        <argsstring></argsstring>
+        <name>factor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="26" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1FactorPlacement_1ab20efd015e86b4739be77b62601b71c3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::FactorPlacement::residual_index</definition>
+        <argsstring></argsstring>
+        <name>residual_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="27" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1FactorPlacement_1a8e90535c7999eac221de3a6283ddc9ef" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::FactorPlacement::residual_dim</definition>
+        <argsstring></argsstring>
+        <name>residual_dim</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="28" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1FactorPlacement_1ae479a9738165bbf8c73f318629c957f0" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; factorama::FactorPlacement::variable_column_indices</definition>
+        <argsstring></argsstring>
+        <name>variable_column_indices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="30" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structfactorama_1_1FactorPlacement_1a97c2e6b57c22ffe8e86521487255ed6c" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; factorama::FactorPlacement::variable_dims</definition>
+        <argsstring></argsstring>
+        <name>variable_dims</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="31" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Internal structure tracking factor placement in the optimization problem. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="1">
+        <label>factorama::FactorPlacement</label>
+        <link refid="structfactorama_1_1FactorPlacement"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>+factor</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="24" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="25" bodyend="32"/>
+    <listofallmembers>
+      <member refid="structfactorama_1_1FactorPlacement_1a790889abaf3dcbd7f4218092acdfae0d" prot="public" virt="non-virtual"><scope>factorama::FactorPlacement</scope><name>factor</name></member>
+      <member refid="structfactorama_1_1FactorPlacement_1a8e90535c7999eac221de3a6283ddc9ef" prot="public" virt="non-virtual"><scope>factorama::FactorPlacement</scope><name>residual_dim</name></member>
+      <member refid="structfactorama_1_1FactorPlacement_1ab20efd015e86b4739be77b62601b71c3" prot="public" virt="non-virtual"><scope>factorama::FactorPlacement</scope><name>residual_index</name></member>
+      <member refid="structfactorama_1_1FactorPlacement_1ae479a9738165bbf8c73f318629c957f0" prot="public" virt="non-virtual"><scope>factorama::FactorPlacement</scope><name>variable_column_indices</name></member>
+      <member refid="structfactorama_1_1FactorPlacement_1a97c2e6b57c22ffe8e86521487255ed6c" prot="public" virt="non-virtual"><scope>factorama::FactorPlacement</scope><name>variable_dims</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

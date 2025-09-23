@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1GenericVariable" kind="class" language="C++" prot="public">
+    <compoundname>factorama::GenericVariable</compoundname>
+    <basecompoundref refid="classfactorama_1_1Variable" prot="public" virt="non-virtual">factorama::Variable</basecompoundref>
+    <includes refid="generic__variable_8hpp" local="no">generic_variable.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1GenericVariable_1a69523e6872e156991d955769b608c632" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::GenericVariable::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="85" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericVariable_1ade678d1cecaaef08ee8086309f0b7a5e" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::GenericVariable::value_</definition>
+        <argsstring></argsstring>
+        <name>value_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="86" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1GenericVariable_1a84a2163e265e2311513f2baf2d7830a9" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::GenericVariable::is_constant_</definition>
+        <argsstring></argsstring>
+        <name>is_constant_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="87" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a241135163c2673949e83aac45675819f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::GenericVariable::GenericVariable</definition>
+        <argsstring>(int id, const Eigen::VectorXd &amp;initial_value)</argsstring>
+        <name>GenericVariable</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>initial_value</declname>
+        </param>
+        <briefdescription>
+<para>Construct generic variable with initial value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique variable identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>initial_value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Initial vector value (any dimension &gt; 0) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="27" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="27" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a43193367c34f61f010c95f788907e076" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericVariable::size</definition>
+        <argsstring>() const override</argsstring>
+        <name>size</name>
+        <reimplements refid="classfactorama_1_1Variable_1a005902228611fa232af7111ff63f430c">size</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the dimension of this variable <simplesect kind="return"><para>Dimension (e.g. 3 for rotations, 6 for poses) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="36" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="36" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a77ceebca91f29b3e005e6601b3af1b61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>const Eigen::VectorXd &amp;</type>
+        <definition>const Eigen::VectorXd&amp; factorama::GenericVariable::value</definition>
+        <argsstring>() const override</argsstring>
+        <name>value</name>
+        <reimplements refid="classfactorama_1_1Variable_1a672c1578b06070f9ca09d8ab4296dcbf">value</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable&apos;s current value as a vector <simplesect kind="return"><para>Current variable value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="38" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1af99b3f0bfe2a0c1bd69af228087e144e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::GenericVariable::set_value_from_vector</definition>
+        <argsstring>(const Eigen::VectorXd &amp;x) override</argsstring>
+        <name>set_value_from_vector</name>
+        <reimplements refid="classfactorama_1_1Variable_1acb8f048e444d8c9971ec38ed36fe810f">set_value_from_vector</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the variable from a new value vector <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New value (used by optimizer) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="40" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="40" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a4bc5af32782bf1f82a845a75da98036c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::GenericVariable::apply_increment</definition>
+        <argsstring>(const Eigen::VectorXd &amp;dx) override</argsstring>
+        <name>apply_increment</name>
+        <reimplements refid="classfactorama_1_1Variable_1a131e1fa8a893b4fb88d4468186be576b">apply_increment</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>dx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply an increment to the current value <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Increment to apply (used by optimization algorithms) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="49" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="49" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1ad18a20ce66a80d15adab77cd6423409c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::GenericVariable::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Variable_1a9cd7ea51b78756d07ef25d2c11995013">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the unique identifier for this variable <simplesect kind="return"><para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> ID used for indexing and identification </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="58" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="58" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a4fccc50a78b36e0c4f72cc16bec63abc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>VariableType::VariableTypeEnum</type>
+        <definition>VariableType::VariableTypeEnum factorama::GenericVariable::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Variable_1a731965d199987b363b709923ce981775">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable type enumeration <simplesect kind="return"><para>Type identifier for this variable class </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="60" column="40" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="60" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1aa5701735ad7c65c4357366d009bebd2d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool factorama::GenericVariable::is_constant</definition>
+        <argsstring>() const override</argsstring>
+        <name>is_constant</name>
+        <reimplements refid="classfactorama_1_1Variable_1a0f666510d6716b87b8d37b05672dbcf8">is_constant</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check if this variable is held constant during optimization <simplesect kind="return"><para>True if variable should not be optimized </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="65" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="65" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a0e99373b2c0045e95e6143ed4e3bb6ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::GenericVariable::set_is_constant</definition>
+        <argsstring>(bool val)</argsstring>
+        <name>set_is_constant</name>
+        <param>
+          <type>bool</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="66" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="66" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1aed48440981365ad359b62f45c04cf723" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::GenericVariable::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Variable_1a3cf558931879db0ae920db384d84a912">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a human-readable name for this variable <simplesect kind="return"><para>String description of this variable </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="68" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="68" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a75ba72eb55e3baf4846e5d2fa14ca208" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::GenericVariable::print</definition>
+        <argsstring>() const override</argsstring>
+        <name>print</name>
+        <reimplements refid="classfactorama_1_1Variable_1a8b5b9746857ca2e90a8b0b2b08bd6e5f">print</reimplements>
+        <briefdescription>
+<para>Print variable information to stdout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="73" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="73" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1GenericVariable_1a4ff27f7a00d147d7dd7f2de8d9ba5c83" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Variable&gt; factorama::GenericVariable::clone</definition>
+        <argsstring>() const override</argsstring>
+        <name>clone</name>
+        <reimplements refid="classfactorama_1_1Variable_1affceff3238526e0ab3ca7ccddb0e6558">clone</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a deep copy of this variable <simplesect kind="return"><para>Shared pointer to cloned variable (used for numerical Jacobians) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="79" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="79" bodyend="82"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Generic N-dimensional linear variable. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Flexible variable type that can represent arbitrary vector quantities. Uses simple linear updates (no special manifold operations like poses).</para>
+<para><programlisting><codeline><highlight class="normal">Eigen::VectorXd<sp/>initial_bias(3);</highlight></codeline>
+<codeline><highlight class="normal">initial_bias<sp/>&lt;&lt;<sp/>0.1,<sp/>-0.05,<sp/>0.02;</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>bias_var<sp/>=<sp/>std::make_shared&lt;GenericVariable&gt;(1,<sp/>initial_bias);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+      <node id="1">
+        <label>factorama::GenericVariable</label>
+        <link refid="classfactorama_1_1GenericVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+      <node id="1">
+        <label>factorama::GenericVariable</label>
+        <link refid="classfactorama_1_1GenericVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" line="19" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/generic_variable.hpp" bodystart="20" bodyend="88"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1GenericVariable_1a4bc5af32782bf1f82a845a75da98036c" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>apply_increment</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a4ff27f7a00d147d7dd7f2de8d9ba5c83" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>clone</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a241135163c2673949e83aac45675819f" prot="public" virt="non-virtual"><scope>factorama::GenericVariable</scope><name>GenericVariable</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1ad18a20ce66a80d15adab77cd6423409c" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>id</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a69523e6872e156991d955769b608c632" prot="private" virt="non-virtual"><scope>factorama::GenericVariable</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1aa5701735ad7c65c4357366d009bebd2d" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>is_constant</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a84a2163e265e2311513f2baf2d7830a9" prot="private" virt="non-virtual"><scope>factorama::GenericVariable</scope><name>is_constant_</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1aed48440981365ad359b62f45c04cf723" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>name</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a75ba72eb55e3baf4846e5d2fa14ca208" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>print</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a0e99373b2c0045e95e6143ed4e3bb6ee" prot="public" virt="non-virtual"><scope>factorama::GenericVariable</scope><name>set_is_constant</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1af99b3f0bfe2a0c1bd69af228087e144e" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>set_value_from_vector</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a43193367c34f61f010c95f788907e076" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>size</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a4fccc50a78b36e0c4f72cc16bec63abc" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>type</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1a77ceebca91f29b3e005e6601b3af1b61" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>value</name></member>
+      <member refid="classfactorama_1_1GenericVariable_1ade678d1cecaaef08ee8086309f0b7a5e" prot="private" virt="non-virtual"><scope>factorama::GenericVariable</scope><name>value_</name></member>
+      <member refid="classfactorama_1_1Variable_1a9cb114fda9cfde5f5c7f18b605ac1f4c" prot="public" virt="virtual"><scope>factorama::GenericVariable</scope><name>~Variable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,4 @@
+<map id="factorama::FactorPlacement" name="factorama::FactorPlacement">
+<area shape="rect" id="node1" title="Internal structure tracking factor placement in the optimization problem." alt="" coords="5,263,211,384"/>
+<area shape="rect" id="node2" href="$classfactorama_1_1Factor.html" title="Base class for all constraints and measurements in the factor graph." alt="" coords="21,5,195,200"/>
+</map>

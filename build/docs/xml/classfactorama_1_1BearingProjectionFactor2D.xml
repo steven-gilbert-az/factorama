@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1BearingProjectionFactor2D" kind="class" language="C++" prot="public">
+    <compoundname>factorama::BearingProjectionFactor2D</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+    <includes refid="bearing__projection__factor__2d_8hpp" local="no">bearing_projection_factor_2d.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1a12106ddb29017d98b403fd5d4816e9db" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::BearingProjectionFactor2D::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="79" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1aac504dd6e7d0219c6ce9b4ca210acd50" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+        <definition>PoseVariable* factorama::BearingProjectionFactor2D::pose_</definition>
+        <argsstring></argsstring>
+        <name>pose_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="80" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1a4455bd8d6040505be710f1f7522fe13a" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1LandmarkVariable" kindref="compound">LandmarkVariable</ref> *</type>
+        <definition>LandmarkVariable* factorama::BearingProjectionFactor2D::landmark_</definition>
+        <argsstring></argsstring>
+        <name>landmark_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="81" column="26" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1a44e36bafc4da46faede238df72b468cc" prot="private" static="no" mutable="no">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::BearingProjectionFactor2D::bearing_C_observed_</definition>
+        <argsstring></argsstring>
+        <name>bearing_C_observed_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="82" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1aa8b2886c110ba3b6f2aa2d0bf6f96d6f" prot="private" static="no" mutable="no">
+        <type>Eigen::Matrix&lt; double, 3, 2 &gt;</type>
+        <definition>Eigen::Matrix&lt;double, 3, 2&gt; factorama::BearingProjectionFactor2D::T_</definition>
+        <argsstring></argsstring>
+        <name>T_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="83" column="23" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1a73d3d04b848efccf7c1e824e7bbc4fdf" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::BearingProjectionFactor2D::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="84" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1BearingProjectionFactor2D_1a3586b6be09851704d9f17797d9fdbb9d" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::BearingProjectionFactor2D::reverse_depth_tolerance_</definition>
+        <argsstring></argsstring>
+        <name>reverse_depth_tolerance_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="85" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1ab181f2b2006fb26d5fd3ecfb7acba375" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::BearingProjectionFactor2D::BearingProjectionFactor2D</definition>
+        <argsstring>(int id, PoseVariable *pose, LandmarkVariable *landmark, const Eigen::Vector3d &amp;bearing_C_observed, double sigma=1.0, double along_tolerance_epsilon=1e-6)</argsstring>
+        <name>BearingProjectionFactor2D</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+          <declname>pose</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1LandmarkVariable" kindref="compound">LandmarkVariable</ref> *</type>
+          <declname>landmark</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>bearing_C_observed</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>along_tolerance_epsilon</declname>
+          <defval>1e-6</defval>
+        </param>
+        <briefdescription>
+<para>Construct 2D bearing projection factor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique factor identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pose</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Camera pose variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>landmark</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>3D landmark variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bearing_C_observed</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unit bearing vector in camera frame </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sigma</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Standard deviation of angular measurement (radians) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>along_tolerance_epsilon</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Tolerance for numerical stability </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="35" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="35" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a930fab24a1e24f54e067cd9f778b650e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::BearingProjectionFactor2D::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="54" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="54" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a82764d2bf2db5e843e72e3f843197ae7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::BearingProjectionFactor2D::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <reimplements refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f">residual_size</reimplements>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="56" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="56" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a2da41505dde012961cd872c4db4dad10" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double factorama::BearingProjectionFactor2D::weight</definition>
+        <argsstring>() const override</argsstring>
+        <name>weight</name>
+        <reimplements refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803">weight</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="58" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="58" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a6e32bca648beab4eb11b726d1be67631" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::BearingProjectionFactor2D::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="60" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="60" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a91962709dc80eb6dd202eed9818a70ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::BearingProjectionFactor2D::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="65" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="65" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a79bfbf83ceb86914c92b6dfd1d712ff4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt;Variable *&gt; factorama::BearingProjectionFactor2D::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <reimplements refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357">variables</reimplements>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="70" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="70" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a4c12a7b24c95adca0907389f28da8a5d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::BearingProjectionFactor2D::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <reimplements refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412">compute_residual</reimplements>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="75" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.cpp" bodystart="35" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1ab9d7912a09468b49825219b1ac35d071" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::BearingProjectionFactor2D::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <reimplements refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a">compute_jacobians</reimplements>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="76" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.cpp" bodystart="64" bodyend="132"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classfactorama_1_1BearingProjectionFactor2D_1a5769cb490f4ff656f7c05e6b12618ece" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::BearingProjectionFactor2D::compute_tangent_basis</definition>
+        <argsstring>()</argsstring>
+        <name>compute_tangent_basis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="87" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.cpp" bodystart="6" bodyend="33"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>2D bearing projection factor for camera measurements </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Projects bearing differences onto the tangent plane of the observed bearing direction. Provides a 2D residual instead of the full 3D residual from <ref refid="classfactorama_1_1BearingObservationFactor" kindref="compound">BearingObservationFactor</ref>.</para>
+<para><programlisting><codeline><highlight class="normal">Eigen::Vector3d<sp/>bearing_vector(0.0,<sp/>0.0,<sp/>1.0);</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>bearing_factor<sp/>=<sp/>std::make_shared&lt;BearingProjectionFactor2D&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>factor_id++,<sp/>camera_pose,<sp/>landmark,<sp/>bearing_vector,<sp/>sigma);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="1">
+        <label>factorama::BearingProjectionFactor2D</label>
+        <link refid="classfactorama_1_1BearingProjectionFactor2D"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="1">
+        <label>factorama::BearingProjectionFactor2D</label>
+        <link refid="classfactorama_1_1BearingProjectionFactor2D"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" line="23" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp" bodystart="24" bodyend="88"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a44e36bafc4da46faede238df72b468cc" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>bearing_C_observed_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1ab181f2b2006fb26d5fd3ecfb7acba375" prot="public" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>BearingProjectionFactor2D</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1ab9d7912a09468b49825219b1ac35d071" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a4c12a7b24c95adca0907389f28da8a5d" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a5769cb490f4ff656f7c05e6b12618ece" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>compute_tangent_basis</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a930fab24a1e24f54e067cd9f778b650e" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>id</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a12106ddb29017d98b403fd5d4816e9db" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a4455bd8d6040505be710f1f7522fe13a" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>landmark_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a6e32bca648beab4eb11b726d1be67631" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>name</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1aac504dd6e7d0219c6ce9b4ca210acd50" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>pose_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a82764d2bf2db5e843e72e3f843197ae7" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a3586b6be09851704d9f17797d9fdbb9d" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>reverse_depth_tolerance_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1aa8b2886c110ba3b6f2aa2d0bf6f96d6f" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>T_</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a91962709dc80eb6dd202eed9818a70ea" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>type</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a79bfbf83ceb86914c92b6dfd1d712ff4" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a2da41505dde012961cd872c4db4dad10" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1BearingProjectionFactor2D_1a73d3d04b848efccf7c1e824e7bbc4fdf" prot="private" virt="non-virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::BearingProjectionFactor2D</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

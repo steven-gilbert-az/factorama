@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacefactorama_1_1FactorType" kind="namespace" language="C++">
+    <compoundname>factorama::FactorType</compoundname>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="types_8hpp_1aab01e46aa033637c7e1478507a230d46" prot="public" static="no" strong="no">
+        <type></type>
+        <name>FactorTypeEnum</name>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46a9b28a2c07524bb2026540fb001f84678" prot="public">
+          <name>none</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46aaf625fce7e646e50563de32b0cbff5d2" prot="public">
+          <name>bearing_observation</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46acec3d586d106ae09a6a14ad8e0c5c8af" prot="public">
+          <name>inverse_range_bearing</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46a573c56123149a9b0f0fa8ad897759a63" prot="public">
+          <name>generic_prior</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46af52a64331e865a1c547df4e17863db98" prot="public">
+          <name>generic_between</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46ac3361d730e3821cf40ae0767670b4af0" prot="public">
+          <name>pose_position_prior</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46a1374f74e0b922d29cdebbd6f54479367" prot="public">
+          <name>pose_orientation_prior</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46a692644cb6d7e8053d6bb10c3a3f5abb8" prot="public">
+          <name>pose_position_between</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46a16e91785efbf61f7502c82e9a55986a1" prot="public">
+          <name>pose_orientation_between</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="types_8hpp_1aab01e46aa033637c7e1478507a230d46ad6abb8a755986a510eff4fe27e1487d6" prot="public">
+          <name>num_factor_types</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="52" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="53" bodyend="64"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="types_8hpp_1afd36a1a7ddbfba28e41f50cc5680cb95" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr auto</type>
+        <definition>constexpr auto factorama::FactorType::factor_names</definition>
+        <argsstring></argsstring>
+        <name>factor_names</name>
+        <initializer>= get_factor_names()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="82" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="types_8hpp_1a6ce2cbf51a8c0dd1b24c0f25b9184952" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr std::array&lt; const char *, num_factor_types &gt;</type>
+        <definition>static constexpr std::array&lt;const char *, num_factor_types&gt; factorama::FactorType::get_factor_names</definition>
+        <argsstring>()</argsstring>
+        <name>get_factor_names</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="67" column="37" bodyfile="/home/sgilbert/repos/factorama/src/factorama/types.hpp" bodystart="67" bodyend="80"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/types.hpp" line="50" column="5"/>
+  </compounddef>
+</doxygen>

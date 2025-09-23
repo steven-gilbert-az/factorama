@@ -1,0 +1,4 @@
+<map id="factorama::GenericPriorFactor" name="factorama::GenericPriorFactor">
+<area shape="rect" id="node1" title="Generic linear prior constraint for linear variable types." alt="" coords="5,248,221,443"/>
+<area shape="rect" id="node2" href="$classfactorama_1_1Factor.html" title="Base class for all constraints and measurements in the factor graph." alt="" coords="27,5,200,200"/>
+</map>

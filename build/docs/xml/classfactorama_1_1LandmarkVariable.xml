@@ -1,0 +1,398 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1LandmarkVariable" kind="class" language="C++" prot="public">
+    <compoundname>factorama::LandmarkVariable</compoundname>
+    <basecompoundref refid="classfactorama_1_1Variable" prot="public" virt="non-virtual">factorama::Variable</basecompoundref>
+    <includes refid="landmark__variable_8hpp" local="no">landmark_variable.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1LandmarkVariable_1a8e9855b2ec5bea78eb400c42645fafa6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::LandmarkVariable::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="89" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1LandmarkVariable_1a0c4b40299a2ae120d1f7d6733fe5f8e5" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::LandmarkVariable::pos_W_</definition>
+        <argsstring></argsstring>
+        <name>pos_W_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="90" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1LandmarkVariable_1a620b81388c396744083e123041f3d772" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::LandmarkVariable::is_constant_</definition>
+        <argsstring></argsstring>
+        <name>is_constant_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="91" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a9f9ebe5b1a8fdd4d8d02f3cbf4ed1df1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::LandmarkVariable::LandmarkVariable</definition>
+        <argsstring>(int id, const Eigen::Vector3d &amp;pos_W_init)</argsstring>
+        <name>LandmarkVariable</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>const Eigen::Vector3d &amp;</type>
+          <declname>pos_W_init</declname>
+        </param>
+        <briefdescription>
+<para>Construct landmark variable with initial 3D position. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique variable identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pos_W_init</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Initial position in world frame </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="26" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="26" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1aca9d99933bf56054f8e7135436f12bc9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::LandmarkVariable::size</definition>
+        <argsstring>() const override</argsstring>
+        <name>size</name>
+        <reimplements refid="classfactorama_1_1Variable_1a005902228611fa232af7111ff63f430c">size</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the dimension of this variable <simplesect kind="return"><para>Dimension (e.g. 3 for rotations, 6 for poses) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="29" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1af448160851a5872f7f79c2762aaa539d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>const Eigen::VectorXd &amp;</type>
+        <definition>const Eigen::VectorXd&amp; factorama::LandmarkVariable::value</definition>
+        <argsstring>() const override</argsstring>
+        <name>value</name>
+        <reimplements refid="classfactorama_1_1Variable_1a672c1578b06070f9ca09d8ab4296dcbf">value</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable&apos;s current value as a vector <simplesect kind="return"><para>Current variable value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="31" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="31" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a9088ff210265d2efdc87dcb201389cb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::LandmarkVariable::set_value_from_vector</definition>
+        <argsstring>(const Eigen::VectorXd &amp;x) override</argsstring>
+        <name>set_value_from_vector</name>
+        <reimplements refid="classfactorama_1_1Variable_1acb8f048e444d8c9971ec38ed36fe810f">set_value_from_vector</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the variable from a new value vector <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New value (used by optimizer) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="33" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="33" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1ad007ce8677612118d0b2a687fbb7d9a8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::LandmarkVariable::apply_increment</definition>
+        <argsstring>(const Eigen::VectorXd &amp;dx) override</argsstring>
+        <name>apply_increment</name>
+        <reimplements refid="classfactorama_1_1Variable_1a131e1fa8a893b4fb88d4468186be576b">apply_increment</reimplements>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>dx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply an increment to the current value <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Increment to apply (used by optimization algorithms) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="37" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="37" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1afd8b804b7f605ff19a42bcd594397aac" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::LandmarkVariable::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Variable_1a9cd7ea51b78756d07ef25d2c11995013">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the unique identifier for this variable <simplesect kind="return"><para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> ID used for indexing and identification </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="46" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="46" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1abe5863e40efd696d7a989d01db9eec8a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>VariableType::VariableTypeEnum</type>
+        <definition>VariableType::VariableTypeEnum factorama::LandmarkVariable::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Variable_1a731965d199987b363b709923ce981775">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the variable type enumeration <simplesect kind="return"><para>Type identifier for this variable class </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="48" column="40" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="48" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1ab567ebfd2ed361fcdb5b2e42ce8eafea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool factorama::LandmarkVariable::is_constant</definition>
+        <argsstring>() const override</argsstring>
+        <name>is_constant</name>
+        <reimplements refid="classfactorama_1_1Variable_1a0f666510d6716b87b8d37b05672dbcf8">is_constant</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check if this variable is held constant during optimization <simplesect kind="return"><para>True if variable should not be optimized </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="52" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="52" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a6accac4b11760672740a732cf017358e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::LandmarkVariable::set_is_constant</definition>
+        <argsstring>(bool val)</argsstring>
+        <name>set_is_constant</name>
+        <param>
+          <type>bool</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="53" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="53" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a42537af933493e42332cde5e3b9207ae" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::LandmarkVariable::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Variable_1a3cf558931879db0ae920db384d84a912">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a human-readable name for this variable <simplesect kind="return"><para>String description of this variable </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="55" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="55" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1abd39ecf5d0fabac36e2ccb436b45132a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Eigen::Vector3d</type>
+        <definition>Eigen::Vector3d factorama::LandmarkVariable::pos_W</definition>
+        <argsstring>() const</argsstring>
+        <name>pos_W</name>
+        <briefdescription>
+<para>Get 3D position in world frame. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Position vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="64" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="64" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a45abdd03a383637a86efd6f470e41e6e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::LandmarkVariable::set_pos_W</definition>
+        <argsstring>(Eigen::Vector3d pos)</argsstring>
+        <name>set_pos_W</name>
+        <param>
+          <type>Eigen::Vector3d</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+<para>Set 3D position in world frame. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pos</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New position vector </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="73" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="73" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1a4af1c5ebbb9fd1a916cd0e75535bb5e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::LandmarkVariable::print</definition>
+        <argsstring>() const override</argsstring>
+        <name>print</name>
+        <reimplements refid="classfactorama_1_1Variable_1a8b5b9746857ca2e90a8b0b2b08bd6e5f">print</reimplements>
+        <briefdescription>
+<para>Print variable information to stdout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="78" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="78" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1LandmarkVariable_1ae1e19d8786aeb20e10a7c9e4bcf299cf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;Variable&gt; factorama::LandmarkVariable::clone</definition>
+        <argsstring>() const override</argsstring>
+        <name>clone</name>
+        <reimplements refid="classfactorama_1_1Variable_1affceff3238526e0ab3ca7ccddb0e6558">clone</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a deep copy of this variable <simplesect kind="return"><para>Shared pointer to cloned variable (used for numerical Jacobians) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="84" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="84" bodyend="86"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>3D landmark variable in Euclidean space </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Represents 3D world landmarks as simple position vectors. Commonly used for bundle adjustment problems with camera observations.</para>
+<para><programlisting><codeline><highlight class="normal">Eigen::Vector3d<sp/>landmark_pos(0.0,<sp/>1.0,<sp/>6.0);</highlight></codeline>
+<codeline><highlight class="normal">auto<sp/>landmark<sp/>=<sp/>std::make_shared&lt;LandmarkVariable&gt;(2,<sp/>landmark_pos);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>factorama::LandmarkVariable</label>
+        <link refid="classfactorama_1_1LandmarkVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::LandmarkVariable</label>
+        <link refid="classfactorama_1_1LandmarkVariable"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>factorama::Variable</label>
+        <link refid="classfactorama_1_1Variable"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" line="18" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/landmark_variable.hpp" bodystart="19" bodyend="92"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1LandmarkVariable_1ad007ce8677612118d0b2a687fbb7d9a8" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>apply_increment</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1ae1e19d8786aeb20e10a7c9e4bcf299cf" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>clone</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1afd8b804b7f605ff19a42bcd594397aac" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>id</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a8e9855b2ec5bea78eb400c42645fafa6" prot="private" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1ab567ebfd2ed361fcdb5b2e42ce8eafea" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>is_constant</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a620b81388c396744083e123041f3d772" prot="private" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>is_constant_</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a9f9ebe5b1a8fdd4d8d02f3cbf4ed1df1" prot="public" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>LandmarkVariable</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a42537af933493e42332cde5e3b9207ae" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>name</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1abd39ecf5d0fabac36e2ccb436b45132a" prot="public" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>pos_W</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a0c4b40299a2ae120d1f7d6733fe5f8e5" prot="private" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>pos_W_</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a4af1c5ebbb9fd1a916cd0e75535bb5e3" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>print</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a6accac4b11760672740a732cf017358e" prot="public" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>set_is_constant</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a45abdd03a383637a86efd6f470e41e6e" prot="public" virt="non-virtual"><scope>factorama::LandmarkVariable</scope><name>set_pos_W</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1a9088ff210265d2efdc87dcb201389cb0" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>set_value_from_vector</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1aca9d99933bf56054f8e7135436f12bc9" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>size</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1abe5863e40efd696d7a989d01db9eec8a" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>type</name></member>
+      <member refid="classfactorama_1_1LandmarkVariable_1af448160851a5872f7f79c2762aaa539d" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>value</name></member>
+      <member refid="classfactorama_1_1Variable_1a9cb114fda9cfde5f5c7f18b605ac1f4c" prot="public" virt="virtual"><scope>factorama::LandmarkVariable</scope><name>~Variable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

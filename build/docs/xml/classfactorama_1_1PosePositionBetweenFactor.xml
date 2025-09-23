@@ -1,0 +1,344 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1PosePositionBetweenFactor" kind="class" language="C++" prot="public">
+    <compoundname>factorama::PosePositionBetweenFactor</compoundname>
+    <basecompoundref refid="classfactorama_1_1Factor" prot="public" virt="non-virtual">factorama::Factor</basecompoundref>
+    <includes refid="pose__between__factors_8hpp" local="no">pose_between_factors.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionBetweenFactor_1a8e38bd116db32fb2b9c243ef9439e741" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::PosePositionBetweenFactor::id_</definition>
+        <argsstring></argsstring>
+        <name>id_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="124" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionBetweenFactor_1afbd3c6983ca70f8953ccd077c776f2fe" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+        <definition>PoseVariable* factorama::PosePositionBetweenFactor::pose_a_</definition>
+        <argsstring></argsstring>
+        <name>pose_a_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="125" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionBetweenFactor_1ae36c023c8cd985bcca9327279b0658a1" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+        <definition>PoseVariable* factorama::PosePositionBetweenFactor::pose_b_</definition>
+        <argsstring></argsstring>
+        <name>pose_b_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="126" column="22" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionBetweenFactor_1ab5b6963b57626dccc4af96b51d5391ba" prot="private" static="no" mutable="no">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable* factorama::PosePositionBetweenFactor::measured_diff_</definition>
+        <argsstring></argsstring>
+        <name>measured_diff_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="127" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="127" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1PosePositionBetweenFactor_1aa20bb683251b5fee894bb4efdd0fba18" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double factorama::PosePositionBetweenFactor::weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="128" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="128" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1ab1b7ab2d812c06cb28c5179259510d42" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>factorama::PosePositionBetweenFactor::PosePositionBetweenFactor</definition>
+        <argsstring>(int id, PoseVariable *pose_a, PoseVariable *pose_b, Variable *measured_diff, double sigma=1.0)</argsstring>
+        <name>PosePositionBetweenFactor</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+          <declname>pose_a</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref> *</type>
+          <declname>pose_b</declname>
+        </param>
+        <param>
+          <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+          <declname>measured_diff</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+<para>Construct position between factor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Unique factor identifier </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pose_a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First pose variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pose_b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second pose variable </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>measured_diff</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> representing measured position difference (pos_b - pos_a) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sigma</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Standard deviation of measurement </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="33" column="9" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="33" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a77869ff6967be447daf94c36d980d481" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::PosePositionBetweenFactor::id</definition>
+        <argsstring>() const override</argsstring>
+        <name>id</name>
+        <reimplements refid="classfactorama_1_1Factor_1a15ee6cb1a6d98a06e51aff237cc47d74">id</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="47" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="47" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a1714484d0d46da11fca3c460c3fad099" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>int</type>
+        <definition>int factorama::PosePositionBetweenFactor::residual_size</definition>
+        <argsstring>() const override</argsstring>
+        <name>residual_size</name>
+        <reimplements refid="classfactorama_1_1Factor_1a40c4509c62aca417ba0fa05c6e74673f">residual_size</reimplements>
+        <briefdescription>
+<para>Get the dimension of this factor&apos;s residual vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Number of residual elements this factor contributes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="52" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="52" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1ac911950911fa05a8ba11930c12968cc0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::PosePositionBetweenFactor::compute_residual</definition>
+        <argsstring>() const override</argsstring>
+        <name>compute_residual</name>
+        <reimplements refid="classfactorama_1_1Factor_1a5766b6f5e3b08882d6a07b971a9b2412">compute_residual</reimplements>
+        <briefdescription>
+<para>Compute the residual vector for current variable values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="57" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="57" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a1cbd1fec3f42422d262ec04625a8d1d4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void factorama::PosePositionBetweenFactor::compute_jacobians</definition>
+        <argsstring>(std::vector&lt; Eigen::MatrixXd &gt; &amp;jacobians) const override</argsstring>
+        <name>compute_jacobians</name>
+        <reimplements refid="classfactorama_1_1Factor_1a8e40b08481ac787f1dde9055be58aa8a">compute_jacobians</reimplements>
+        <param>
+          <type>std::vector&lt; Eigen::MatrixXd &gt; &amp;</type>
+          <declname>jacobians</declname>
+        </param>
+        <briefdescription>
+<para>Compute jacobians with respect to connected variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jacobians</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of jacobian matrices (one per variable). Empty (0x0) matrices indicate constant variables by convention. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="64" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="64" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a88701d973a3a1fceefbb0ff5b931f5f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::vector&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::vector&lt;Variable *&gt; factorama::PosePositionBetweenFactor::variables</definition>
+        <argsstring>() override</argsstring>
+        <name>variables</name>
+        <reimplements refid="classfactorama_1_1Factor_1af6abd4333b0fae4b2b04780ef40dc357">variables</reimplements>
+        <briefdescription>
+<para>Get pointers to all variables this factor depends on. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of variable pointers in jacobian order </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="103" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="103" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a8f0bcff443a28d2dbf2a4ec778e69a5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>double</type>
+        <definition>double factorama::PosePositionBetweenFactor::weight</definition>
+        <argsstring>() const override</argsstring>
+        <name>weight</name>
+        <reimplements refid="classfactorama_1_1Factor_1a1de23a9f9d43547ef32b54099b29c803">weight</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="108" column="16" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="108" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1ae4765100bab81e9e4fc71848e04048be" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string factorama::PosePositionBetweenFactor::name</definition>
+        <argsstring>() const override</argsstring>
+        <name>name</name>
+        <reimplements refid="classfactorama_1_1Factor_1a942879f9728775ebf4e115003c593ec2">name</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="113" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="113" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1PosePositionBetweenFactor_1a6ddda6073586f9b33e558dfe1055e9e1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>FactorType::FactorTypeEnum</type>
+        <definition>FactorType::FactorTypeEnum factorama::PosePositionBetweenFactor::type</definition>
+        <argsstring>() const override</argsstring>
+        <name>type</name>
+        <reimplements refid="classfactorama_1_1Factor_1a18b392f445631b479dcdd6159f8e4d22">type</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="118" column="36" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="118" bodyend="121"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Position-only relative constraint between pose variables. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Constrains the position difference between two poses to match a measured difference variable. Only affects the translation components of poses, ignoring rotation.</para>
+<para><programlisting><codeline><highlight class="normal">auto<sp/>position_constraint<sp/>=<sp/>std::make_shared&lt;PosePositionBetweenFactor&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>factor_id++,<sp/>pose_a,<sp/>pose_b,<sp/>measured_delta_variable,<sp/>sigma);</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="1">
+        <label>factorama::PosePositionBetweenFactor</label>
+        <link refid="classfactorama_1_1PosePositionBetweenFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>factorama::Factor</label>
+        <link refid="classfactorama_1_1Factor"/>
+      </node>
+      <node id="1">
+        <label>factorama::PosePositionBetweenFactor</label>
+        <link refid="classfactorama_1_1PosePositionBetweenFactor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" line="22" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp" bodystart="23" bodyend="129"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a1cbd1fec3f42422d262ec04625a8d1d4" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>compute_jacobians</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1ac911950911fa05a8ba11930c12968cc0" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>compute_residual</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a77869ff6967be447daf94c36d980d481" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>id</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a8e38bd116db32fb2b9c243ef9439e741" prot="private" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>id_</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1ab5b6963b57626dccc4af96b51d5391ba" prot="private" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>measured_diff_</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1ae4765100bab81e9e4fc71848e04048be" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>name</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1afbd3c6983ca70f8953ccd077c776f2fe" prot="private" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>pose_a_</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1ae36c023c8cd985bcca9327279b0658a1" prot="private" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>pose_b_</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1ab1b7ab2d812c06cb28c5179259510d42" prot="public" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>PosePositionBetweenFactor</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a1714484d0d46da11fca3c460c3fad099" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>residual_size</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a6ddda6073586f9b33e558dfe1055e9e1" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>type</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a88701d973a3a1fceefbb0ff5b931f5f2" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>variables</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1a8f0bcff443a28d2dbf2a4ec778e69a5a" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>weight</name></member>
+      <member refid="classfactorama_1_1PosePositionBetweenFactor_1aa20bb683251b5fee894bb4efdd0fba18" prot="private" virt="non-virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>weight_</name></member>
+      <member refid="classfactorama_1_1Factor_1a0d5f10ab19ffd64c16d1e4399683d229" prot="public" virt="virtual"><scope>factorama::PosePositionBetweenFactor</scope><name>~Factor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

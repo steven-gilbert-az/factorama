@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--gc-sections -s CMakeFiles/solver_benchmark.dir/src/factorama_test/solver_benchmark.cpp.o -o solver_benchmark  libfactorama.a 

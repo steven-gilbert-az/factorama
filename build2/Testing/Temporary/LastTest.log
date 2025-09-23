@@ -1,0 +1,2553 @@
+Start testing: Sep 21 22:11 MST
+----------------------------------------------------------
+1/29 Testing: BasicResidualSanityTest
+1/29 Test: BasicResidualSanityTest
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BasicResidualSanityTest"
+Directory: /home/sgilbert/repos/factorama/build2
+"BasicResidualSanityTest" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BasicResidualSanityTest"
+Randomness seeded to: 2883586061
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BasicResidualSanityTest" end time: Sep 21 22:11 MST
+"BasicResidualSanityTest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/29 Testing: InverseRangeFactorSanityTest
+2/29 Test: InverseRangeFactorSanityTest
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "InverseRangeFactorSanityTest"
+Directory: /home/sgilbert/repos/factorama/build2
+"InverseRangeFactorSanityTest" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "InverseRangeFactorSanityTest"
+Randomness seeded to: 312516153
+===============================================================================
+All tests passed (7 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"InverseRangeFactorSanityTest" end time: Sep 21 22:11 MST
+"InverseRangeFactorSanityTest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/29 Testing: PosePositionPriorFactor: dimensions and residual
+3/29 Test: PosePositionPriorFactor: dimensions and residual
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PosePositionPriorFactor: dimensions and residual"
+Directory: /home/sgilbert/repos/factorama/build2
+"PosePositionPriorFactor: dimensions and residual" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PosePositionPriorFactor: dimensions and residual"
+Randomness seeded to: 4224268753
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PosePositionPriorFactor: dimensions and residual" end time: Sep 21 22:11 MST
+"PosePositionPriorFactor: dimensions and residual" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/29 Testing: GenericPriorFactor: dimensions and residual with LandmarkVariable
+4/29 Test: GenericPriorFactor: dimensions and residual with LandmarkVariable
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "GenericPriorFactor: dimensions and residual with LandmarkVariable"
+Directory: /home/sgilbert/repos/factorama/build2
+"GenericPriorFactor: dimensions and residual with LandmarkVariable" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "GenericPriorFactor: dimensions and residual with LandmarkVariable"
+Randomness seeded to: 2670388902
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GenericPriorFactor: dimensions and residual with LandmarkVariable" end time: Sep 21 22:11 MST
+"GenericPriorFactor: dimensions and residual with LandmarkVariable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/29 Testing: BearingObservationFactor: analytical Jacobian matches numerical
+5/29 Test: BearingObservationFactor: analytical Jacobian matches numerical
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BearingObservationFactor: analytical Jacobian matches numerical"
+Directory: /home/sgilbert/repos/factorama/build2
+"BearingObservationFactor: analytical Jacobian matches numerical" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BearingObservationFactor: analytical Jacobian matches numerical"
+Randomness seeded to: 938422023
+===============================================================================
+All tests passed (21 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BearingObservationFactor: analytical Jacobian matches numerical" end time: Sep 21 22:11 MST
+"BearingObservationFactor: analytical Jacobian matches numerical" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/29 Testing: InverseRangeBearingFactor: analytical Jacobian matches numerical
+6/29 Test: InverseRangeBearingFactor: analytical Jacobian matches numerical
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "InverseRangeBearingFactor: analytical Jacobian matches numerical"
+Directory: /home/sgilbert/repos/factorama/build2
+"InverseRangeBearingFactor: analytical Jacobian matches numerical" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "InverseRangeBearingFactor: analytical Jacobian matches numerical"
+Randomness seeded to: 2916590806
+===============================================================================
+All tests passed (21 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"InverseRangeBearingFactor: analytical Jacobian matches numerical" end time: Sep 21 22:11 MST
+"InverseRangeBearingFactor: analytical Jacobian matches numerical" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/29 Testing: SO(3) exponential and logarithmic maps round trip
+7/29 Test: SO(3) exponential and logarithmic maps round trip
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "SO(3) exponential and logarithmic maps round trip"
+Directory: /home/sgilbert/repos/factorama/build2
+"SO(3) exponential and logarithmic maps round trip" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SO(3) exponential and logarithmic maps round trip"
+Randomness seeded to: 2009782156
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SO(3) exponential and logarithmic maps round trip" end time: Sep 21 22:11 MST
+"SO(3) exponential and logarithmic maps round trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/29 Testing: SO(3) ExpMap produces orthonormal matrix
+8/29 Test: SO(3) ExpMap produces orthonormal matrix
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "SO(3) ExpMap produces orthonormal matrix"
+Directory: /home/sgilbert/repos/factorama/build2
+"SO(3) ExpMap produces orthonormal matrix" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SO(3) ExpMap produces orthonormal matrix"
+Randomness seeded to: 3827627271
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SO(3) ExpMap produces orthonormal matrix" end time: Sep 21 22:11 MST
+"SO(3) ExpMap produces orthonormal matrix" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/29 Testing: SO(3) ExpMap/LogMap π-rotation edge cases
+9/29 Test: SO(3) ExpMap/LogMap π-rotation edge cases
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "SO(3) ExpMap/LogMap π-rotation edge cases"
+Directory: /home/sgilbert/repos/factorama/build2
+"SO(3) ExpMap/LogMap π-rotation edge cases" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SO(3) ExpMap/LogMap π-rotation edge cases"
+Randomness seeded to: 1351009554
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SO(3) ExpMap/LogMap π-rotation edge cases" end time: Sep 21 22:11 MST
+"SO(3) ExpMap/LogMap π-rotation edge cases" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/29 Testing: SO(3) near-zero rotation is stable
+10/29 Test: SO(3) near-zero rotation is stable
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "SO(3) near-zero rotation is stable"
+Directory: /home/sgilbert/repos/factorama/build2
+"SO(3) near-zero rotation is stable" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SO(3) near-zero rotation is stable"
+Randomness seeded to: 448357204
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SO(3) near-zero rotation is stable" end time: Sep 21 22:11 MST
+"SO(3) near-zero rotation is stable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/29 Testing: SO(3) LogMap behaves near 180 degrees
+11/29 Test: SO(3) LogMap behaves near 180 degrees
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "SO(3) LogMap behaves near 180 degrees"
+Directory: /home/sgilbert/repos/factorama/build2
+"SO(3) LogMap behaves near 180 degrees" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SO(3) LogMap behaves near 180 degrees"
+Randomness seeded to: 2112875871
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SO(3) LogMap behaves near 180 degrees" end time: Sep 21 22:11 MST
+"SO(3) LogMap behaves near 180 degrees" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/29 Testing: PoseOrientationBetweenFactor residual and jacobian numeric check
+12/29 Test: PoseOrientationBetweenFactor residual and jacobian numeric check
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PoseOrientationBetweenFactor residual and jacobian numeric check"
+Directory: /home/sgilbert/repos/factorama/build2
+"PoseOrientationBetweenFactor residual and jacobian numeric check" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PoseOrientationBetweenFactor residual and jacobian numeric check"
+Randomness seeded to: 3226176969
+===============================================================================
+All tests passed (26 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PoseOrientationBetweenFactor residual and jacobian numeric check" end time: Sep 21 22:11 MST
+"PoseOrientationBetweenFactor residual and jacobian numeric check" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/29 Testing: PoseVariable apply_increment
+13/29 Test: PoseVariable apply_increment
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PoseVariable apply_increment"
+Directory: /home/sgilbert/repos/factorama/build2
+"PoseVariable apply_increment" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PoseVariable apply_increment"
+Randomness seeded to: 231773686
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PoseVariable apply_increment" end time: Sep 21 22:11 MST
+"PoseVariable apply_increment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/29 Testing: RotationVariable apply_increment
+14/29 Test: RotationVariable apply_increment
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "RotationVariable apply_increment"
+Directory: /home/sgilbert/repos/factorama/build2
+"RotationVariable apply_increment" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "RotationVariable apply_increment"
+Randomness seeded to: 1334350413
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RotationVariable apply_increment" end time: Sep 21 22:11 MST
+"RotationVariable apply_increment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/29 Testing: GenericBetweenFactor residuals and jacobians with LandmarkVariable
+15/29 Test: GenericBetweenFactor residuals and jacobians with LandmarkVariable
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "GenericBetweenFactor residuals and jacobians with LandmarkVariable"
+Directory: /home/sgilbert/repos/factorama/build2
+"GenericBetweenFactor residuals and jacobians with LandmarkVariable" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "GenericBetweenFactor residuals and jacobians with LandmarkVariable"
+Randomness seeded to: 1980067532
+===============================================================================
+All tests passed (23 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GenericBetweenFactor residuals and jacobians with LandmarkVariable" end time: Sep 21 22:11 MST
+"GenericBetweenFactor residuals and jacobians with LandmarkVariable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/29 Testing: PosePositionBetweenFactor computes correct residuals and jacobians
+16/29 Test: PosePositionBetweenFactor computes correct residuals and jacobians
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PosePositionBetweenFactor computes correct residuals and jacobians"
+Directory: /home/sgilbert/repos/factorama/build2
+"PosePositionBetweenFactor computes correct residuals and jacobians" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PosePositionBetweenFactor computes correct residuals and jacobians"
+Randomness seeded to: 1274502892
+===============================================================================
+All tests passed (19 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PosePositionBetweenFactor computes correct residuals and jacobians" end time: Sep 21 22:11 MST
+"PosePositionBetweenFactor computes correct residuals and jacobians" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/29 Testing: PosePositionPriorFactor: comprehensive behavior tests
+17/29 Test: PosePositionPriorFactor: comprehensive behavior tests
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PosePositionPriorFactor: comprehensive behavior tests"
+Directory: /home/sgilbert/repos/factorama/build2
+"PosePositionPriorFactor: comprehensive behavior tests" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PosePositionPriorFactor: comprehensive behavior tests"
+Randomness seeded to: 3701350092
+===============================================================================
+All tests passed (19 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PosePositionPriorFactor: comprehensive behavior tests" end time: Sep 21 22:11 MST
+"PosePositionPriorFactor: comprehensive behavior tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/29 Testing: PosePositionPriorFactor: analytical vs numerical Jacobians
+18/29 Test: PosePositionPriorFactor: analytical vs numerical Jacobians
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PosePositionPriorFactor: analytical vs numerical Jacobians"
+Directory: /home/sgilbert/repos/factorama/build2
+"PosePositionPriorFactor: analytical vs numerical Jacobians" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PosePositionPriorFactor: analytical vs numerical Jacobians"
+Randomness seeded to: 411557229
+===============================================================================
+All tests passed (7 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PosePositionPriorFactor: analytical vs numerical Jacobians" end time: Sep 21 22:11 MST
+"PosePositionPriorFactor: analytical vs numerical Jacobians" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/29 Testing: PoseOrientationPriorFactor: analytical vs numerical Jacobians
+19/29 Test: PoseOrientationPriorFactor: analytical vs numerical Jacobians
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "PoseOrientationPriorFactor: analytical vs numerical Jacobians"
+Directory: /home/sgilbert/repos/factorama/build2
+"PoseOrientationPriorFactor: analytical vs numerical Jacobians" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "PoseOrientationPriorFactor: analytical vs numerical Jacobians"
+Randomness seeded to: 3742143007
+===============================================================================
+All tests passed (7 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"PoseOrientationPriorFactor: analytical vs numerical Jacobians" end time: Sep 21 22:11 MST
+"PoseOrientationPriorFactor: analytical vs numerical Jacobians" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/29 Testing: Variable clone() method behaves correctly
+20/29 Test: Variable clone() method behaves correctly
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "Variable clone() method behaves correctly"
+Directory: /home/sgilbert/repos/factorama/build2
+"Variable clone() method behaves correctly" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "Variable clone() method behaves correctly"
+Randomness seeded to: 800531085
+diff: 0.1, tol: 1e-09
+diff: 0.2, tol: 1e-09
+diff: 0.0151228, tol: 1e-09
+===============================================================================
+All tests passed (73 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Variable clone() method behaves correctly" end time: Sep 21 22:11 MST
+"Variable clone() method behaves correctly" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/29 Testing: FactorGraph apply_increment
+21/29 Test: FactorGraph apply_increment
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "FactorGraph apply_increment"
+Directory: /home/sgilbert/repos/factorama/build2
+"FactorGraph apply_increment" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "FactorGraph apply_increment"
+Randomness seeded to: 795063793
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"FactorGraph apply_increment" end time: Sep 21 22:11 MST
+"FactorGraph apply_increment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/29 Testing: FactorGraph ID Collision Detection
+22/29 Test: FactorGraph ID Collision Detection
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "FactorGraph ID Collision Detection"
+Directory: /home/sgilbert/repos/factorama/build2
+"FactorGraph ID Collision Detection" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "FactorGraph ID Collision Detection"
+Randomness seeded to: 3756137790
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"FactorGraph ID Collision Detection" end time: Sep 21 22:11 MST
+"FactorGraph ID Collision Detection" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/29 Testing: BearingProjectionFactor2D: Basic functionality and residual computation
+23/29 Test: BearingProjectionFactor2D: Basic functionality and residual computation
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BearingProjectionFactor2D: Basic functionality and residual computation"
+Directory: /home/sgilbert/repos/factorama/build2
+"BearingProjectionFactor2D: Basic functionality and residual computation" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BearingProjectionFactor2D: Basic functionality and residual computation"
+Randomness seeded to: 2482199121
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BearingProjectionFactor2D: Basic functionality and residual computation" end time: Sep 21 22:11 MST
+"BearingProjectionFactor2D: Basic functionality and residual computation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/29 Testing: BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation
+24/29 Test: BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation"
+Directory: /home/sgilbert/repos/factorama/build2
+"BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation"
+Randomness seeded to: 3312801571
+===============================================================================
+All tests passed (118 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation" end time: Sep 21 22:11 MST
+"BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/29 Testing: BearingProjectionFactor2D: Edge case handling for small alpha
+25/29 Test: BearingProjectionFactor2D: Edge case handling for small alpha
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BearingProjectionFactor2D: Edge case handling for small alpha"
+Directory: /home/sgilbert/repos/factorama/build2
+"BearingProjectionFactor2D: Edge case handling for small alpha" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BearingProjectionFactor2D: Edge case handling for small alpha"
+Randomness seeded to: 2162127306
+Warning: BearingProjectionFactor2D depth=-1 <= eps=1e-06, down-weighting factor
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BearingProjectionFactor2D: Edge case handling for small alpha" end time: Sep 21 22:11 MST
+"BearingProjectionFactor2D: Edge case handling for small alpha" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/29 Testing: BearingProjectionFactor2D: Integration test with optimization convergence
+26/29 Test: BearingProjectionFactor2D: Integration test with optimization convergence
+Command: "/home/sgilbert/repos/factorama/build2/unit_test" "BearingProjectionFactor2D: Integration test with optimization convergence"
+Directory: /home/sgilbert/repos/factorama/build2
+"BearingProjectionFactor2D: Integration test with optimization convergence" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "BearingProjectionFactor2D: Integration test with optimization convergence"
+Randomness seeded to: 971999059
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BearingProjectionFactor2D: Integration test with optimization convergence" end time: Sep 21 22:11 MST
+"BearingProjectionFactor2D: Integration test with optimization convergence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/29 Testing: Consolidated Integration Tests
+27/29 Test: Consolidated Integration Tests
+Command: "/home/sgilbert/repos/factorama/build2/integration_test" "Consolidated Integration Tests"
+Directory: /home/sgilbert/repos/factorama/build2
+"Consolidated Integration Tests" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "Consolidated Integration Tests"
+Randomness seeded to: 3611715592
+
+=== Running Consolidated Integration Tests ===
+
+=== [1/10] Full optimization with pose variables ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 6
+  Factors: 8
+  Residuals: 24
+  Values: 18
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+Landmark4
+Pos: -1.08044
+-1.01971
+  5.0157
+Landmark5
+Pos:  0.962833
+-0.996807
+  4.99362
+Landmark6
+Pos: -0.999111
+ 0.982888
+  4.97873
+Landmark7
+Pos: 0.995301
+ 1.00888
+ 4.96928
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 35.135
+Initial chi²: 1234.47
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 35.135
+  Final residual norm:   0.865679
+  Step norm (||dx||):    0.402761
+  chi²:                  0.7494
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            28 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 0.865679
+  Final residual norm:   0.0571693
+  Step norm (||dx||):    0.109486
+  chi²:                  0.00326832
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            15 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 0.0571693
+  Final residual norm:   0.0123097
+  Step norm (||dx||):    0.107269
+  chi²:                  0.00015153
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            11 us
+
+[SparseGN] Iteration 4 Summary:
+  Initial residual norm: 0.0123097
+  Final residual norm:   6.88854e-08
+  Step norm (||dx||):    0.000135945
+  chi²:                  4.7452e-15
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            10 us
+
+[SparseGN] Iteration 5 Summary:
+  Initial residual norm: 6.88854e-08
+  Final residual norm:   6.27657e-14
+  Step norm (||dx||):    2.27808e-08
+  chi²:                  3.93953e-27
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            9 us
+[SparseOptimizer] Converged: Step norm (2.27808e-08) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 5
+Final residual norm: 6.27657e-14
+Final chi²: 3.93953e-27
+Final step norm: 2.27808e-08
+Residual improvement: 35.135
+Relative improvement: 100 %
+Total time: 8.516e-05 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos:  0.708275
+ 0.0521559
+-0.0647578
+dcm_CW:    0.998727   0.0051738  -0.0501725
+-0.00473782     0.99995  0.00880458
+  0.0502155 -0.00855566    0.998702
+Landmark4
+Pos:  -0.95059
+-0.938874
+  4.73478
+Landmark5
+Pos: 0.991318
+-1.00775
+ 5.00591
+Landmark6
+Pos: -1.01226
+0.994859
+ 4.99178
+Landmark7
+Pos: 0.940057
+0.974279
+ 4.76146
+Initial residual norm: 35.135
+Final residual norm: 6.27657e-14
+PASSED
+
+=== [2/10] Full optimization with pose variables - second test ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 6
+  Factors: 8
+  Residuals: 24
+  Values: 18
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+Landmark4
+Pos: -1.08044
+-1.01971
+  5.0157
+Landmark5
+Pos:  0.962833
+-0.996807
+  4.99362
+Landmark6
+Pos: -0.999111
+ 0.982888
+  4.97873
+Landmark7
+Pos: 0.995301
+ 1.00888
+ 4.96928
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 35.135
+Initial chi²: 1234.47
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 35.135
+  Final residual norm:   0.865679
+  Step norm (||dx||):    0.402761
+  chi²:                  0.7494
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            13 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 0.865679
+  Final residual norm:   0.0571693
+  Step norm (||dx||):    0.109486
+  chi²:                  0.00326832
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            10 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 0.0571693
+  Final residual norm:   0.0123097
+  Step norm (||dx||):    0.107269
+  chi²:                  0.00015153
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            9 us
+
+[SparseGN] Iteration 4 Summary:
+  Initial residual norm: 0.0123097
+  Final residual norm:   6.88854e-08
+  Step norm (||dx||):    0.000135945
+  chi²:                  4.7452e-15
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            9 us
+
+[SparseGN] Iteration 5 Summary:
+  Initial residual norm: 6.88854e-08
+  Final residual norm:   6.27657e-14
+  Step norm (||dx||):    2.27808e-08
+  chi²:                  3.93953e-27
+  J: 24 x 18 | nnz = 144 | density = 33.3333 %
+  Total time:            8 us
+[SparseOptimizer] Converged: Step norm (2.27808e-08) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 5
+Final residual norm: 6.27657e-14
+Final chi²: 3.93953e-27
+Final step norm: 2.27808e-08
+Residual improvement: 35.135
+Relative improvement: 100 %
+Total time: 6.0567e-05 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos:  0.708275
+ 0.0521559
+-0.0647578
+dcm_CW:    0.998727   0.0051738  -0.0501725
+-0.00473782     0.99995  0.00880458
+  0.0502155 -0.00855566    0.998702
+Landmark4
+Pos:  -0.95059
+-0.938874
+  4.73478
+Landmark5
+Pos: 0.991318
+-1.00775
+ 5.00591
+Landmark6
+Pos: -1.01226
+0.994859
+ 4.99178
+Landmark7
+Pos: 0.940057
+0.974279
+ 4.76146
+Initial residual norm: 35.135
+Final residual norm: 6.27657e-14
+PASSED
+
+=== [3/10] Full optimization with inverse range variables ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 6
+  Factors: 8
+  Residuals: 24
+  Values: 10
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+InverseRangeVariable2
+Origin: -1
+ 0
+ 0
+Range: 6.11894
+Pos: -1.09615
+-1.21892
+ 5.99554
+InverseRangeVariable3
+Origin: -1
+ 0
+ 0
+Range: 6.45734
+Pos:   1.3225
+-1.17946
+ 5.90865
+InverseRangeVariable4
+Origin: -1
+ 0
+ 0
+Range: 6.07482
+Pos: -0.998936
+  1.17657
+  5.95979
+InverseRangeVariable5
+Origin: -1
+ 0
+ 0
+Range: 6.44911
+Pos: 1.36147
+1.19403
+5.88122
+
+=== SparseOptimizer Starting ===
+Algorithm: Levenberg-Marquardt
+Max iterations: 100
+Initial residual norm: 4.5025
+Initial chi²: 20.2725
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+[LM] Step rejected, cost: 10.1362 -> 28.7257, increasing lambda to 0.01
+[LM] Step rejected, cost: 10.1362 -> 27.6878, increasing lambda to 0.1
+[LM] Step rejected, cost: 10.1362 -> 19.667, increasing lambda to 1
+[LM] Step accepted, cost: 10.1362 -> 4.73191, decreasing lambda to 0.1
+
+[LM] Iteration 1 Summary:
+  Initial residual norm: 4.5025
+  Final residual norm:   3.07633
+  Step norm (||dx||):    0.743731
+  chi²:                  9.46383
+  Damping (λ):           0.1
+  LM attempts:           4
+  Step accepted:         YES
+  J: 24 x 10 | nnz = 96 | density = 40 %
+  Total time:            35 us
+
+#### Iteration 1 ####
+[LM] Step accepted, cost: 4.73191 -> 4.00102, decreasing lambda to 0.01
+
+[LM] Iteration 2 Summary:
+  Initial residual norm: 3.07633
+  Final residual norm:   2.82879
+  Step norm (||dx||):    0.127989
+  chi²:                  8.00204
+  Damping (λ):           0.01
+  LM attempts:           1
+  Step accepted:         YES
+  J: 24 x 10 | nnz = 96 | density = 40 %
+  Total time:            7 us
+[LM] Step accepted, cost: 4.00102 -> 3.9946, decreasing lambda to 0.001
+
+[LM] Iteration 3 Summary:
+  Initial residual norm: 2.82879
+  Final residual norm:   2.82652
+  Step norm (||dx||):    0.0163852
+  chi²:                  7.9892
+  Damping (λ):           0.001
+  LM attempts:           1
+  Step accepted:         YES
+  J: 24 x 10 | nnz = 96 | density = 40 %
+  Total time:            6 us
+[LM] Step accepted, cost: 3.9946 -> 3.9946, decreasing lambda to 0.0001
+
+[LM] Iteration 4 Summary:
+  Initial residual norm: 2.82652
+  Final residual norm:   2.82652
+  Step norm (||dx||):    0.000102056
+  chi²:                  7.9892
+  Damping (λ):           0.0001
+  LM attempts:           1
+  Step accepted:         YES
+  J: 24 x 10 | nnz = 96 | density = 40 %
+  Total time:            6 us
+[SparseOptimizer] Converged: Residual improvement (6.82117e-07) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 4
+Final residual norm: 2.82652
+Final chi²: 7.9892
+Final step norm: 0.000102056
+Residual improvement: 1.67598
+Relative improvement: 37.2234 %
+Total time: 6.4712e-05 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos:  1.01191
+0.0685106
+ 0.718724
+dcm_CW:    0.992548 -0.00564952     0.12172
+   0.012015    0.998594  -0.0516254
+  -0.121258   0.0527032    0.991221
+InverseRangeVariable2
+Origin: -1
+ 0
+ 0
+Range: 4.25009
+Pos:  -1.06679
+-0.846634
+  4.16438
+InverseRangeVariable3
+Origin: -1
+ 0
+ 0
+Range: 4.03618
+Pos:  0.451686
+-0.737226
+  3.69322
+InverseRangeVariable4
+Origin: -1
+ 0
+ 0
+Range: 4.03798
+Pos: -0.999293
+ 0.782073
+  3.96152
+InverseRangeVariable5
+Origin: -1
+ 0
+ 0
+Range: 4.52916
+Pos: 0.658442
+0.838557
+ 4.13034
+Initial residual norm: 4.5025
+Final residual norm: 2.82652
+PASSED
+
+=== [4/10] Full optimization with inverse range variables (Camera poses held constant) ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 6
+  Factors: 8
+  Residuals: 24
+  Values: 4
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+InverseRangeVariable2
+Origin: -1
+ 0
+ 0
+Range: 6.11894
+Pos: -1.09615
+-1.21892
+ 5.99554
+InverseRangeVariable3
+Origin: -1
+ 0
+ 0
+Range: 6.45734
+Pos:   1.3225
+-1.17946
+ 5.90865
+InverseRangeVariable4
+Origin: -1
+ 0
+ 0
+Range: 6.07482
+Pos: -0.998936
+  1.17657
+  5.95979
+InverseRangeVariable5
+Origin: -1
+ 0
+ 0
+Range: 6.44911
+Pos: 1.36147
+1.19403
+5.88122
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 4.5025
+Initial chi²: 20.2725
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 4.5025
+  Final residual norm:   3.34711
+  Step norm (||dx||):    0.0624329
+  chi²:                  11.2032
+  J: 24 x 4 | nnz = 24 | density = 25 %
+  Total time:            7 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 3.34711
+  Final residual norm:   3.3561
+  Step norm (||dx||):    0.00450843
+  chi²:                  11.2634
+  J: 24 x 4 | nnz = 24 | density = 25 %
+  Total time:            3 us
+[SparseOptimizer] Aborted: residual went up - residual improvement: -0.00899242
+
+=== SparseOptimizer Summary ===
+Total iterations: 2
+Final residual norm: 3.3561
+Final chi²: 11.2634
+Final step norm: 0.00450843
+Residual improvement: 1.14639
+Relative improvement: 25.4613 %
+Total time: 2.2523e-05 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+InverseRangeVariable2
+Origin: -1
+ 0
+ 0
+Range: 5.29245
+Pos: -1.08317
+-1.05428
+ 5.18572
+InverseRangeVariable3
+Origin: -1
+ 0
+ 0
+Range: 5.08199
+Pos:  0.827831
+-0.928247
+  4.65016
+InverseRangeVariable4
+Origin: -1
+ 0
+ 0
+Range: 4.91632
+Pos: -0.999139
+  0.95219
+  4.82323
+InverseRangeVariable5
+Origin: -1
+ 0
+ 0
+Range: 6.22754
+Pos: 1.28034
+1.15301
+5.67916
+Initial residual norm: 4.5025
+Final residual norm: 3.3561
+PASSED
+
+=== [5/10] Full optimization with inverse range variables (larger planar problem) ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 14
+  Factors: 45
+  Residuals: 135
+  Values: 9
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.997799
+0.0520617
+-0.998105
+dcm_CW:    0.999993 0.000302444 -0.00368667
+-0.00068889    0.994443   -0.105277
+ 0.00363434    0.105279    0.994436
+Pose2
+pos:   1.99196
+-0.0519712
+  -0.99843
+dcm_CW:     0.998734  0.000544303    0.0502992
+-0.000731287     0.999993   0.00369911
+  -0.0502968  -0.00373121     0.998727
+Pose3
+pos:    3.00009
+-0.00171117
+   -1.05213
+dcm_CW:     0.999995   0.00307169  0.000889036
+ -0.00307211     0.999995  0.000468537
+-0.000887592 -0.000471266     0.999999
+Pose4
+pos:     4.00057
+-0.000138609
+   -0.995463
+dcm_CW:     0.999289   -0.0376417  -0.00210788
+   0.0376426     0.999291  0.000379345
+  0.00209211 -0.000458421     0.999998
+InverseRangeVariable5
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.87469
+-0.973544
+-0.461829
+InverseRangeVariable6
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.97509
+0.00225019
+ -0.501529
+InverseRangeVariable7
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.88422
+ 0.974731
+-0.559246
+InverseRangeVariable8
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85786
+ -1.12335
+-0.626766
+InverseRangeVariable9
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.98808
+0.00010232
+ -0.654893
+InverseRangeVariable10
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85538
+   1.1211
+-0.589569
+InverseRangeVariable11
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85765
+ -1.14186
+-0.684716
+InverseRangeVariable12
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.97893
+-0.292387
+-0.646843
+InverseRangeVariable13
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85757
+  1.14293
+-0.687446
+
+=== DETAILED FACTOR TEST ===
+Testing 45 factors with tolerance 1e-06
+
+=== SUMMARY ===
+Factors passed: 45/45
+Factors failed: 0/45
+ALL FACTORS PASSED!
+
+=== SparseOptimizer Starting ===
+Algorithm: Levenberg-Marquardt
+Max iterations: 100
+Initial residual norm: 418.152
+Initial chi²: 174851
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+[LM] Step accepted, cost: 87425.6 -> 12444, decreasing lambda to 0.0001
+
+[LM] Iteration 1 Summary:
+  Initial residual norm: 418.152
+  Final residual norm:   157.759
+  Step norm (||dx||):    0.145441
+  chi²:                  24888.1
+  Damping (λ):           0.0001
+  LM attempts:           1
+  Step accepted:         YES
+  J: 135 x 9 | nnz = 135 | density = 11.1111 %
+  Total time:            25 us
+
+#### Iteration 1 ####
+[LM] Step accepted, cost: 12444 -> 8098.73, decreasing lambda to 1e-05
+
+[LM] Iteration 2 Summary:
+  Initial residual norm: 157.759
+  Final residual norm:   127.269
+  Step norm (||dx||):    0.0542895
+  chi²:                  16197.5
+  Damping (λ):           1e-05
+  LM attempts:           1
+  Step accepted:         YES
+  J: 135 x 9 | nnz = 135 | density = 11.1111 %
+  Total time:            17 us
+[LM] Step accepted, cost: 8098.73 -> 6723.33, decreasing lambda to 1e-06
+
+[LM] Iteration 3 Summary:
+  Initial residual norm: 127.269
+  Final residual norm:   115.96
+  Step norm (||dx||):    0.0360168
+  chi²:                  13446.7
+  Damping (λ):           1e-06
+  LM attempts:           1
+  Step accepted:         YES
+  J: 135 x 9 | nnz = 135 | density = 11.1111 %
+  Total time:            16 us
+[LM] Step accepted, cost: 6723.33 -> 6432.82, decreasing lambda to 1e-07
+
+[LM] Iteration 4 Summary:
+  Initial residual norm: 115.96
+  Final residual norm:   113.427
+  Step norm (||dx||):    0.0283225
+  chi²:                  12865.6
+  Damping (λ):           1e-07
+  LM attempts:           1
+  Step accepted:         YES
+  J: 135 x 9 | nnz = 135 | density = 11.1111 %
+  Total time:            17 us
+[LM] Step rejected, cost: 6432.82 -> 7078.36, increasing lambda to 1e-06
+[LM] Step rejected, cost: 6432.82 -> 7078.36, increasing lambda to 1e-05
+[LM] Step rejected, cost: 6432.82 -> 7078.36, increasing lambda to 0.0001
+[LM] Step rejected, cost: 6432.82 -> 7078.36, increasing lambda to 0.001
+[LM] Step rejected, cost: 6432.82 -> 7078.36, increasing lambda to 0.01
+[LM] No acceptable step found after 5 attempts
+
+[LM] Iteration 5 Summary:
+  Initial residual norm: 113.427
+  Final residual norm:   113.427
+  Step norm (||dx||):    0
+  chi²:                  12865.6
+  Damping (λ):           0.01
+  LM attempts:           6
+  Step accepted:         NO
+  J: 135 x 9 | nnz = 135 | density = 11.1111 %
+  Total time:            39 us
+[SparseOptimizer] Converged: Step norm (0) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 5
+Final residual norm: 113.427
+Final chi²: 12865.6
+Final step norm: 0
+Residual improvement: 304.725
+Relative improvement: 72.8743 %
+Total time: 0.000127306 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.997799
+0.0520617
+-0.998105
+dcm_CW:    0.999993 0.000302444 -0.00368667
+-0.00068889    0.994443   -0.105277
+ 0.00363434    0.105279    0.994436
+Pose2
+pos:   1.99196
+-0.0519712
+  -0.99843
+dcm_CW:     0.998734  0.000544303    0.0502992
+-0.000731287     0.999993   0.00369911
+  -0.0502968  -0.00373121     0.998727
+Pose3
+pos:    3.00009
+-0.00171117
+   -1.05213
+dcm_CW:     0.999995   0.00307169  0.000889036
+ -0.00307211     0.999995  0.000468537
+-0.000887592 -0.000471266     0.999999
+Pose4
+pos:     4.00057
+-0.000138609
+   -0.995463
+dcm_CW:     0.999289   -0.0376417  -0.00210788
+   0.0376426     0.999291  0.000379345
+  0.00209211 -0.000458421     0.999998
+InverseRangeVariable5
+Origin:  0
+ 0
+-1
+Range: 10.1437
+Pos:   9.88944
+ -1.97506
+0.0918057
+InverseRangeVariable6
+Origin:  0
+ 0
+-1
+Range: 5.30571
+Pos:    5.27928
+0.00238777
+ -0.471051
+InverseRangeVariable7
+Origin:  0
+ 0
+-1
+Range: 6.38346
+Pos:   6.23565
+  1.24443
+-0.437293
+InverseRangeVariable8
+Origin:  0
+ 0
+-1
+Range: 8.88149
+Pos:     8.629
+  -1.9954
+-0.337024
+InverseRangeVariable9
+Origin:  0
+ 0
+-1
+Range: 8.40043
+Pos:     8.38039
+0.000171906
+  -0.420191
+InverseRangeVariable10
+Origin:  0
+ 0
+-1
+Range: 7.27883
+Pos:   7.06829
+  1.63206
+-0.402508
+InverseRangeVariable11
+Origin:  0
+ 0
+-1
+Range: 8.28963
+Pos:   8.05362
+ -1.89312
+-0.477283
+InverseRangeVariable12
+Origin:  0
+ 0
+-1
+Range: 10.336
+Pos:   10.2924
+ -0.60442
+-0.269957
+InverseRangeVariable13
+Origin:  0
+ 0
+-1
+Range: 9.81297
+Pos:   9.53344
+  2.24311
+-0.386584
+
+=== DETAILED FACTOR TEST ===
+Testing 45 factors with tolerance 1e-06
+
+=== SUMMARY ===
+Factors passed: 45/45
+Factors failed: 0/45
+ALL FACTORS PASSED!
+Initial residual norm: 418.152
+Final residual norm: 113.427
+PASSED
+
+=== [6/10] Full optimization with inverse range variables (and prior factors!) ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 14
+  Factors: 53
+  Residuals: 159
+  Values: 33
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.997249
+0.0525772
+-0.997631
+dcm_CW:    0.999989 0.000374897 -0.00460853
+-0.00086421    0.994298   -0.106637
+ 0.00454227     0.10664    0.994287
+Pose2
+pos:  1.98995
+-0.052464
+-0.998037
+dcm_CW:      0.99873  0.000680191    0.0503795
+-0.000914292     0.999989   0.00462385
+  -0.0503758  -0.00466403     0.998719
+Pose3
+pos:    3.00011
+-0.00213896
+   -1.05266
+dcm_CW:     0.999992   0.00383955   0.00111152
+  -0.0038402     0.999992  0.000585244
+ -0.00110926 -0.000589508     0.999999
+Pose4
+pos:     4.00071
+-0.000173261
+   -0.994328
+dcm_CW:     0.999214   -0.0395528  -0.00263529
+   0.0395542     0.999217  0.000471658
+  0.00261457 -0.000575523     0.999996
+InverseRangeVariable5
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.8747
+-0.973198
+-0.461338
+InverseRangeVariable6
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.97507
+0.00281303
+ -0.501291
+InverseRangeVariable7
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.8843
+ 0.974218
+-0.558945
+InverseRangeVariable8
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85774
+  -1.1239
+-0.626886
+InverseRangeVariable9
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:     4.98808
+0.000127904
+  -0.654948
+InverseRangeVariable10
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.85535
+  1.12125
+-0.589673
+InverseRangeVariable11
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.8577
+ -1.14159
+-0.684472
+InverseRangeVariable12
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:   4.97891
+-0.292263
+-0.646419
+InverseRangeVariable13
+Origin:  0
+ 0
+-1
+Range: 5
+Pos:    4.8576
+  1.14293
+-0.687884
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 333.981
+Initial chi²: 111543
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 333.981
+  Final residual norm:   124.151
+  Step norm (||dx||):    0.1752
+  chi²:                  15413.4
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            63 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 124.151
+  Final residual norm:   33.3594
+  Step norm (||dx||):    0.147394
+  chi²:                  1112.85
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            41 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 33.3594
+  Final residual norm:   8.37722
+  Step norm (||dx||):    0.0734402
+  chi²:                  70.1777
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            36 us
+
+[SparseGN] Iteration 4 Summary:
+  Initial residual norm: 8.37722
+  Final residual norm:   7.39063
+  Step norm (||dx||):    0.0144003
+  chi²:                  54.6215
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            35 us
+
+[SparseGN] Iteration 5 Summary:
+  Initial residual norm: 7.39063
+  Final residual norm:   7.38942
+  Step norm (||dx||):    0.000793696
+  chi²:                  54.6035
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            35 us
+
+[SparseGN] Iteration 6 Summary:
+  Initial residual norm: 7.38942
+  Final residual norm:   7.38942
+  Step norm (||dx||):    2.14688e-05
+  chi²:                  54.6035
+  J: 159 x 33 | nnz = 927 | density = 17.6672 %
+  Total time:            35 us
+[SparseOptimizer] Converged: Residual improvement (7.88039e-07) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 6
+Final residual norm: 7.38942
+Final chi²: 54.6035
+Final step norm: 2.14688e-05
+Residual improvement: 326.591
+Relative improvement: 97.7875 %
+Total time: 0.000258856 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose1
+pos: 0.997231
+0.0524767
+-0.997489
+dcm_CW:    0.999998  0.00109986 -0.00157297
+-0.00125642    0.994653   -0.103266
+ 0.00145098    0.103268    0.994653
+Pose2
+pos:   1.98983
+-0.0522311
+ -0.997566
+dcm_CW:    0.998557 -0.00181761   0.0536738
+ 0.00171827    0.999997  0.00189697
+ -0.0536771 -0.00180201    0.998557
+Pose3
+pos:    2.99974
+-0.00228204
+   -1.05274
+dcm_CW:    0.999991    0.004142  0.00106583
+-0.00414325    0.999991  0.00117896
+-0.00106094 -0.00118337    0.999999
+Pose4
+pos:    4.00106
+-0.00084728
+  -0.994007
+dcm_CW:    0.999153  -0.0411293 -0.00135069
+  0.0411312    0.999153  0.00141743
+ 0.00129124 -0.00147179    0.999998
+InverseRangeVariable5
+Origin:  0
+ 0
+-1
+Range: 10.0218
+Pos:   9.77062
+ -1.95063
+0.0796691
+InverseRangeVariable6
+Origin:  0
+ 0
+-1
+Range: 10.0997
+Pos:    10.0493
+0.00568212
+0.00735816
+InverseRangeVariable7
+Origin:  0
+ 0
+-1
+Range: 10.3184
+Pos:    10.0796
+   2.01047
+-0.0898075
+InverseRangeVariable8
+Origin:  0
+ 0
+-1
+Range: 13.6664
+Pos:   13.2775
+ -3.07191
+0.0198212
+InverseRangeVariable9
+Origin:  0
+ 0
+-1
+Range: 11.7091
+Pos:     11.6812
+0.000299528
+  -0.191952
+InverseRangeVariable10
+Origin:  0
+ 0
+-1
+Range: 12.9799
+Pos:   12.6044
+  2.91074
+0.0651999
+InverseRangeVariable11
+Origin:  0
+ 0
+-1
+Range: 14.8901
+Pos:    14.4663
+  -3.39968
+-0.0603545
+InverseRangeVariable12
+Origin:  0
+ 0
+-1
+Range: 16.773
+Pos:   16.7022
+-0.980425
+  0.18612
+InverseRangeVariable13
+Origin:  0
+ 0
+-1
+Range: 16.5466
+Pos:   16.0754
+  3.78234
+0.0328939
+Initial residual norm: 333.981
+Final residual norm: 7.38942
+PASSED
+
+=== [7/10] Full optimization with prior factors! ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 14
+  Factors: 62
+  Residuals: 186
+  Values: 51
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.997249
+0.0525772
+-0.997631
+dcm_CW:    0.999989 0.000374897 -0.00460853
+-0.00086421    0.994298   -0.106637
+ 0.00454227     0.10664    0.994287
+Pose4
+pos:  1.98995
+-0.052464
+-0.998037
+dcm_CW:      0.99873  0.000680191    0.0503795
+-0.000914292     0.999989   0.00462385
+  -0.0503758  -0.00466403     0.998719
+Pose6
+pos:    3.00011
+-0.00213896
+   -1.05266
+dcm_CW:     0.999992   0.00383955   0.00111152
+  -0.0038402     0.999992  0.000585244
+ -0.00110926 -0.000589508     0.999999
+Pose8
+pos:     4.00071
+-0.000173261
+   -0.994328
+dcm_CW:     0.999214   -0.0395528  -0.00263529
+   0.0395542     0.999217  0.000471658
+  0.00261457 -0.000575523     0.999996
+Landmark10
+Pos:  9.98987
+ -1.9944
+0.103896
+Landmark11
+Pos:    9.99449
+0.00565114
+0.00186559
+Landmark12
+Pos:    9.99807
+   1.99421
+-0.0971694
+Landmark13
+Pos:     12.9965
+   -3.00689
+-0.00176558
+Landmark14
+Pos:     12.9977
+0.000333286
+  -0.100881
+Landmark15
+Pos:    13.006
+  3.00349
+0.0991419
+Landmark16
+Pos:  16.9955
+-3.99406
+0.103928
+Landmark17
+Pos:   17.0133
+-0.998683
+ 0.208209
+Landmark18
+Pos:   17.0023
+  4.00043
+0.0924502
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 69.3695
+Initial chi²: 4812.13
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 69.3695
+  Final residual norm:   7.01401
+  Step norm (||dx||):    0.034995
+  chi²:                  49.1963
+  J: 186 x 51 | nnz = 1278 | density = 13.4725 %
+  Total time:            102 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 7.01401
+  Final residual norm:   7.01312
+  Step norm (||dx||):    8.07622e-05
+  chi²:                  49.1839
+  J: 186 x 51 | nnz = 1278 | density = 13.4725 %
+  Total time:            78 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 7.01312
+  Final residual norm:   7.01312
+  Step norm (||dx||):    8.67507e-08
+  chi²:                  49.1839
+  J: 186 x 51 | nnz = 1278 | density = 13.4725 %
+  Total time:            69 us
+[SparseOptimizer] Converged: Step norm (8.67507e-08) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 3
+Final residual norm: 7.01312
+Final chi²: 49.1839
+Final step norm: 8.67507e-08
+Residual improvement: 62.3564
+Relative improvement: 89.8902 %
+Total time: 0.000257424 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.999435
+0.0493991
+-0.999214
+dcm_CW:            1  0.000184674 -0.000120338
+-0.000195657      0.99511   -0.0987715
+ 0.000101509    0.0987715      0.99511
+Pose4
+pos:   2.00141
+-0.0485713
+ -0.999459
+dcm_CW:     0.998744  0.000137874    0.0501129
+-0.000114316            1 -0.000472958
+  -0.0501129  0.000466635     0.998743
+Pose6
+pos:   3.00415
+0.00183317
+  -1.05111
+dcm_CW:            1  3.58878e-05  0.000117969
+-3.57841e-05            1 -0.000878521
+-0.000118001  0.000878517            1
+Pose8
+pos:    3.99557
+-0.00232992
+  -0.997323
+dcm_CW:     0.999562   -0.0296006 -0.000520993
+   0.0296009     0.999562  0.000763062
+ 0.000498177 -0.000778149            1
+Landmark10
+Pos:  9.99899
+-2.00127
+0.102032
+Landmark11
+Pos:     10.0003
+ 0.00368204
+-0.00114422
+Landmark12
+Pos:    9.99971
+   2.00167
+-0.0983474
+Landmark13
+Pos:      13.0003
+    -2.99996
+-2.86399e-05
+Landmark14
+Pos:    12.9999
+0.00107492
+-0.0992179
+Landmark15
+Pos:  12.9998
+ 3.00083
+0.102238
+Landmark16
+Pos:  16.9998
+-4.00006
+ 0.10428
+Landmark17
+Pos:  16.9999
+-0.99838
+ 0.20038
+Landmark18
+Pos:  17.0009
+ 3.99605
+0.100766
+Initial residual norm: 69.3695
+Final residual norm: 7.01312
+PASSED
+
+=== [8/10] Full optimization with relative orientation alignment factors ===
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 22.1823
+Initial chi²: 492.056
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 22.1823
+  Final residual norm:   2.78538
+  Step norm (||dx||):    0.35929
+  chi²:                  7.75833
+  J: 18 x 3 | nnz = 54 | density = 100 %
+  Total time:            10 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 2.78538
+  Final residual norm:   2.78537
+  Step norm (||dx||):    0.000106275
+  chi²:                  7.75829
+  J: 18 x 3 | nnz = 54 | density = 100 %
+  Total time:            4 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 2.78537
+  Final residual norm:   2.78537
+  Step norm (||dx||):    3.28474e-08
+  chi²:                  7.75829
+  J: 18 x 3 | nnz = 54 | density = 100 %
+  Total time:            4 us
+[SparseOptimizer] Converged: Step norm (3.28474e-08) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 3
+Final residual norm: 2.78537
+Final chi²: 7.75829
+Final step norm: 3.28474e-08
+Residual improvement: 19.397
+Relative improvement: 87.4433 %
+Total time: 2.4597e-05 seconds
+Optimization SUCCESS
+===============================
+Initial residual norm: 22.1823
+Final residual norm: 2.78537
+Calibration result validation skipped in consolidated test
+PASSED
+
+=== [9/10] Full optimization with BearingProjectionFactor2D ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 6
+  Factors: 8
+  Residuals: 16
+  Values: 18
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.977991
+0.0206173
+0.0189544
+dcm_CW:    0.999315  0.00395893  -0.0367823
+-0.00596561     0.99849  -0.0546072
+  0.0365105   0.0547892     0.99783
+Landmark4
+Pos: -1.08044
+-1.01971
+  5.0157
+Landmark5
+Pos:  0.962833
+-0.996807
+  4.99362
+Landmark6
+Pos: -0.999111
+ 0.982888
+  4.97873
+Landmark7
+Pos: 0.995301
+ 1.00888
+ 4.96928
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 35.1143
+Initial chi²: 1233.02
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 35.1143
+  Final residual norm:   10.2032
+  Step norm (||dx||):    2.9124
+  chi²:                  104.106
+  J: 16 x 18 | nnz = 96 | density = 33.3333 %
+  Total time:            21 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 10.2032
+  Final residual norm:   0.302555
+  Step norm (||dx||):    0.207234
+  chi²:                  0.0915396
+  J: 16 x 18 | nnz = 96 | density = 33.3333 %
+  Total time:            10 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 0.302555
+  Final residual norm:   0.00012234
+  Step norm (||dx||):    0.00887782
+  chi²:                  1.4967e-08
+  J: 16 x 18 | nnz = 96 | density = 33.3333 %
+  Total time:            8 us
+
+[SparseGN] Iteration 4 Summary:
+  Initial residual norm: 0.00012234
+  Final residual norm:   5.57991e-10
+  Step norm (||dx||):    8.9627e-06
+  chi²:                  3.11353e-19
+  J: 16 x 18 | nnz = 96 | density = 33.3333 %
+  Total time:            8 us
+
+[SparseGN] Iteration 5 Summary:
+  Initial residual norm: 5.57991e-10
+  Final residual norm:   3.42273e-14
+  Step norm (||dx||):    1.61083e-10
+  chi²:                  1.17151e-27
+  J: 16 x 18 | nnz = 96 | density = 33.3333 %
+  Total time:            7 us
+[SparseOptimizer] Converged: Step norm (1.61083e-10) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 5
+Final residual norm: 3.42273e-14
+Final chi²: 1.17151e-27
+Final step norm: 1.61083e-10
+Residual improvement: 35.1143
+Relative improvement: 100 %
+Total time: 6.5196e-05 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos:-1
+ 0
+ 0
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos:  0.352104
+  0.100364
+-0.0423236
+dcm_CW:     0.99921   0.0060033  -0.0392809
+-0.00505901    0.999697   0.0240948
+  0.0394136  -0.0238771    0.998938
+Landmark4
+Pos: -0.962228
+-0.717737
+  3.61958
+Landmark5
+Pos:   0.52748
+-0.773014
+  3.83988
+Landmark6
+Pos: -1.00941
+0.763657
+ 3.83171
+Landmark7
+Pos: 0.489049
+0.747787
+ 3.65456
+Initial residual norm: 35.1143
+Final residual norm: 3.42273e-14
+PASSED
+
+=== [10/10] Full optimization with BearingProjectionFactor2D and prior factors ===
+**** INITIAL FACTOR GRAPH ****
+Factor graph structure:
+  Variables: 14
+  Factors: 62
+  Residuals: 141
+  Values: 51
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.997249
+0.0525772
+-0.997631
+dcm_CW:    0.999989 0.000374897 -0.00460853
+-0.00086421    0.994298   -0.106637
+ 0.00454227     0.10664    0.994287
+Pose4
+pos:  1.98995
+-0.052464
+-0.998037
+dcm_CW:      0.99873  0.000680191    0.0503795
+-0.000914292     0.999989   0.00462385
+  -0.0503758  -0.00466403     0.998719
+Pose6
+pos:    3.00011
+-0.00213896
+   -1.05266
+dcm_CW:     0.999992   0.00383955   0.00111152
+  -0.0038402     0.999992  0.000585244
+ -0.00110926 -0.000589508     0.999999
+Pose8
+pos:     4.00071
+-0.000173261
+   -0.994328
+dcm_CW:     0.999214   -0.0395528  -0.00263529
+   0.0395542     0.999217  0.000471658
+  0.00261457 -0.000575523     0.999996
+Landmark10
+Pos:  9.98987
+ -1.9944
+0.103896
+Landmark11
+Pos:    9.99449
+0.00565114
+0.00186559
+Landmark12
+Pos:    9.99807
+   1.99421
+-0.0971694
+Landmark13
+Pos:     12.9965
+   -3.00689
+-0.00176558
+Landmark14
+Pos:     12.9977
+0.000333286
+  -0.100881
+Landmark15
+Pos:    13.006
+  3.00349
+0.0991419
+Landmark16
+Pos:  16.9955
+-3.99406
+0.103928
+Landmark17
+Pos:   17.0133
+-0.998683
+ 0.208209
+Landmark18
+Pos:   17.0023
+  4.00043
+0.0924502
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 100
+Initial residual norm: 69.3689
+Initial chi²: 4812.04
+Step tolerance: 1e-06
+Residual tolerance: 1e-06
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 69.3689
+  Final residual norm:   7.01401
+  Step norm (||dx||):    0.0349955
+  chi²:                  49.1963
+  J: 141 x 51 | nnz = 927 | density = 12.8911 %
+  Total time:            77 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 7.01401
+  Final residual norm:   7.01312
+  Step norm (||dx||):    8.06323e-05
+  chi²:                  49.1839
+  J: 141 x 51 | nnz = 927 | density = 12.8911 %
+  Total time:            68 us
+
+[SparseGN] Iteration 3 Summary:
+  Initial residual norm: 7.01312
+  Final residual norm:   7.01312
+  Step norm (||dx||):    8.62145e-08
+  chi²:                  49.1839
+  J: 141 x 51 | nnz = 927 | density = 12.8911 %
+  Total time:            66 us
+[SparseOptimizer] Converged: Step norm (8.62145e-08) below tolerance (1e-06)
+
+=== SparseOptimizer Summary ===
+Total iterations: 3
+Final residual norm: 7.01312
+Final chi²: 49.1839
+Final step norm: 8.62145e-08
+Residual improvement: 62.3557
+Relative improvement: 89.8901 %
+Total time: 0.000218847 seconds
+Optimization SUCCESS
+===============================
+**** FINAL FACTOR GRAPH ****
+Variables:
+Pose0
+pos: 0
+ 0
+-1
+dcm_CW: 1 0 0
+0 1 0
+0 0 1
+Pose2
+pos: 0.999435
+0.0493991
+-0.999214
+dcm_CW:            1  0.000184674 -0.000120338
+-0.000195657      0.99511   -0.0987715
+ 0.000101509    0.0987715      0.99511
+Pose4
+pos:   2.00141
+-0.0485713
+ -0.999459
+dcm_CW:     0.998744  0.000137874    0.0501129
+-0.000114316            1 -0.000472958
+  -0.0501129  0.000466635     0.998743
+Pose6
+pos:   3.00415
+0.00183317
+  -1.05111
+dcm_CW:            1  3.58878e-05  0.000117969
+-3.57841e-05            1 -0.000878521
+-0.000118001  0.000878517            1
+Pose8
+pos:    3.99557
+-0.00232992
+  -0.997323
+dcm_CW:     0.999562   -0.0296006 -0.000520993
+   0.0296009     0.999562  0.000763062
+ 0.000498177 -0.000778149            1
+Landmark10
+Pos:  9.99899
+-2.00127
+0.102032
+Landmark11
+Pos:     10.0003
+ 0.00368204
+-0.00114422
+Landmark12
+Pos:    9.99971
+   2.00167
+-0.0983474
+Landmark13
+Pos:      13.0003
+    -2.99996
+-2.86401e-05
+Landmark14
+Pos:    12.9999
+0.00107492
+-0.0992179
+Landmark15
+Pos:  12.9998
+ 3.00083
+0.102238
+Landmark16
+Pos:  16.9998
+-4.00006
+ 0.10428
+Landmark17
+Pos:  16.9999
+-0.99838
+ 0.20038
+Landmark18
+Pos:  17.0009
+ 3.99605
+0.100766
+Initial residual norm: 69.3689
+Final residual norm: 7.01312
+PASSED
+
+=== FINAL SUMMARY ===
+Scenarios passed: 10/10
+All integration tests completed successfully!
+===============================================================================
+All tests passed (12 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Consolidated Integration Tests" end time: Sep 21 22:11 MST
+"Consolidated Integration Tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/29 Testing: SparseOptimizer basic GN convergence
+28/29 Test: SparseOptimizer basic GN convergence
+Command: "/home/sgilbert/repos/factorama/build2/optimizer_test" "SparseOptimizer basic GN convergence"
+Directory: /home/sgilbert/repos/factorama/build2
+"SparseOptimizer basic GN convergence" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SparseOptimizer basic GN convergence"
+Randomness seeded to: 1876245740
+
+=== SparseOptimizer Starting ===
+Algorithm: Gauss-Newton
+Max iterations: 10
+Initial residual norm: 3.15864
+Initial chi²: 9.977
+Step tolerance: 1e-08
+Residual tolerance: 1e-08
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+
+[SparseGN] Iteration 1 Summary:
+  Initial residual norm: 3.15864
+  Final residual norm:   1.22663e-16
+  Step norm (||dx||):    0.126346
+  chi²:                  1.50463e-32
+  J: 18 x 18 | nnz = 72 | density = 22.2222 %
+  Total time:            18 us
+
+#### Iteration 1 ####
+
+[SparseGN] Iteration 2 Summary:
+  Initial residual norm: 1.22663e-16
+  Final residual norm:   0
+  Step norm (||dx||):    4.90654e-18
+  chi²:                  0
+  J: 18 x 18 | nnz = 72 | density = 22.2222 %
+  Total time:            7 us
+[SparseOptimizer] Converged: Step norm (4.90654e-18) below tolerance (1e-08)
+
+=== SparseOptimizer Summary ===
+Total iterations: 2
+Final residual norm: 0
+Final chi²: 0
+Final step norm: 4.90654e-18
+Residual improvement: 3.15864
+Relative improvement: 100 %
+Total time: 3.2899e-05 seconds
+Optimization SUCCESS
+===============================
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SparseOptimizer basic GN convergence" end time: Sep 21 22:11 MST
+"SparseOptimizer basic GN convergence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/29 Testing: SparseOptimizer LM convergence
+29/29 Test: SparseOptimizer LM convergence
+Command: "/home/sgilbert/repos/factorama/build2/optimizer_test" "SparseOptimizer LM convergence"
+Directory: /home/sgilbert/repos/factorama/build2
+"SparseOptimizer LM convergence" start time: Sep 21 22:11 MST
+Output:
+----------------------------------------------------------
+Filters: "SparseOptimizer LM convergence"
+Randomness seeded to: 2283232779
+
+=== SparseOptimizer Starting ===
+Algorithm: Levenberg-Marquardt
+Max iterations: 10
+Initial residual norm: 3.15864
+Initial chi²: 9.977
+Step tolerance: 1e-08
+Residual tolerance: 1e-08
+Learning rate: 1
+=================================
+
+#### Iteration 0 ####
+[LM] Step accepted, cost: 4.9885 -> 1.27705e-11, decreasing lambda to 0.0001
+
+[LM] Iteration 1 Summary:
+  Initial residual norm: 3.15864
+  Final residual norm:   5.05381e-06
+  Step norm (||dx||):    0.126345
+  chi²:                  2.5541e-11
+  Damping (λ):           0.0001
+  LM attempts:           1
+  Step accepted:         YES
+  J: 18 x 18 | nnz = 72 | density = 22.2222 %
+  Total time:            18 us
+
+#### Iteration 1 ####
+[LM] Step accepted, cost: 1.27705e-11 -> 2.40041e-25, decreasing lambda to 1e-05
+
+[LM] Iteration 2 Summary:
+  Initial residual norm: 5.05381e-06
+  Final residual norm:   6.9288e-13
+  Step norm (||dx||):    2.02153e-07
+  chi²:                  4.80083e-25
+  Damping (λ):           1e-05
+  LM attempts:           1
+  Step accepted:         YES
+  J: 18 x 18 | nnz = 72 | density = 22.2222 %
+  Total time:            9 us
+[LM] Step accepted, cost: 2.40041e-25 -> 4.11221e-42, decreasing lambda to 1e-06
+
+[LM] Iteration 3 Summary:
+  Initial residual norm: 6.9288e-13
+  Final residual norm:   2.86782e-21
+  Step norm (||dx||):    2.77152e-14
+  chi²:                  8.22442e-42
+  Damping (λ):           1e-06
+  LM attempts:           1
+  Step accepted:         YES
+  J: 18 x 18 | nnz = 72 | density = 22.2222 %
+  Total time:            8 us
+[SparseOptimizer] Converged: Step norm (2.77152e-14) below tolerance (1e-08)
+
+=== SparseOptimizer Summary ===
+Total iterations: 3
+Final residual norm: 2.86782e-21
+Final chi²: 8.22442e-42
+Final step norm: 2.77152e-14
+Residual improvement: 3.15864
+Relative improvement: 100 %
+Total time: 4.4654e-05 seconds
+Optimization SUCCESS
+===============================
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SparseOptimizer LM convergence" end time: Sep 21 22:11 MST
+"SparseOptimizer LM convergence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 21 22:11 MST

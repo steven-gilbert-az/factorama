@@ -1,0 +1,5 @@
+if(EXISTS "/home/sgilbert/repos/factorama/build2/unit_test-b12d07c_tests.cmake")
+  include("/home/sgilbert/repos/factorama/build2/unit_test-b12d07c_tests.cmake")
+else()
+  add_test(unit_test_NOT_BUILT-b12d07c unit_test_NOT_BUILT-b12d07c)
+endif()

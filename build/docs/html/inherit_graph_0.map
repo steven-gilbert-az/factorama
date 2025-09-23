@@ -1,0 +1,12 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classfactorama_1_1Factor.html" title="Base class for all constraints and measurements in the factor graph." alt="" coords="5,261,141,287"/>
+<area shape="rect" id="node2" href="$classfactorama_1_1BearingObservationFactor.html" title="Bearing observation factor for camera measurements." alt="" coords="195,5,421,47"/>
+<area shape="rect" id="node3" href="$classfactorama_1_1BearingProjectionFactor2D.html" title="2D bearing projection factor for camera measurements" alt="" coords="202,71,414,112"/>
+<area shape="rect" id="node4" href="$classfactorama_1_1GenericBetweenFactor.html" title="Generic linear relative constraint between variables." alt="" coords="206,136,410,177"/>
+<area shape="rect" id="node5" href="$classfactorama_1_1GenericPriorFactor.html" title="Generic linear prior constraint for linear variable types." alt="" coords="200,202,416,229"/>
+<area shape="rect" id="node6" href="$classfactorama_1_1PoseOrientationBetweenFactor.html" title="Orientation&#45;only relative constraint between pose variables." alt="" coords="207,253,409,295"/>
+<area shape="rect" id="node7" href="$classfactorama_1_1PoseOrientationPriorFactor.html" title="Prior constraint on camera orientation." alt="" coords="207,319,409,360"/>
+<area shape="rect" id="node8" href="$classfactorama_1_1PosePositionBetweenFactor.html" title="Position&#45;only relative constraint between pose variables." alt="" coords="189,384,427,425"/>
+<area shape="rect" id="node9" href="$classfactorama_1_1PosePositionPriorFactor.html" title="Prior constraint on camera position." alt="" coords="203,449,413,491"/>
+<area shape="rect" id="node10" href="$classfactorama_1_1RotationPriorFactor.html" title="Prior constraint for rotation variables using SO(3) manifold." alt="" coords="217,515,399,556"/>
+</map>

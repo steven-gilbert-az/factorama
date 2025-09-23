@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="random__utils_8hpp" kind="file" language="C++">
+    <compoundname>random_utils.hpp</compoundname>
+    <includes local="no">Eigen/Dense</includes>
+    <includedby refid="bearing__observation__factor_8cpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/bearing_observation_factor.cpp</includedby>
+    <includedby refid="bearing__projection__factor__2d_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp</includedby>
+    <includedby refid="inverse__range__bearing__factor_8cpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.cpp</includedby>
+    <includedby refid="pose__between__factors_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp</includedby>
+    <includedby refid="pose__prior__factors_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp</includedby>
+    <includedby refid="pose__variable_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/pose_variable.hpp</includedby>
+    <includedby refid="random__utils_8cpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp</includedby>
+    <includedby refid="rotation__prior__factor_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/rotation_prior_factor.hpp</includedby>
+    <includedby refid="rotation__variable_8hpp" local="yes">/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp</label>
+        <link refid="random__utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Eigen/Dense</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="4">
+        <label>/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.cpp</label>
+        <link refid="bearing__projection__factor__2d_8cpp_source"/>
+      </node>
+      <node id="6">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.hpp</label>
+        <link refid="pose__between__factors_8hpp_source"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/home/sgilbert/repos/factorama/src/factorama/bearing_observation_factor.cpp</label>
+        <link refid="bearing__observation__factor_8cpp_source"/>
+      </node>
+      <node id="1">
+        <label>/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp</label>
+        <link refid="random__utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>/home/sgilbert/repos/factorama/src/factorama/rotation_variable.hpp</label>
+        <link refid="rotation__variable_8hpp_source"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>/home/sgilbert/repos/factorama/src/factorama/bearing_projection_factor_2d.hpp</label>
+        <link refid="bearing__projection__factor__2d_8hpp_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.cpp</label>
+        <link refid="pose__prior__factors_8cpp_source"/>
+      </node>
+      <node id="11">
+        <label>/home/sgilbert/repos/factorama/src/factorama/bearing_observation_factor.hpp</label>
+        <link refid="bearing__observation__factor_8hpp_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.cpp</label>
+        <link refid="inverse__range__bearing__factor_8cpp_source"/>
+      </node>
+      <node id="15">
+        <label>/home/sgilbert/repos/factorama/src/factorama/rotation_prior_factor.hpp</label>
+        <link refid="rotation__prior__factor_8hpp_source"/>
+      </node>
+      <node id="13">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_variable.cpp</label>
+        <link refid="pose__variable_8cpp_source"/>
+      </node>
+      <node id="8">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_prior_factors.hpp</label>
+        <link refid="pose__prior__factors_8hpp_source"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>/home/sgilbert/repos/factorama/src/factorama/inverse_range_bearing_factor.hpp</label>
+        <link refid="inverse__range__bearing__factor_8hpp_source"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_variable.hpp</label>
+        <link refid="pose__variable_8hpp_source"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>/home/sgilbert/repos/factorama/src/factorama/pose_between_factors.cpp</label>
+        <link refid="pose__between__factors_8cpp_source"/>
+      </node>
+      <node id="14">
+        <label>/home/sgilbert/repos/factorama/src/factorama/random_utils.cpp</label>
+        <link refid="random__utils_8cpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacefactorama">factorama</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;Eigen/Dense&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">factorama</highlight></codeline>
+<codeline lineno="6"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/>constexpr<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>PI<sp/>=<sp/>3.14159265358979323846;</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix3d<sp/>skew_symmetric(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Vector3d<sp/>&amp;v);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>unskew(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Matrix3d<sp/>&amp;m);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix3d<sp/>ExpMapSO3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Vector3d<sp/>&amp;omega);</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Vector3d<sp/>LogMapSO3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Matrix3d<sp/>&amp;R);</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>Eigen::Matrix3d<sp/>compute_inverse_right_jacobian_so3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Eigen::Vector3d<sp/>&amp;omega);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>factorama</highlight></codeline>
+    </programlisting>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/random_utils.hpp"/>
+  </compounddef>
+</doxygen>

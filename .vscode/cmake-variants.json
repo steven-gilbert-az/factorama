@@ -1,0 +1,36 @@
+{
+    "buildType": {
+        "default": "release",
+        "choices": {
+            "debug": {
+                "short": "Debug",
+                "long": "Emit debug information",
+                "buildType": "Debug"
+            },
+            "release": {
+                "short": "Release",
+                "long": "Optimize generated code",
+                "buildType": "Release"
+            }
+        }
+    },
+    "pythonBindings": {
+        "default": "on",
+        "choices": {
+            "on": {
+                "short": "Python ON",
+                "long": "Build Python bindings",
+                "settings": {
+                    "BUILD_PYTHON_BINDINGS": "ON"
+                }
+            },
+            "off": {
+                "short": "Python OFF",
+                "long": "Skip Python bindings",
+                "settings": {
+                    "BUILD_PYTHON_BINDINGS": "OFF"
+                }
+            }
+        }
+    }
+}

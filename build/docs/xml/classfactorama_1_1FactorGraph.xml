@@ -1,0 +1,911 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classfactorama_1_1FactorGraph" kind="class" language="C++" prot="public">
+    <compoundname>factorama::FactorGraph</compoundname>
+    <includes refid="factor__graph_8hpp" local="no">factor_graph.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1ad845be1ee6c3e2f2b8256468fd29b043" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; int, <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> * &gt;</type>
+        <definition>std::unordered_map&lt;int, Variable*&gt; factorama::FactorGraph::variables_map_</definition>
+        <argsstring></argsstring>
+        <name>variables_map_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="227" column="28" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="227" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a0311756e489ec89f15cc915a090f266e" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt; &gt;</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;Variable&gt; &gt; factorama::FactorGraph::variables_vector_</definition>
+        <argsstring></argsstring>
+        <name>variables_vector_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="228" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="228" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1ab196cd94246f7b16e7393c610d88ef81" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; int, <ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> * &gt;</type>
+        <definition>std::unordered_map&lt;int, Factor*&gt; factorama::FactorGraph::factors_map_</definition>
+        <argsstring></argsstring>
+        <name>factors_map_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="229" column="28" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="229" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1ae50155ceaf555118f7d5b81885f39512" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> &gt; &gt;</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;Factor&gt; &gt; factorama::FactorGraph::factors_</definition>
+        <argsstring></argsstring>
+        <name>factors_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="230" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="230" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a67c50d0a28fbac190c2696683c26aa10" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::structure_finalized_</definition>
+        <argsstring></argsstring>
+        <name>structure_finalized_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="233" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="233" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1af82314fe454a86c702deb4674f078c1c" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; int, <ref refid="structfactorama_1_1VariablePlacement" kindref="compound">VariablePlacement</ref> &gt;</type>
+        <definition>std::unordered_map&lt;int, VariablePlacement&gt; factorama::FactorGraph::variable_placement_</definition>
+        <argsstring></argsstring>
+        <name>variable_placement_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="234" column="28" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="234" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a5d23da08a81770c469be42fcb6c05192" prot="private" static="no" mutable="no">
+        <type>std::unordered_map&lt; int, <ref refid="structfactorama_1_1FactorPlacement" kindref="compound">FactorPlacement</ref> &gt;</type>
+        <definition>std::unordered_map&lt;int, FactorPlacement&gt; factorama::FactorGraph::factor_placement_</definition>
+        <argsstring></argsstring>
+        <name>factor_placement_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="235" column="28" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="235" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a3d2fa91cf51754c77f7d93fe4097cada" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::FactorGraph::num_residuals_</definition>
+        <argsstring></argsstring>
+        <name>num_residuals_</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="237" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1abeef91f659b14b9ef873a8b82d9f1785" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int factorama::FactorGraph::num_values_</definition>
+        <argsstring></argsstring>
+        <name>num_values_</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="238" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a8ab21cd0e1f49f889cd66d98e3ce539f" prot="private" static="no" mutable="no">
+        <type>Eigen::MatrixXd</type>
+        <definition>Eigen::MatrixXd factorama::FactorGraph::cached_jacobian_</definition>
+        <argsstring></argsstring>
+        <name>cached_jacobian_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="241" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="241" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a402e9ecb4534784a63749a4b39746d16" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::jacobian_valid_</definition>
+        <argsstring></argsstring>
+        <name>jacobian_valid_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="242" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="242" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1aef8811885f7b96793117970356680cff" prot="private" static="no" mutable="no">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::FactorGraph::cached_residual_</definition>
+        <argsstring></argsstring>
+        <name>cached_residual_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="244" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1afd71bbee3ec5a78838793927eebbe070" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::residual_valid_</definition>
+        <argsstring></argsstring>
+        <name>residual_valid_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="245" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="245" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1aea6eef954fc23aee0af36d7d4d6ae45e" prot="private" static="no" mutable="no">
+        <type>Eigen::SparseMatrix&lt; double &gt;</type>
+        <definition>Eigen::SparseMatrix&lt;double&gt; factorama::FactorGraph::sparse_jacobian_</definition>
+        <argsstring></argsstring>
+        <name>sparse_jacobian_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="247" column="29" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1ac7046128706e10c3b5e2406236e69840" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::sparse_jacobian_initialized_</definition>
+        <argsstring></argsstring>
+        <name>sparse_jacobian_initialized_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="248" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="248" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a4cadc37da38111c2c3dbfde14a72ad3a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::sparse_jacobian_valid_</definition>
+        <argsstring></argsstring>
+        <name>sparse_jacobian_valid_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="249" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1aaf4e31e6df0e7cff29526c31cefa8641" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::vector&lt; int &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;int&gt; &gt; factorama::FactorGraph::sparse_jacobian_row_indices_</definition>
+        <argsstring></argsstring>
+        <name>sparse_jacobian_row_indices_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="253" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a7867b414ec754d0fc0eeeb08acae4367" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::vector&lt; double &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;double&gt; &gt; factorama::FactorGraph::sparse_jacobian_data_</definition>
+        <argsstring></argsstring>
+        <name>sparse_jacobian_data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="254" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="254" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classfactorama_1_1FactorGraph_1a4c9632de68c9b06fc91050d01724c589" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::verbose_</definition>
+        <argsstring></argsstring>
+        <name>verbose_</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="257" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1aa27861db358fc4ac7878461106c45a58" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>factorama::FactorGraph::FactorGraph</definition>
+        <argsstring>()=default</argsstring>
+        <name>FactorGraph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="51" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1aa126c3eeb8c7eb063741f12cc3cdd780" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::add_variable</definition>
+        <argsstring>(const std::shared_ptr&lt; Variable &gt; &amp;variable)</argsstring>
+        <name>add_variable</name>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt; &amp;</type>
+          <declname>variable</declname>
+        </param>
+        <briefdescription>
+<para>Add a variable to the factor graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>variable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shared pointer to any <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> subclass (<ref refid="classfactorama_1_1PoseVariable" kindref="compound">PoseVariable</ref>, <ref refid="classfactorama_1_1LandmarkVariable" kindref="compound">LandmarkVariable</ref>, etc.) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="57" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="8" bodyend="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a87a1bfe3bf0c474d7384195eba093796" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::add_factor</definition>
+        <argsstring>(const std::shared_ptr&lt; Factor &gt; &amp;factor)</argsstring>
+        <name>add_factor</name>
+        <param>
+          <type>const std::shared_ptr&lt; <ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> &gt; &amp;</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+<para>Add a factor (constraint/measurement) to the factor graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>factor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Shared pointer to any <ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> subclass (<ref refid="classfactorama_1_1BearingObservationFactor" kindref="compound">BearingObservationFactor</ref>, PriorFactor, etc.) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="63" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="19" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1ad1deb027a186862776815112415e8a50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::finalize_structure</definition>
+        <argsstring>()</argsstring>
+        <name>finalize_structure</name>
+        <briefdescription>
+<para>Finalize the graph structure for optimization Must be called after adding all variables and factors, before optimization. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="69" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="242" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1ae4b1ee50b1f216cec4d66be52208dbda" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::VectorXd &amp;</type>
+        <definition>Eigen::VectorXd &amp; factorama::FactorGraph::compute_full_residual_vector</definition>
+        <argsstring>()</argsstring>
+        <name>compute_full_residual_vector</name>
+        <briefdescription>
+<para>Compute residual vector for all factors. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to computed residual vector </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="75" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="131" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1ae05dc64e00f75a8ecfa53c3602b3e6dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::MatrixXd &amp;</type>
+        <definition>Eigen::MatrixXd &amp; factorama::FactorGraph::compute_full_jacobian_matrix</definition>
+        <argsstring>()</argsstring>
+        <name>compute_full_jacobian_matrix</name>
+        <briefdescription>
+<para>Compute dense Jacobian matrix. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to computed Jacobian matrix </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="81" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="158" bodyend="229"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a51ecc09581aa4e598393ecdde14ba2a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::SparseMatrix&lt; double &gt; &amp;</type>
+        <definition>Eigen::SparseMatrix&lt; double &gt; &amp; factorama::FactorGraph::compute_sparse_jacobian_matrix</definition>
+        <argsstring>()</argsstring>
+        <name>compute_sparse_jacobian_matrix</name>
+        <briefdescription>
+<para>Compute sparse Jacobian matrix (more efficient for large problems) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Reference to computed sparse Jacobian matrix </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="87" column="29" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="389" bodyend="512"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a3dbd595f80282bab514466002eb7165a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::compute_full_jacobian_and_residual</definition>
+        <argsstring>()</argsstring>
+        <name>compute_full_jacobian_and_residual</name>
+        <briefdescription>
+<para>Compute both Jacobian and residual in one call. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="92" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="231" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a48ee91a1f3fad3d444853a9cc77be351" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> *</type>
+        <definition>Variable * factorama::FactorGraph::get_variable</definition>
+        <argsstring>(int id) const</argsstring>
+        <name>get_variable</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Get variable by ID. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to variable or nullptr if not found </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="99" column="18" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="30" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a4a8ecb647ba2efe908af145ec1bdef56" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::vector&lt; std::shared_ptr&lt; <ref refid="classfactorama_1_1Variable" kindref="compound">Variable</ref> &gt; &gt; &amp;</type>
+        <definition>const std::vector&lt; std::shared_ptr&lt; Variable &gt; &gt; &amp; factorama::FactorGraph::get_all_variables</definition>
+        <argsstring>() const</argsstring>
+        <name>get_all_variables</name>
+        <briefdescription>
+<para>Get all variables in the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of shared pointers to all variables </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="105" column="27" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="36" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a4d55141c139bc131615ba3bfaaabfd4d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::vector&lt; std::shared_ptr&lt; <ref refid="classfactorama_1_1Factor" kindref="compound">Factor</ref> &gt; &gt; &amp;</type>
+        <definition>const std::vector&lt; std::shared_ptr&lt; Factor &gt; &gt; &amp; factorama::FactorGraph::get_all_factors</definition>
+        <argsstring>() const</argsstring>
+        <name>get_all_factors</name>
+        <briefdescription>
+<para>Get all factors in the graph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Vector of shared pointers to all factors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="111" column="27" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="41" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1af0f128c7776c6ef46abece5de06e7c9c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>Eigen::VectorXd</type>
+        <definition>Eigen::VectorXd factorama::FactorGraph::get_variable_vector</definition>
+        <argsstring>() const</argsstring>
+        <name>get_variable_vector</name>
+        <briefdescription>
+<para>Get current variable values as a single vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Concatenated vector of all variable values </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="117" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="46" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a22f44bc6267e9eae6717063988f00f53" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::set_variable_values_from_vector</definition>
+        <argsstring>(const Eigen::VectorXd &amp;x)</argsstring>
+        <name>set_variable_values_from_vector</name>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>Set all variable values from a concatenated vector. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Vector containing new values for all variables </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="123" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="77" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1ad8dc4da4f4ad91a421eddd5fc49b013f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::apply_increment</definition>
+        <argsstring>(const Eigen::VectorXd &amp;dx)</argsstring>
+        <name>apply_increment</name>
+        <param>
+          <type>const Eigen::VectorXd &amp;</type>
+          <declname>dx</declname>
+        </param>
+        <briefdescription>
+<para>Apply optimization increment to all variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Increment vector (typically from optimizer) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="129" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="90" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a85b5f3b0bb3c36d3fb4db074da298332" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::MatrixXd &amp;</type>
+        <definition>const Eigen::MatrixXd&amp; factorama::FactorGraph::jacobian</definition>
+        <argsstring>() const</argsstring>
+        <name>jacobian</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="132" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="132" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a38ec9ec90e481ca631051bbf885d4787" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::SparseMatrix&lt; double &gt; &amp;</type>
+        <definition>const Eigen::SparseMatrix&lt;double&gt;&amp; factorama::FactorGraph::sparse_jacobian</definition>
+        <argsstring>() const</argsstring>
+        <name>sparse_jacobian</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="141" column="35" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="141" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a49b26bb95c1e547562febe1a9b29dfca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const Eigen::VectorXd &amp;</type>
+        <definition>const Eigen::VectorXd&amp; factorama::FactorGraph::residual</definition>
+        <argsstring>() const</argsstring>
+        <name>residual</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="150" column="31" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="150" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1af297dfb8e57ea8ac8f6cc193802de904" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::jacobian_valid</definition>
+        <argsstring>() const</argsstring>
+        <name>jacobian_valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="159" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="159" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1ae826d52abc6df701d492f88ba826dafb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::residual_valid</definition>
+        <argsstring>() const</argsstring>
+        <name>residual_valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="160" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="160" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1abd3e8e412d9d9c11c6e4061c2099a2b5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; std::shared_ptr&lt; T &gt; &gt;</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;T&gt; &gt; factorama::FactorGraph::get_variables_of_type</definition>
+        <argsstring>() const</argsstring>
+        <name>get_variables_of_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="164" column="21" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="164" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a794b2be30e73a5a66bc27792cf7b91aa" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::print_structure</definition>
+        <argsstring>() const</argsstring>
+        <name>print_structure</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="178" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="514" bodyend="526"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a6057acc6ca51d7e6df44beec9915b814" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::print_variables</definition>
+        <argsstring>() const</argsstring>
+        <name>print_variables</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="179" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="528" bodyend="536"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1aa32af15c8649b23393860c3a0c656ab6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::print_jacobian_and_residual</definition>
+        <argsstring>(bool detailed=false)</argsstring>
+        <name>print_jacobian_and_residual</name>
+        <param>
+          <type>bool</type>
+          <declname>detailed</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="180" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="538" bodyend="572"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a1f312e1dff66814ba19c96e39f72d7a5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::FactorGraph::num_variables</definition>
+        <argsstring>() const</argsstring>
+        <name>num_variables</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="183" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="183" bodyend="183"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a13e482fb825ee30339b9c0494984ed2e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::FactorGraph::num_values</definition>
+        <argsstring>() const</argsstring>
+        <name>num_values</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="184" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="184" bodyend="184"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1adba24d50f231ed23de862026e8067272" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int factorama::FactorGraph::num_residuals</definition>
+        <argsstring>() const</argsstring>
+        <name>num_residuals</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="185" column="13" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="185" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1aadbde0731abb1e9a89a488245a4c929d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::set_verbose</definition>
+        <argsstring>(bool verbose)</argsstring>
+        <name>set_verbose</name>
+        <param>
+          <type>bool</type>
+          <declname>verbose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="187" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="187" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1adb74853d8f893ce3617f4bc89b929406" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structfactorama_1_1VariablePlacement" kindref="compound">VariablePlacement</ref></type>
+        <definition>VariablePlacement factorama::FactorGraph::variable_placement</definition>
+        <argsstring>(int id, bool &amp;valid_out) const</argsstring>
+        <name>variable_placement</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>bool &amp;</type>
+          <declname>valid_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="189" column="27" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="189" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a06aa10da9ef003bb776182f783b601ed" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structfactorama_1_1FactorPlacement" kindref="compound">FactorPlacement</ref></type>
+        <definition>FactorPlacement factorama::FactorGraph::factor_placement</definition>
+        <argsstring>(int id, bool &amp;valid_out) const</argsstring>
+        <name>factor_placement</name>
+        <param>
+          <type>int</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>bool &amp;</type>
+          <declname>valid_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="199" column="25" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="199" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a84c7d5ee35a6768dac76e1d3a404b1df" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::unordered_map&lt; int, <ref refid="structfactorama_1_1VariablePlacement" kindref="compound">VariablePlacement</ref> &gt; &amp;</type>
+        <definition>const std::unordered_map&lt;int, VariablePlacement&gt;&amp; factorama::FactorGraph::variable_placement_map</definition>
+        <argsstring>() const</argsstring>
+        <name>variable_placement_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="209" column="34" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="209" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a364c4128e119c61ddd30559fd2dcb90c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::unordered_map&lt; int, <ref refid="structfactorama_1_1FactorPlacement" kindref="compound">FactorPlacement</ref> &gt; &amp;</type>
+        <definition>const std::unordered_map&lt;int, FactorPlacement&gt;&amp; factorama::FactorGraph::factor_placement_map</definition>
+        <argsstring>() const</argsstring>
+        <name>factor_placement_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="212" column="34" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="212" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1a38e2e7163f59b037e17d87cc80ee34d7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool factorama::FactorGraph::detailed_factor_test</definition>
+        <argsstring>(double jacobian_tol, bool verbose=false)</argsstring>
+        <name>detailed_factor_test</name>
+        <param>
+          <type>double</type>
+          <declname>jacobian_tol</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>verbose</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="220" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="574" bodyend="723"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classfactorama_1_1FactorGraph_1afc82f504ac229875a532e90a3c209c12" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void factorama::FactorGraph::copy_sparse_data_to_eigen_matrix</definition>
+        <argsstring>()</argsstring>
+        <name>copy_sparse_data_to_eigen_matrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="260" column="14" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.cpp" bodystart="725" bodyend="778"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Central container for factor graph optimization problems. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classfactorama_1_1FactorGraph" kindref="compound">FactorGraph</ref> manages variables (poses, landmarks, etc.) and factors (constraints, measurements) for non-linear least squares optimization. Call <ref refid="classfactorama_1_1FactorGraph_1ad1deb027a186862776815112415e8a50" kindref="member">finalize_structure()</ref> after adding all variables and factors, then use with <ref refid="classfactorama_1_1SparseOptimizer" kindref="compound">SparseOptimizer</ref> for solving.</para>
+<para><programlisting><codeline><highlight class="normal">FactorGraph<sp/>graph;</highlight></codeline>
+<codeline><highlight class="normal">graph.add_variable(pose_var);</highlight></codeline>
+<codeline><highlight class="normal">graph.add_factor(measurement_factor);</highlight></codeline>
+<codeline><highlight class="normal">graph.finalize_structure();</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>factorama::FactorGraph</label>
+        <link refid="classfactorama_1_1FactorGraph"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" line="48" column="5" bodyfile="/home/sgilbert/repos/factorama/src/factorama/factor_graph.hpp" bodystart="49" bodyend="261"/>
+    <listofallmembers>
+      <member refid="classfactorama_1_1FactorGraph_1a87a1bfe3bf0c474d7384195eba093796" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>add_factor</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aa126c3eeb8c7eb063741f12cc3cdd780" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>add_variable</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ad8dc4da4f4ad91a421eddd5fc49b013f" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>apply_increment</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a8ab21cd0e1f49f889cd66d98e3ce539f" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>cached_jacobian_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aef8811885f7b96793117970356680cff" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>cached_residual_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a3dbd595f80282bab514466002eb7165a" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>compute_full_jacobian_and_residual</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ae05dc64e00f75a8ecfa53c3602b3e6dd" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>compute_full_jacobian_matrix</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ae4b1ee50b1f216cec4d66be52208dbda" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>compute_full_residual_vector</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a51ecc09581aa4e598393ecdde14ba2a6" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>compute_sparse_jacobian_matrix</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1afc82f504ac229875a532e90a3c209c12" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>copy_sparse_data_to_eigen_matrix</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a38e2e7163f59b037e17d87cc80ee34d7" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>detailed_factor_test</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a06aa10da9ef003bb776182f783b601ed" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>factor_placement</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a5d23da08a81770c469be42fcb6c05192" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>factor_placement_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a364c4128e119c61ddd30559fd2dcb90c" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>factor_placement_map</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aa27861db358fc4ac7878461106c45a58" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>FactorGraph</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ae50155ceaf555118f7d5b81885f39512" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>factors_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ab196cd94246f7b16e7393c610d88ef81" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>factors_map_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ad1deb027a186862776815112415e8a50" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>finalize_structure</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a4d55141c139bc131615ba3bfaaabfd4d" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>get_all_factors</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a4a8ecb647ba2efe908af145ec1bdef56" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>get_all_variables</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a48ee91a1f3fad3d444853a9cc77be351" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>get_variable</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1af0f128c7776c6ef46abece5de06e7c9c" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>get_variable_vector</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1abd3e8e412d9d9c11c6e4061c2099a2b5" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>get_variables_of_type</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a85b5f3b0bb3c36d3fb4db074da298332" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>jacobian</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1af297dfb8e57ea8ac8f6cc193802de904" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>jacobian_valid</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a402e9ecb4534784a63749a4b39746d16" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>jacobian_valid_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1adba24d50f231ed23de862026e8067272" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>num_residuals</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a3d2fa91cf51754c77f7d93fe4097cada" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>num_residuals_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a13e482fb825ee30339b9c0494984ed2e" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>num_values</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1abeef91f659b14b9ef873a8b82d9f1785" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>num_values_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a1f312e1dff66814ba19c96e39f72d7a5" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>num_variables</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aa32af15c8649b23393860c3a0c656ab6" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>print_jacobian_and_residual</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a794b2be30e73a5a66bc27792cf7b91aa" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>print_structure</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a6057acc6ca51d7e6df44beec9915b814" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>print_variables</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a49b26bb95c1e547562febe1a9b29dfca" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>residual</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ae826d52abc6df701d492f88ba826dafb" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>residual_valid</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1afd71bbee3ec5a78838793927eebbe070" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>residual_valid_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a22f44bc6267e9eae6717063988f00f53" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>set_variable_values_from_vector</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aadbde0731abb1e9a89a488245a4c929d" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>set_verbose</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a38ec9ec90e481ca631051bbf885d4787" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aea6eef954fc23aee0af36d7d4d6ae45e" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a7867b414ec754d0fc0eeeb08acae4367" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian_data_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ac7046128706e10c3b5e2406236e69840" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian_initialized_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1aaf4e31e6df0e7cff29526c31cefa8641" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian_row_indices_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a4cadc37da38111c2c3dbfde14a72ad3a" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>sparse_jacobian_valid_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a67c50d0a28fbac190c2696683c26aa10" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>structure_finalized_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1adb74853d8f893ce3617f4bc89b929406" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>variable_placement</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1af82314fe454a86c702deb4674f078c1c" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>variable_placement_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a84c7d5ee35a6768dac76e1d3a404b1df" prot="public" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>variable_placement_map</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1ad845be1ee6c3e2f2b8256468fd29b043" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>variables_map_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a0311756e489ec89f15cc915a090f266e" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>variables_vector_</name></member>
+      <member refid="classfactorama_1_1FactorGraph_1a4c9632de68c9b06fc91050d01724c589" prot="private" virt="non-virtual"><scope>factorama::FactorGraph</scope><name>verbose_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
