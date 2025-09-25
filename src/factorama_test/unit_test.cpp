@@ -1080,9 +1080,10 @@ TEST_CASE("PoseOrientationPriorFactor: analytical vs numerical Jacobians", "[pri
     auto pose = std::make_shared<PoseVariable>(0, pose_init);
     
     Eigen::Vector3d rot_prior(0.1, 0.0, 0.2);
+    Eigen::Matrix3d dcm_prior = ExpMapSO3(rot_prior);
     double sigma = 0.3;
     
-    auto factor = std::make_shared<PoseOrientationPriorFactor>(0, pose.get(), rot_prior, sigma);
+    auto factor = std::make_shared<PoseOrientationPriorFactor>(0, pose.get(), dcm_prior, sigma);
     
     std::vector<Eigen::MatrixXd> J_analytic;
     std::vector<Eigen::MatrixXd> J_numeric;

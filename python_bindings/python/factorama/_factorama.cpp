@@ -31,6 +31,7 @@
 #include <factorama/pose_between_factors.hpp>
 #include <factorama/rotation_prior_factor.hpp>
 #include <factorama/bearing_projection_factor_2d.hpp>
+#include <factorama/random_utils.hpp>
 
 namespace py = pybind11;
 
@@ -158,7 +159,7 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("id"), py::arg("pose"), py::arg("pos_prior"), py::arg("sigma") = 1.0);
 
     py::class_<factorama::PoseOrientationPriorFactor, std::shared_ptr<factorama::PoseOrientationPriorFactor>, factorama::Factor>(m, "PoseOrientationPriorFactor")
-        .def(py::init<int, factorama::PoseVariable*, const Eigen::Vector3d&, double>(),
+        .def(py::init<int, factorama::PoseVariable*, const Eigen::Matrix3d&, double>(),
              "Create a PoseOrientationPriorFactor",
              py::arg("id"), py::arg("pose"), py::arg("rotvec_prior"), py::arg("sigma") = 1.0);
 
@@ -254,4 +255,13 @@ PYBIND11_MODULE(_factorama, m) {
         .def("settings", &factorama::SparseOptimizer::settings, py::return_value_policy::reference)
         .def_readwrite("initial_stats", &factorama::SparseOptimizer::initial_stats_)
         .def_readwrite("current_stats", &factorama::SparseOptimizer::current_stats_);
+
+    // Bind SO(3) utility functions
+    m.def("ExpMapSO3", &factorama::ExpMapSO3,
+          "Exponential map from so(3) to SO(3). Converts a rotation vector to a rotation matrix.",
+          py::arg("omega"));
+
+    m.def("LogMapSO3", &factorama::LogMapSO3,
+          "Logarithm map from SO(3) to so(3). Converts a rotation matrix to a rotation vector.",
+          py::arg("R"));
 }

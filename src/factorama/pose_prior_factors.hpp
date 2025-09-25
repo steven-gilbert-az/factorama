@@ -60,7 +60,7 @@ namespace factorama
      * @code
      * double orientation_sigma = 0.1;
      * auto pose_orientation_prior = std::make_shared<PoseOrientationPriorFactor>(
-     *     factor_id++, camera_pose, Eigen::Vector3d::Zero(), orientation_sigma);
+     *     factor_id++, camera_pose, Eigen::Matrix3d::Identity(), orientation_sigma);
      * @endcode
      */
     class PoseOrientationPriorFactor : public Factor
@@ -70,12 +70,12 @@ namespace factorama
          * @brief Construct orientation prior factor
          * @param id Unique factor identifier
          * @param pose Camera pose variable
-         * @param rotvec_prior Prior rotation as rodrigues vector
-         * @param sigma Standard deviation of angular measurement (radians)
+         * @param dcm_CW_prior Prior rotation - direction cosine matrix (DCM)
+         * @param sigma Standard deviation of angular prior (radians)
          */
         PoseOrientationPriorFactor(int id,
                                    PoseVariable* pose,
-                                   const Eigen::Vector3d &rotvec_prior,
+                                   const Eigen::Matrix3d &dcm_CW_prior,
                                    double sigma = 1.0);
 
         int id() const override { return id_; }

@@ -48,12 +48,14 @@ std::string PosePositionPriorFactor::name() const
 // PoseOrientationPriorFactor implementations
 PoseOrientationPriorFactor::PoseOrientationPriorFactor(int id,
                                                        PoseVariable* pose,
-                                                       const Eigen::Vector3d &rotvec_prior,
+                                                       const Eigen::Matrix3d &dcm_CW_prior,
                                                        double sigma)
-    : id_(id), pose_(pose), rot_CW_prior_(rotvec_prior), weight_(1.0 / sigma)
+    : id_(id), pose_(pose), weight_(1.0 / sigma)
 {
     assert(pose != nullptr && "pose cannot be nullptr");
     assert(sigma > 0.0 && "Sigma must be greater than zero");
+
+     rot_CW_prior_ = LogMapSO3(dcm_CW_prior);
 }
 
 Eigen::VectorXd PoseOrientationPriorFactor::compute_residual() const

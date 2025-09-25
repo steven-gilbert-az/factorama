@@ -9,12 +9,34 @@
 namespace factorama
 {
 
+    /**
+     * @brief Bearing observation factor for inverse range landmarks
+     *
+     * Represents directional measurements from cameras to inverse range landmarks.
+     * The factor constrains the predicted bearing (from camera pose to inverse range landmark)
+     * to match the observed bearing direction in the camera frame.
+     *
+     * @code
+     * Eigen::Vector3d bearing_vector(0.0, 0.0, 1.0);
+     * double bearing_sigma = 0.1;
+     * auto bearing_factor = std::make_shared<InverseRangeBearingFactor>(
+     *     factor_id++, camera_pose, inv_range_landmark, bearing_vector, bearing_sigma);
+     * @endcode
+     */
     class InverseRangeBearingFactor : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_CAMERA = 1e-9;
         static constexpr double MIN_INVERSE_RANGE = 1e-9;
 
     public:
+        /**
+         * @brief Construct inverse range bearing factor
+         * @param id Unique factor identifier
+         * @param pose_var Camera pose variable
+         * @param inverse_range_variable Inverse range landmark variable
+         * @param bearing_C_observed Unit bearing vector in camera frame
+         * @param angle_sigma Standard deviation of angular measurement (radians)
+         */
         InverseRangeBearingFactor(
             int id,
             PoseVariable* pose_var,

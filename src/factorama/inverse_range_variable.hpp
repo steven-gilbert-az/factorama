@@ -8,9 +8,31 @@
 namespace factorama
 {
 
+    /**
+     * @brief Inverse range parameterization
+     *
+     * Represents 3D landmarks using inverse range (inverse depth) parameterization.
+     *
+     * The landmark position is computed as: pos_W = origin_pos_W + bearing_W / inverse_range
+     *
+     * @code
+     * Eigen::Vector3d origin(0.0, 0.0, 0.0);
+     * Eigen::Vector3d bearing(0.0, 0.0, 1.0);
+     * double initial_range = 5.0;
+     * auto inv_range_var = std::make_shared<InverseRangeVariable>(
+     *     1, origin, bearing, initial_range);
+     * @endcode
+     */
     class InverseRangeVariable : public Variable
     {
     public:
+        /**
+         * @brief Construct inverse range variable
+         * @param variable_id Unique variable identifier
+         * @param origin_pos_W Bearing origin position in world frame
+         * @param bearing_W Unit bearing direction in world frame
+         * @param initial_range Initial range estimate (positive distance)
+         */
         InverseRangeVariable(int variable_id,
                              const Eigen::Vector3d &origin_pos_W,
                              const Eigen::Vector3d &bearing_W,

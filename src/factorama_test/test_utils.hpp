@@ -201,9 +201,10 @@ namespace factorama
                 // Create a pair of prior factors (position / orientation)
                 Eigen::Vector3d pos_prior = original_cam_pose.segment<3>(0);
                 Eigen::Vector3d rot_prior = original_cam_pose.segment<3>(3);
+                Eigen::Matrix3d dcm_prior = ExpMapSO3(rot_prior);
 
                 auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos_prior, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot_prior, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), dcm_prior, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
@@ -317,8 +318,9 @@ namespace factorama
                 // Create a pair of prior factors (position / orientation)
                 Eigen::Vector3d pos = cam_pose.segment<3>(0);
                 Eigen::Vector3d rot = cam_pose.segment<3>(3);
+                Eigen::Matrix3d dcm = ExpMapSO3(rot);
                 auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), dcm, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
@@ -543,9 +545,10 @@ namespace factorama
                 // Create a pair of prior factors (position / orientation)
                 Eigen::Vector3d pos_prior = original_cam_pose.segment<3>(0);
                 Eigen::Vector3d rot_prior = original_cam_pose.segment<3>(3);
+                Eigen::Matrix3d dcm_prior = ExpMapSO3(rot_prior);
 
                 auto position_prior = std::make_shared<PosePositionPriorFactor>(factor_id++, pose.get(), pos_prior, noise_sigma);
-                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), rot_prior, noise_sigma);
+                auto rotation_prior = std::make_shared<PoseOrientationPriorFactor>(factor_id++, pose.get(), dcm_prior, noise_sigma);
                 graph.add_factor(position_prior);
                 graph.add_factor(rotation_prior);
             }
