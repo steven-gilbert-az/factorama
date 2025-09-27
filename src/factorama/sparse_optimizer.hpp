@@ -11,8 +11,8 @@ namespace factorama
    */
   enum class OptimizerMethod
   {
-    GaussNewton,        ///< Gauss-Newton method (faster, requires good initialization)
-    LevenbergMarquardt  ///< Levenberg-Marquardt method (more robust, handles poor initialization)
+    GaussNewton,       ///< Gauss-Newton method (faster, requires good initialization)
+    LevenbergMarquardt ///< Levenberg-Marquardt method (more robust, handles poor initialization)
   };
 
   /**
@@ -62,14 +62,14 @@ namespace factorama
    */
   struct OptimizerStats
   {
-    bool valid = false;                  ///< Whether these statistics are valid
-    double chi2 = -1.0;                  ///< Chi-squared cost (||residual||^2)
-    double delta_norm = -1.0;            ///< Norm of optimization step
-    double residual_norm = -1.0;         ///< Norm of residual vector
-    int current_iteration = 0;           ///< Current iteration number
-    int rank = -1;                       ///< Matrix rank (if computed)
+    bool valid = false;          ///< Whether these statistics are valid
+    double chi2 = -1.0;          ///< Chi-squared cost (||residual||^2)
+    double delta_norm = -1.0;    ///< Norm of optimization step
+    double residual_norm = -1.0; ///< Norm of residual vector
+    int current_iteration = 0;   ///< Current iteration number
+    int rank = -1;               ///< Matrix rank (if computed)
 
-    double damping_parameter = 1e-3;     ///< Levenberg-Marquardt damping parameter (lambda)
+    double damping_parameter = 1e-3; ///< Levenberg-Marquardt damping parameter (lambda)
   };
 
   /**
@@ -106,6 +106,24 @@ namespace factorama
     void optimize();
 
     /**
+     * @brief Compute and cache Hessian for covariance estimation
+     */
+    void prepare_to_estimate_covariances();
+
+    /**
+     * @brief Estimate covariance matrix for a specific variable
+     * @param variable Variable to compute covariance for
+     * @param valid_out Set to true if computation succeeded
+     * @return Covariance matrix (empty if invalid)
+     */
+    Eigen::MatrixXd estimate_covariance(const Variable *variable, bool &valid_out);
+
+    /**
+     * @brief Print covariance matrices for all variables in the graph
+     */
+    void print_all_covariances();
+
+    /**
      * @brief Get current optimizer settings
      * @return Reference to optimization settings
      */
@@ -119,11 +137,15 @@ namespace factorama
     OptimizerSettings settings_;
     std::shared_ptr<FactorGraph> graph_;
 
-    // we could also save off a std::vector<OptimizerStats> for logging / telemetry
+    bool optimization_complete_ = false;
 
     // ---- Cached Jacobian Pattern ----
     bool jacobian_pattern_initialized_ = false;
     Eigen::SparseMatrix<double> J_pattern_; // Only structure (non-zero pattern)
+
+    // Cached Hessian (for covariance estimates)
+    bool cached_hessian_valid_for_covariance_est_ = false;
+    Eigen::SparseMatrix<double> cached_hessian_;
 
     // Optional reuse of solver object (may reduce overhead)
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_solver_;

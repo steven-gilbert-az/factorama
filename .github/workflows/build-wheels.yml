@@ -4,6 +4,8 @@ on:
   push:
     tags: ['v*']  # Trigger on version tags
   workflow_dispatch:  # Manual trigger
+  release:
+    types: [published]  # Trigger on GitHub releases
 
 permissions:
   contents: write
@@ -60,3 +62,26 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: "*.zip"
+
+  upload_to_pypi:
+    name: Upload to PyPI
+    needs: build_wheels
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: List downloaded files
+        run: |
+          find dist/ -name "*.whl" -ls
+
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist/

@@ -63,12 +63,18 @@ OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSetti
     // Get final residual norm
     result.final_norm = graph_copy->compute_full_residual_vector().norm();
     result.converged = (result.final_norm < result.initial_norm);
-    
+
     if (verbose) {
         std::cout << "**** FINAL FACTOR GRAPH ****" << std::endl;
         graph_copy->print_variables();
     }
-    
+
+    // Test covariance estimation (should not crash)
+    if (verbose) {
+        std::cout << "**** TESTING COVARIANCE ESTIMATION ****" << std::endl;
+    }
+    optimizer.print_all_covariances();
+
     // Run post-optimization jacobian test if requested
     if (run_jacobian_test) {
         REQUIRE(graph_copy->detailed_factor_test(jacobian_tol, true));

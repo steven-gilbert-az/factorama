@@ -252,6 +252,14 @@ PYBIND11_MODULE(_factorama, m) {
         .def(py::init<>())
         .def("setup", &factorama::SparseOptimizer::setup)
         .def("optimize", &factorama::SparseOptimizer::optimize)
+        .def("prepare_to_estimate_covariances", &factorama::SparseOptimizer::prepare_to_estimate_covariances)
+        .def("estimate_covariance", [](factorama::SparseOptimizer& self, const factorama::Variable* variable) {
+            bool valid = false;
+            auto result = self.estimate_covariance(variable, valid);
+            return std::make_tuple(result, valid);
+        }, "Estimate covariance matrix for a specific variable, returns (matrix, valid)",
+           py::arg("variable"))
+        .def("print_all_covariances", &factorama::SparseOptimizer::print_all_covariances)
         .def("settings", &factorama::SparseOptimizer::settings, py::return_value_policy::reference)
         .def_readwrite("initial_stats", &factorama::SparseOptimizer::initial_stats_)
         .def_readwrite("current_stats", &factorama::SparseOptimizer::current_stats_);
