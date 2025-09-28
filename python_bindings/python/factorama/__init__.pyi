@@ -30,5 +30,15 @@ from factorama._factorama import SparseOptimizer
 from factorama._factorama import Variable
 from factorama._factorama import VariableType
 from . import _factorama
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
-__version__: str = '1.0.0'
+from typing import Optional, Any
+
+def PlotFactorGraph(
+    factor_graph: FactorGraph,
+    axis_handle: Optional[Any] = None,
+    plot_covariance: bool = False,
+    optimizer: Optional[SparseOptimizer] = None,
+    plot_3d: bool = True
+) -> Any: ...
+
+__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PlotFactorGraph', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__version__: str

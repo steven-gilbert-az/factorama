@@ -6,6 +6,7 @@ TODO.md
 dist/
 *.so
 __pycache__/
+*/__pycache__/
 
 # Python build artifacts
 *.egg-info/

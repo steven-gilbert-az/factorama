@@ -3,21 +3,22 @@ Factorama Python bindings - factor graph optimization library
 """
 from __future__ import annotations
 import numpy
+import numpy.typing
 import scipy.sparse
 import typing
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 class BearingObservationFactor(Factor):
-    def __init__(self, id: int, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: numpy.ndarray[numpy.float64[3, 1]], angle_sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a BearingObservationFactor
         """
 class BearingProjectionFactor2D(Factor):
-    def __init__(self, id: int, pose: PoseVariable, landmark: LandmarkVariable, bearing_C_observed: numpy.ndarray[numpy.float64[3, 1]], sigma: float = 1.0, along_tolerance_epsilon: float = 1e-06) -> None:
+    def __init__(self, id: typing.SupportsInt, pose: PoseVariable, landmark: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], sigma: typing.SupportsFloat = 1.0, along_tolerance_epsilon: typing.SupportsFloat = 1e-06) -> None:
         """
         Create a BearingProjectionFactor2D
         """
 class Factor:
-    def compute_residual(self) -> numpy.ndarray[numpy.float64[m, 1]]:
+    def compute_residual(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]:
         ...
     def id(self) -> int:
         ...
@@ -38,17 +39,17 @@ class FactorGraph:
         ...
     def add_variable(self, arg0: Variable) -> None:
         ...
-    def apply_increment(self, arg0: numpy.ndarray[numpy.float64[m, 1]]) -> None:
+    def apply_increment(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"]) -> None:
         ...
     def compute_full_jacobian_and_residual(self) -> None:
         ...
-    def compute_full_jacobian_matrix(self) -> numpy.ndarray[numpy.float64[m, n]]:
+    def compute_full_jacobian_matrix(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]"]:
         ...
-    def compute_full_residual_vector(self) -> numpy.ndarray[numpy.float64[m, 1]]:
+    def compute_full_residual_vector(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]:
         ...
     def compute_sparse_jacobian_matrix(self) -> scipy.sparse.csc_matrix:
         ...
-    def detailed_factor_test(self, jacobian_tol: float, verbose: bool = False) -> bool:
+    def detailed_factor_test(self, jacobian_tol: typing.SupportsFloat, verbose: bool = False) -> bool:
         ...
     def finalize_structure(self) -> None:
         ...
@@ -56,11 +57,11 @@ class FactorGraph:
         ...
     def get_all_variables(self) -> list[Variable]:
         ...
-    def get_variable(self, arg0: int) -> Variable:
+    def get_variable(self, arg0: typing.SupportsInt) -> Variable:
         ...
-    def get_variable_vector(self) -> numpy.ndarray[numpy.float64[m, 1]]:
+    def get_variable_vector(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]:
         ...
-    def jacobian(self) -> numpy.ndarray[numpy.float64[m, n]]:
+    def jacobian(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]"]:
         ...
     def jacobian_valid(self) -> bool:
         ...
@@ -76,11 +77,11 @@ class FactorGraph:
         ...
     def print_variables(self) -> None:
         ...
-    def residual(self) -> numpy.ndarray[numpy.float64[m, 1]]:
+    def residual(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]:
         ...
     def residual_valid(self) -> bool:
         ...
-    def set_variable_values_from_vector(self, arg0: numpy.ndarray[numpy.float64[m, 1]]) -> None:
+    def set_variable_values_from_vector(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"]) -> None:
         ...
     def set_verbose(self, arg0: bool) -> None:
         ...
@@ -126,7 +127,7 @@ class FactorType:
         ...
     def __index__(self) -> int:
         ...
-    def __init__(self, value: int) -> None:
+    def __init__(self, value: typing.SupportsInt) -> None:
         ...
     def __int__(self) -> int:
         ...
@@ -134,7 +135,7 @@ class FactorType:
         ...
     def __repr__(self) -> str:
         ...
-    def __setstate__(self, state: int) -> None:
+    def __setstate__(self, state: typing.SupportsInt) -> None:
         ...
     def __str__(self) -> str:
         ...
@@ -145,52 +146,62 @@ class FactorType:
     def value(self) -> int:
         ...
 class GenericBetweenFactor(Factor):
-    def __init__(self, id: int, var_a: Variable, var_b: Variable, measured_diff: Variable, sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, var_a: Variable, var_b: Variable, measured_diff: Variable, sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a GenericBetweenFactor
         """
 class GenericPriorFactor(Factor):
-    def __init__(self, id: int, variable: Variable, prior_value: numpy.ndarray[numpy.float64[m, 1]], sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, variable: Variable, prior_value: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a GenericPriorFactor
         """
 class GenericVariable(Variable):
-    def __init__(self, id: int, initial_value: numpy.ndarray[numpy.float64[m, 1]]) -> None:
+    def __init__(self, id: typing.SupportsInt, initial_value: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"]) -> None:
         """
         Create a GenericVariable with arbitrary dimension
         """
     def set_is_constant(self, arg0: bool) -> None:
         ...
 class InverseRangeBearingFactor(Factor):
-    def __init__(self, id: int, pose_var: PoseVariable, inverse_range_var: InverseRangeVariable, bearing_C_observed: numpy.ndarray[numpy.float64[3, 1]], angle_sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, inverse_range_var: InverseRangeVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create an InverseRangeBearingFactor
         """
-    def bearing_C_obs(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def bearing_C_obs(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
 class InverseRangeVariable(Variable):
-    maximum_inverse_range: float
-    minimum_inverse_range: float
-    def __init__(self, id: int, origin_pos_W: numpy.ndarray[numpy.float64[3, 1]], bearing_W: numpy.ndarray[numpy.float64[3, 1]], initial_range: float) -> None:
+    def __init__(self, id: typing.SupportsInt, origin_pos_W: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], bearing_W: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], initial_range: typing.SupportsFloat) -> None:
         """
         Create an InverseRangeVariable
         """
-    def bearing_W(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def bearing_W(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
     def inverse_range(self) -> float:
         ...
-    def origin_pos_W(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def origin_pos_W(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
-    def pos_W(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def pos_W(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
     def set_is_constant(self, arg0: bool) -> None:
         ...
+    @property
+    def maximum_inverse_range(self) -> float:
+        ...
+    @maximum_inverse_range.setter
+    def maximum_inverse_range(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def minimum_inverse_range(self) -> float:
+        ...
+    @minimum_inverse_range.setter
+    def minimum_inverse_range(self, arg0: typing.SupportsFloat) -> None:
+        ...
 class LandmarkVariable(Variable):
-    def __init__(self, id: int, pos_W_init: numpy.ndarray[numpy.float64[3, 1]]) -> None:
+    def __init__(self, id: typing.SupportsInt, pos_W_init: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"]) -> None:
         """
         Create a LandmarkVariable with 3D position
         """
-    def pos_W(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def pos_W(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
     def set_is_constant(self, arg0: bool) -> None:
         ...
@@ -213,7 +224,7 @@ class OptimizerMethod:
         ...
     def __index__(self) -> int:
         ...
-    def __init__(self, value: int) -> None:
+    def __init__(self, value: typing.SupportsInt) -> None:
         ...
     def __int__(self) -> int:
         ...
@@ -221,7 +232,7 @@ class OptimizerMethod:
         ...
     def __repr__(self) -> str:
         ...
-    def __setstate__(self, state: int) -> None:
+    def __setstate__(self, state: typing.SupportsInt) -> None:
         ...
     def __str__(self) -> str:
         ...
@@ -233,80 +244,150 @@ class OptimizerMethod:
         ...
 class OptimizerSettings:
     check_rank_deficiency: bool
-    initial_lambda: float
-    lambda_down_factor: float
-    lambda_up_factor: float
-    learning_rate: float
-    max_lambda: float
-    max_num_iterations: int
     method: OptimizerMethod
-    residual_tolerance: float
-    step_tolerance: float
     verbose: bool
     def __init__(self) -> None:
         ...
+    @property
+    def initial_lambda(self) -> float:
+        ...
+    @initial_lambda.setter
+    def initial_lambda(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def lambda_down_factor(self) -> float:
+        ...
+    @lambda_down_factor.setter
+    def lambda_down_factor(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def lambda_up_factor(self) -> float:
+        ...
+    @lambda_up_factor.setter
+    def lambda_up_factor(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def learning_rate(self) -> float:
+        ...
+    @learning_rate.setter
+    def learning_rate(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def max_lambda(self) -> float:
+        ...
+    @max_lambda.setter
+    def max_lambda(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def max_num_iterations(self) -> int:
+        ...
+    @max_num_iterations.setter
+    def max_num_iterations(self, arg0: typing.SupportsInt) -> None:
+        ...
+    @property
+    def residual_tolerance(self) -> float:
+        ...
+    @residual_tolerance.setter
+    def residual_tolerance(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def step_tolerance(self) -> float:
+        ...
+    @step_tolerance.setter
+    def step_tolerance(self, arg0: typing.SupportsFloat) -> None:
+        ...
 class OptimizerStats:
-    chi2: float
-    current_iteration: int
-    damping_parameter: float
-    delta_norm: float
-    rank: int
-    residual_norm: float
     valid: bool
     def __init__(self) -> None:
         ...
+    @property
+    def chi2(self) -> float:
+        ...
+    @chi2.setter
+    def chi2(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def current_iteration(self) -> int:
+        ...
+    @current_iteration.setter
+    def current_iteration(self, arg0: typing.SupportsInt) -> None:
+        ...
+    @property
+    def damping_parameter(self) -> float:
+        ...
+    @damping_parameter.setter
+    def damping_parameter(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def delta_norm(self) -> float:
+        ...
+    @delta_norm.setter
+    def delta_norm(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    @property
+    def rank(self) -> int:
+        ...
+    @rank.setter
+    def rank(self, arg0: typing.SupportsInt) -> None:
+        ...
+    @property
+    def residual_norm(self) -> float:
+        ...
+    @residual_norm.setter
+    def residual_norm(self, arg0: typing.SupportsFloat) -> None:
+        ...
 class PoseOrientationBetweenFactor(Factor):
-    def __init__(self, id: int, pose1: PoseVariable, pose2: PoseVariable, calibration_rotation_12: RotationVariable, angle_sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose1: PoseVariable, pose2: PoseVariable, calibration_rotation_12: RotationVariable, angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a PoseOrientationBetweenFactor
         """
 class PoseOrientationPriorFactor(Factor):
-    def __init__(self, id: int, pose: PoseVariable, rotvec_prior: numpy.ndarray[numpy.float64[3, 1]], sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose: PoseVariable, rotvec_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a PoseOrientationPriorFactor
         """
 class PosePositionBetweenFactor(Factor):
-    def __init__(self, id: int, pose_a: PoseVariable, pose_b: PoseVariable, measured_diff: Variable, sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_a: PoseVariable, pose_b: PoseVariable, measured_diff: Variable, sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a PosePositionBetweenFactor
         """
 class PosePositionPriorFactor(Factor):
-    def __init__(self, id: int, pose: PoseVariable, pos_prior: numpy.ndarray[numpy.float64[3, 1]], sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose: PoseVariable, pos_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a PosePositionPriorFactor
         """
 class PoseVariable(Variable):
     @typing.overload
-    def __init__(self, id: int, pose_CW_init: numpy.ndarray[numpy.float64[6, 1]]) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_CW_init: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[6, 1]"]) -> None:
         """
         Create a PoseVariable with SE(3) pose
         """
     @typing.overload
-    def __init__(self, id: int, pos_W: numpy.ndarray[numpy.float64[3, 1]], dcm_CW: numpy.ndarray[numpy.float64[3, 3]]) -> None:
+    def __init__(self, id: typing.SupportsInt, pos_W: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], dcm_CW: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"]) -> None:
         """
         Create a PoseVariable with position and rotation matrix
         """
-    def dcm_CW(self) -> numpy.ndarray[numpy.float64[3, 3]]:
+    def dcm_CW(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 3]"]:
         ...
-    def pos_W(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def pos_W(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
-    def rot_CW(self) -> numpy.ndarray[numpy.float64[3, 1]]:
+    def rot_CW(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
     def set_is_constant(self, arg0: bool) -> None:
         ...
 class RotationPriorFactor(Factor):
-    def __init__(self, id: int, rotation: RotationVariable, dcm_AB_prior: numpy.ndarray[numpy.float64[3, 3]], sigma: float = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, rotation: RotationVariable, dcm_AB_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a RotationPriorFactor
         """
 class RotationVariable(Variable):
-    def __init__(self, id: int, dcm_AB: numpy.ndarray[numpy.float64[3, 3]]) -> None:
+    def __init__(self, id: typing.SupportsInt, dcm_AB: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"]) -> None:
         """
         Create a RotationVariable with DCM
         """
-    def dcm_AB(self) -> numpy.ndarray[numpy.float64[3, 3]]:
+    def dcm_AB(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 3]"]:
         ...
-    def rotation(self) -> numpy.ndarray[numpy.float64[3, 3]]:
+    def rotation(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 3]"]:
         ...
     def set_is_constant(self, arg0: bool) -> None:
         ...
@@ -315,14 +396,24 @@ class SparseOptimizer:
     initial_stats: OptimizerStats
     def __init__(self) -> None:
         ...
+    def estimate_covariance(self, variable: Variable) -> tuple[typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]"], bool]:
+        """
+        Estimate covariance matrix for a specific variable, returns (matrix, valid)
+        """
     def optimize(self) -> None:
+        ...
+    def prepare_to_estimate_covariances(self) -> None:
+        ...
+    def print_all_covariances(self) -> None:
         ...
     def settings(self) -> OptimizerSettings:
         ...
     def setup(self, arg0: FactorGraph, arg1: OptimizerSettings) -> None:
         ...
 class Variable:
-    def apply_increment(self, arg0: numpy.ndarray[numpy.float64[m, 1]]) -> None:
+    """
+    """
+    def apply_increment(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"]) -> None:
         ...
     def clone(self) -> Variable:
         ...
@@ -332,13 +423,13 @@ class Variable:
         ...
     def name(self) -> str:
         ...
-    def set_value_from_vector(self, arg0: numpy.ndarray[numpy.float64[m, 1]]) -> None:
+    def set_value_from_vector(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[m, 1]"]) -> None:
         ...
     def size(self) -> int:
         ...
     def type(self) -> VariableType:
         ...
-    def value(self) -> numpy.ndarray[numpy.float64[m, 1]]:
+    def value(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]:
         ...
 class VariableType:
     """
@@ -371,7 +462,7 @@ class VariableType:
         ...
     def __index__(self) -> int:
         ...
-    def __init__(self, value: int) -> None:
+    def __init__(self, value: typing.SupportsInt) -> None:
         ...
     def __int__(self) -> int:
         ...
@@ -379,7 +470,7 @@ class VariableType:
         ...
     def __repr__(self) -> str:
         ...
-    def __setstate__(self, state: int) -> None:
+    def __setstate__(self, state: typing.SupportsInt) -> None:
         ...
     def __str__(self) -> str:
         ...
@@ -389,3 +480,11 @@ class VariableType:
     @property
     def value(self) -> int:
         ...
+def ExpMapSO3(omega: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"]) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 3]"]:
+    """
+    Exponential map from so(3) to SO(3). Converts a rotation vector to a rotation matrix.
+    """
+def LogMapSO3(R: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"]) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
+    """
+    Logarithm map from SO(3) to so(3). Converts a rotation matrix to a rotation vector.
+    """

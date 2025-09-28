@@ -8,7 +8,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "factorama"
-dynamic = ["version"]
+version = "1.0.3"
 description = "Factor graph optimization library with Python bindings"
 authors = [{ name = "Steven Gilbert" }]
 license = { text = "MIT" }
@@ -38,10 +38,8 @@ cmake.args = [
     "-DBUILD_PYTHON_BINDINGS=ON",
     "-DBUILD_TESTS=OFF"
 ]
+experimental = true
 
-# Configure dynamic versioning from git tags
-metadata.version.provider = "scikit_build_core.metadata.git"
-metadata.version.provider-path = "scikit_build_core.metadata.git:get_version"
 
 # tells scikit-build where your Python package source lives
 wheel.packages = ["python_bindings/python/factorama"]
