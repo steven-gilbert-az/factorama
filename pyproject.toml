@@ -12,7 +12,7 @@ version = "1.0.3"
 description = "Factor graph optimization library with Python bindings"
 authors = [{ name = "Steven Gilbert" }]
 license = { text = "MIT" }
-readme = "README.md"
+readme = "README_PYPI.md"
 requires-python = ">=3.8"
 dependencies = [
     "numpy>=1.15.0"
