@@ -119,7 +119,7 @@ TEST_CASE("PoseVariable correctly applies SE3 increments", "[pose][variable]")
 
 1. Create header in `src/factorama/my_variable.hpp`
 2. Inherit from `Variable` and implement all virtual methods
-3. Add to `VariableType` enum in `types.hpp`
+3. Add to `VariableType` enum in `base_types.hpp`
 4. Add comprehensive unit tests
 
 ### Adding a New Factor Type
@@ -127,7 +127,7 @@ TEST_CASE("PoseVariable correctly applies SE3 increments", "[pose][variable]")
 1. Create header/source in `src/factorama/my_factor.hpp/.cpp`
 2. Inherit from `Factor` and implement all virtual methods
 3. Provide analytical Jacobians (no numerical differentiation)
-4. Add to `FactorType` enum in `types.hpp`
+4. Add to `FactorType` enum in `base_types.hpp`
 5. Test residual and Jacobian computation
 6. Verify Jacobians with finite differences in tests
 
