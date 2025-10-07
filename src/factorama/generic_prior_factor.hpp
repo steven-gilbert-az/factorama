@@ -1,5 +1,5 @@
 #pragma once
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include <cassert>
 
 namespace factorama
@@ -31,16 +31,12 @@ namespace factorama
                            Variable* variable,
                            const Eigen::VectorXd &prior_value,
                            double sigma = 1.0)
-            : id_(id), variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
+            : variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
         {
+            id_ = id;
             assert(variable != nullptr && "variable cannot be nullptr");
             assert(prior_.size() == variable_->size() && "Prior size must match variable size");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
-        }
-
-        int id() const override
-        {
-            return id_;
         }
 
         int residual_size() const override
@@ -72,7 +68,7 @@ namespace factorama
             return {variable_};
         }
 
-        double weight() const override
+        double weight() const
         {
             return weight_;
         }
@@ -88,7 +84,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         Variable* variable_;
         Eigen::VectorXd prior_;
         double weight_;

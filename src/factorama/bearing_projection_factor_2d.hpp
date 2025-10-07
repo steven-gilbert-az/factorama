@@ -1,5 +1,5 @@
 #pragma once
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/landmark_variable.hpp"
 #include "factorama/random_utils.hpp"
@@ -38,28 +38,26 @@ namespace factorama
                                   const Eigen::Vector3d& bearing_C_observed,
                                   double sigma = 1.0,
                                   double along_tolerance_epsilon = 1e-6)
-            : id_(id),
-              pose_(pose),
+            : pose_(pose),
               landmark_(landmark),
               bearing_C_observed_(bearing_C_observed.normalized()),
               weight_(1.0 / sigma),
               reverse_depth_tolerance_(along_tolerance_epsilon)
         {
+            id_ = id;
             assert(pose != nullptr && "pose cannot be nullptr");
             assert(landmark != nullptr && "landmark cannot be nullptr");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
             compute_tangent_basis();
         }
-
-        int id() const override { return id_; }
         
         int residual_size() const override { return 2; }
         
-        double weight() const override { return weight_; }
+        double weight() const { return weight_; }
         
         std::string name() const override 
         { 
-            return "BearingProjection2D(" + pose_->name() + "," + landmark_->name() + ")";
+            return "BearingProjection2D_" + std::to_string(id()) +"(" + pose_->name() + "," + landmark_->name() + ")";
         }
         
         FactorType::FactorTypeEnum type() const override 
@@ -76,7 +74,6 @@ namespace factorama
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
     private:
-        int id_;
         PoseVariable* pose_;
         LandmarkVariable* landmark_;
         Eigen::Vector3d bearing_C_observed_;                    // measurement bearing (unit)

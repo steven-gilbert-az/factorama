@@ -9,8 +9,9 @@ PosePositionPriorFactor::PosePositionPriorFactor(int id,
                                                 PoseVariable* pose,
                                                 const Eigen::Vector3d &pos_prior,
                                                 double sigma)
-    : id_(id), pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
+    : pose_(pose), pos_prior_(pos_prior), weight_(1.0 / sigma)
 {
+    id_ = id;
     assert(pose != nullptr && "pose cannot be nullptr");
     assert(sigma > 0.0 && "Sigma must be greater than zero");
 }
@@ -50,8 +51,9 @@ PoseOrientationPriorFactor::PoseOrientationPriorFactor(int id,
                                                        PoseVariable* pose,
                                                        const Eigen::Matrix3d &dcm_CW_prior,
                                                        double sigma)
-    : id_(id), pose_(pose), weight_(1.0 / sigma)
+    : pose_(pose), weight_(1.0 / sigma)
 {
+    id_ = id;
     assert(pose != nullptr && "pose cannot be nullptr");
     assert(sigma > 0.0 && "Sigma must be greater than zero");
 

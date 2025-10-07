@@ -6,7 +6,7 @@ import numpy
 import numpy.typing
 import scipy.sparse
 import typing
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 class BearingObservationFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
@@ -29,8 +29,6 @@ class Factor:
     def type(self) -> FactorType:
         ...
     def variables(self) -> list[Variable]:
-        ...
-    def weight(self) -> float:
         ...
 class FactorGraph:
     def __init__(self) -> None:
@@ -205,6 +203,11 @@ class LandmarkVariable(Variable):
         ...
     def set_is_constant(self, arg0: bool) -> None:
         ...
+class LinearVelocityFactor(Factor):
+    def __init__(self, id: typing.SupportsInt, var_1: Variable, var_2: Variable, velocity_variable: Variable, dt: typing.SupportsFloat, sigma: typing.SupportsFloat = 1.0) -> None:
+        """
+        Create a LinearVelocityFactor
+        """
 class OptimizerMethod:
     """
     Members:

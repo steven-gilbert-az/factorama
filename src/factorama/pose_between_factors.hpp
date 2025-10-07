@@ -1,6 +1,6 @@
 #pragma once
 #include <cassert>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/random_utils.hpp"
 #include "factorama/rotation_variable.hpp"
@@ -35,18 +35,14 @@ namespace factorama
                                   PoseVariable* pose_b,
                                   Variable* measured_diff,
                                   double sigma = 1.0)
-            : id_(id), pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
+            : pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
         {
+            id_ = id;
             assert(pose_a != nullptr && "pose_a cannot be nullptr");
             assert(pose_b != nullptr && "pose_b cannot be nullptr");
             assert(measured_diff != nullptr && "measured_diff cannot be nullptr");
             assert(measured_diff_->size() == 3 && "PosePositionBetweenFactor: measured_diff must be 3D");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
-        }
-
-        int id() const override
-        {
-            return id_;
         }
 
         int residual_size() const override
@@ -105,7 +101,7 @@ namespace factorama
             return {pose_a_, pose_b_, measured_diff_};
         }
 
-        double weight() const override
+        double weight() const
         {
             return weight_;
         }
@@ -121,7 +117,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         PoseVariable* pose_a_;
         PoseVariable* pose_b_;
         Variable* measured_diff_;
@@ -157,21 +152,16 @@ namespace factorama
             PoseVariable* pose2,
             RotationVariable* calibration_rotation_12,
             double angle_sigma = 1.0)
-            : id_(id),
-              pose1_(pose1),
+            : pose1_(pose1),
               pose2_(pose2),
               calibration_rotation_12_(calibration_rotation_12),
               weight_(1.0 / angle_sigma)
         {
+            id_ = id;
             assert(pose1 != nullptr && "pose1 cannot be nullptr");
             assert(pose2 != nullptr && "pose2 cannot be nullptr");
             assert(calibration_rotation_12 != nullptr && "calibration_rotation_12 cannot be nullptr");
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
-        }
-
-        int id() const override
-        {
-            return id_;
         }
 
         // Residual dimension is 3 for so(3)
@@ -207,9 +197,7 @@ namespace factorama
             return {pose1_, pose2_, calibration_rotation_12_};
         }
 
-        double weight() const override { return weight_; }
-
-        std::string name() const override { return "PoseOrientationBetweenFactor"; }
+        double weight() const { return weight_; }
 
         FactorType::FactorTypeEnum type() const override
         {
@@ -217,7 +205,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         PoseVariable* pose1_;
         PoseVariable* pose2_;
         RotationVariable* calibration_rotation_12_;

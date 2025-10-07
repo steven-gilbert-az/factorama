@@ -1,5 +1,5 @@
 #pragma once
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include <cassert>
 
 namespace factorama
@@ -34,9 +34,8 @@ namespace factorama
                              Variable* measured_diff,
                              double sigma = 1.0);
 
-        int id() const override { return id_; }
         int residual_size() const override { return measured_diff_->size(); }
-        double weight() const override { return weight_; }
+        double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::generic_between; }
 
         Eigen::VectorXd compute_residual() const override;
@@ -45,7 +44,6 @@ namespace factorama
         std::string name() const override;
 
     private:
-        int id_;
         Variable* var_a_;
         Variable* var_b_;
         Variable* measured_diff_;

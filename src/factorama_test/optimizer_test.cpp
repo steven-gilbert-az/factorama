@@ -5,7 +5,7 @@
 
 using namespace factorama;
 
-constexpr double kTol = 1e-6;
+constexpr double precision_tol = 1e-6;
 
 
 

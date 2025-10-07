@@ -1,6 +1,6 @@
 #pragma once
 #include <cassert>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/random_utils.hpp"
 
@@ -34,9 +34,8 @@ namespace factorama
                                 const Eigen::Vector3d &pos_prior,
                                 double sigma = 1.0);
 
-        int id() const override { return id_; }
         int residual_size() const override { return 3; }
-        double weight() const override { return weight_; }
+        double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::pose_position_prior; }
 
         Eigen::VectorXd compute_residual() const override;
@@ -45,7 +44,6 @@ namespace factorama
         std::string name() const override;
 
     private:
-        int id_;
         PoseVariable* pose_;
         Eigen::Vector3d pos_prior_;
         double weight_;
@@ -78,9 +76,8 @@ namespace factorama
                                    const Eigen::Matrix3d &dcm_CW_prior,
                                    double sigma = 1.0);
 
-        int id() const override { return id_; }
         int residual_size() const override { return 3; }
-        double weight() const override { return weight_; }
+        double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::pose_orientation_prior; }
 
         Eigen::VectorXd compute_residual() const override;
@@ -89,7 +86,6 @@ namespace factorama
         std::string name() const override;
 
     private:
-        int id_;
         PoseVariable* pose_;
         Eigen::Vector3d rot_CW_prior_;
         double weight_;

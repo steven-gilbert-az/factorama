@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <chrono>
 #include "factorama/factor_graph.hpp"
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama_test/test_utils.hpp"
 
 

@@ -15,7 +15,7 @@
 #endif
 
 // Factorama includes
-#include <factorama/types.hpp>
+#include <factorama/base_types.hpp>
 #include <factorama/factor_graph.hpp>
 #include <factorama/sparse_optimizer.hpp>
 #include <factorama/pose_variable.hpp>
@@ -27,6 +27,7 @@
 #include <factorama/generic_prior_factor.hpp>
 #include <factorama/inverse_range_bearing_factor.hpp>
 #include <factorama/generic_between_factor.hpp>
+#include <factorama/linear_velocity_factor.hpp>
 #include <factorama/pose_prior_factors.hpp>
 #include <factorama/pose_between_factors.hpp>
 #include <factorama/rotation_prior_factor.hpp>
@@ -75,7 +76,6 @@ PYBIND11_MODULE(_factorama, m) {
         .def("residual_size", &factorama::Factor::residual_size)
         .def("compute_residual", &factorama::Factor::compute_residual)
         .def("variables", &factorama::Factor::variables)
-        .def("weight", &factorama::Factor::weight)
         .def("name", &factorama::Factor::name)
         .def("type", &factorama::Factor::type);
 
@@ -152,6 +152,11 @@ PYBIND11_MODULE(_factorama, m) {
         .def(py::init<int, factorama::Variable*, factorama::Variable*, factorama::Variable*, double>(),
              "Create a GenericBetweenFactor",
              py::arg("id"), py::arg("var_a"), py::arg("var_b"), py::arg("measured_diff"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::LinearVelocityFactor, std::shared_ptr<factorama::LinearVelocityFactor>, factorama::Factor>(m, "LinearVelocityFactor")
+        .def(py::init<int, factorama::Variable*, factorama::Variable*, factorama::Variable*, double, double>(),
+             "Create a LinearVelocityFactor",
+             py::arg("id"), py::arg("var_1"), py::arg("var_2"), py::arg("velocity_variable"), py::arg("dt"), py::arg("sigma") = 1.0);
 
     py::class_<factorama::PosePositionPriorFactor, std::shared_ptr<factorama::PosePositionPriorFactor>, factorama::Factor>(m, "PosePositionPriorFactor")
         .def(py::init<int, factorama::PoseVariable*, const Eigen::Vector3d&, double>(),

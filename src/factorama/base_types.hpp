@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 namespace factorama
 {
@@ -15,6 +16,8 @@ namespace factorama
             inverse_range_landmark,
             extrinsic_rotation,
             generic,
+            custom,
+            other,
             num_variable_types
         };
 
@@ -28,6 +31,8 @@ namespace factorama
             names[inverse_range_landmark] = "inverse_range_landmark";
             names[extrinsic_rotation] = "extrinsic_rotation";
             names[generic] = "generic";
+            names[custom] = "custom";
+            names[other] = "other";
             return names;
         }
 
@@ -60,6 +65,8 @@ namespace factorama
             pose_orientation_prior,
             pose_position_between,
             pose_orientation_between,
+            custom,
+            other,
             num_factor_types
         };
 
@@ -76,6 +83,8 @@ namespace factorama
             names[pose_orientation_prior] = "pose_orientation_prior";
             names[pose_position_between] = "pose_position_between";
             names[pose_orientation_between] = "pose_orientation_between";
+            names[custom] = "custom";
+            names[other] = "other";
             return names;
         }
 
@@ -107,10 +116,6 @@ namespace factorama
     public:
         virtual ~Variable() = default;
         
-        /// Get the unique identifier for this variable
-        /// @return Variable ID used for indexing and identification
-        virtual int id() const = 0;
-        
         /// Get the dimension of this variable
         /// @return Dimension (e.g. 3 for rotations, 6 for poses)
         virtual int size() const = 0;
@@ -130,21 +135,42 @@ namespace factorama
         /// Get the variable type enumeration
         /// @return Type identifier for this variable class
         virtual VariableType::VariableTypeEnum type() const = 0;
-        
-        /// Get a human-readable name for this variable
-        /// @return String description of this variable
-        virtual std::string name() const = 0;
-        
-        /// Print variable information to stdout
-        virtual void print() const = 0;
-        
-        /// Check if this variable is held constant during optimization
-        /// @return True if variable should not be optimized
-        virtual bool is_constant() const = 0;
 
         /// Create a deep copy of this variable
         /// @return Shared pointer to cloned variable (used for numerical Jacobians)
         virtual std::shared_ptr<Variable> clone() const = 0;
+
+        /// Get the unique identifier for this variable
+        /// @return Variable ID used for indexing and identification
+        virtual int id() const {
+            return id_;
+        }
+        
+        /// Get a human-readable name for this variable
+        /// @return String description of this variable
+        virtual std::string name() const {
+           return VariableType::variable_names[int(type())] + std::to_string(id());
+        }
+        
+        /// Print variable information to stdout
+        virtual void print() const {
+            std::cout << name() << std::endl;
+            std::cout << "Value: " << value().transpose() << std::endl;
+        };
+        
+        /// Check if this variable is held constant during optimization
+        /// @return True if variable should not be optimized
+        virtual bool is_constant() const {
+            return is_constant_;
+        }
+
+        virtual void set_constant(bool val) {
+            is_constant_ = val;
+        }
+    
+    protected:
+        int id_;
+        bool is_constant_ = false;
     };
 
     /**
@@ -157,7 +183,6 @@ namespace factorama
     {
     public:
         virtual ~Factor() = default;
-        virtual int id() const = 0;
 
         /**
          * @brief Get the dimension of this factor's residual vector
@@ -184,8 +209,17 @@ namespace factorama
          */
         virtual std::vector<Variable *> variables() = 0;
 
-        virtual double weight() const = 0;
-        virtual std::string name() const = 0;
+        virtual int id() const {
+            return id_;
+        };
+
+        virtual std::string name() const {
+            return FactorType::factor_names[int(type())] + std::to_string(id());
+        }
         virtual FactorType::FactorTypeEnum type() const = 0;
+
+        protected:
+        int id_;
+        
     };
 }

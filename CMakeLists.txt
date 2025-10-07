@@ -65,6 +65,7 @@ target_sources(factorama
         src/factorama/generic_between_factor.cpp
         src/factorama/inverse_range_bearing_factor.cpp
         src/factorama/inverse_range_variable.cpp
+        src/factorama/linear_velocity_factor.cpp
         src/factorama/pose_prior_factors.cpp
         src/factorama/pose_variable.cpp
         src/factorama/sparse_optimizer.cpp
@@ -121,6 +122,8 @@ if(BUILD_TESTS)
     
     # Create test executables
     add_factorama_test(unit_test src/factorama_test/unit_test.cpp)
+    add_factorama_test(variable_tests src/factorama_test/variable_tests.cpp)
+    add_factorama_test(factor_tests src/factorama_test/factor_tests.cpp)
     add_factorama_test(integration_test src/factorama_test/integration_test.cpp)
     add_factorama_test(optimizer_test src/factorama_test/optimizer_test.cpp)
     
@@ -136,10 +139,14 @@ if(BUILD_TESTS)
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.10)
         include(Catch)
         catch_discover_tests(unit_test)
+        catch_discover_tests(variable_tests)
+        catch_discover_tests(factor_tests)
         catch_discover_tests(integration_test)
         catch_discover_tests(optimizer_test)
     else()
         add_test(NAME unit_test COMMAND unit_test)
+        add_test(NAME variable_tests COMMAND variable_tests)
+        add_test(NAME factor_tests COMMAND factor_tests)
         add_test(NAME integration_test COMMAND integration_test)
         add_test(NAME optimizer_test COMMAND optimizer_test)
     endif()

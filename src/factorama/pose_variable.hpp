@@ -3,7 +3,7 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <iostream>
-#include "factorama/types.hpp" // assuming VariableType is defined here
+#include "factorama/base_types.hpp" // assuming VariableType is defined here
 #include "factorama/random_utils.hpp"
 
 namespace factorama
@@ -38,11 +38,9 @@ namespace factorama
          */
         PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW);
 
-        int id() const override { return id_; }
         int size() const override { return 6; }
         const Eigen::VectorXd &value() const override { return pose_CW_; }
         VariableType::VariableTypeEnum type() const override { return VariableType::pose; }
-        bool is_constant() const override { return is_constant_; }
         void set_is_constant(bool val) { is_constant_ = val; }
 
         /**
@@ -59,7 +57,6 @@ namespace factorama
 
         void set_value_from_vector(const Eigen::VectorXd &x) override;
         void apply_increment(const Eigen::VectorXd &dx) override;
-        std::string name() const override;
 
         /**
          * @brief Get DCM (rotation matrix) from rodrigues vector
@@ -88,8 +85,6 @@ namespace factorama
         std::shared_ptr<Variable> clone() const override;
 
     private:
-        int id_;
         Eigen::VectorXd pose_CW_; // [tx, ty, tz, rx, ry, rz] representing pose_CW
-        bool is_constant_ = false;
     };
 }

@@ -9,8 +9,9 @@ GenericBetweenFactor::GenericBetweenFactor(int id,
                                          Variable* var_b,
                                          Variable* measured_diff,
                                          double sigma)
-    : id_(id), var_a_(var_a), var_b_(var_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
+    : var_a_(var_a), var_b_(var_b), measured_diff_(measured_diff), weight_(1.0 / sigma)
 {
+    id_ = id;
     assert(var_a != nullptr && "var_a cannot be nullptr");
     assert(var_b != nullptr && "var_b cannot be nullptr");
     assert(measured_diff != nullptr && "measured_diff cannot be nullptr");

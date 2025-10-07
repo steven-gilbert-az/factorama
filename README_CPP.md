@@ -48,7 +48,7 @@ See [EXAMPLES.md](EXAMPLES.md) for usage examples.
 ```
 factorama/
 ├── src/factorama/          # Core library implementation
-│   ├── types.hpp            # Base variable and factor interfaces
+│   ├── base_types.hpp            # Base variable and factor interfaces
 │   ├── factor_graph.hpp     # Factor graph container and operations
 │   ├── sparse_optimizer.hpp # Sparse optimization algorithms
 │   ├── *_variable.hpp       # Variable implementations

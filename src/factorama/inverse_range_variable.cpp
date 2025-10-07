@@ -10,8 +10,9 @@ InverseRangeVariable::InverseRangeVariable(int variable_id,
                                          const Eigen::Vector3d &origin_pos_W,
                                          const Eigen::Vector3d &bearing_W,
                                          double initial_range)
-    : id_(variable_id), origin_pos_W_(origin_pos_W), bearing_W_(bearing_W.normalized())
+    :  origin_pos_W_(origin_pos_W), bearing_W_(bearing_W.normalized())
 {
+    id_ = variable_id;
     // Store inverse range
     inverse_range_value_ = Eigen::VectorXd(1);
     inverse_range_value_[0] = 1.0 / initial_range;
@@ -53,10 +54,6 @@ Eigen::Vector3d InverseRangeVariable::pos_W() const
     return origin_pos_W_ + (1.0 / inv_range) * bearing_W_;
 }
 
-std::string InverseRangeVariable::name() const
-{
-    return "InverseRangeVariable" + std::to_string(id());
-}
 
 void InverseRangeVariable::print() const
 {

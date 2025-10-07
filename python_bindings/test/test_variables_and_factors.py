@@ -77,7 +77,6 @@ def test_bearing_observation_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.bearing_observation
-    assert np.isclose(factor.weight(), 1.0 / angle_sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -112,7 +111,6 @@ def test_inverse_range_bearing_factor():
     residual = factor.compute_residual()
     assert len(residual) == 3
     
-    assert np.isclose(factor.weight(), 10.0)
 
 
 def test_generic_prior_factor():
@@ -129,7 +127,6 @@ def test_generic_prior_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.generic_prior
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -158,7 +155,6 @@ def test_generic_between_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 2
     assert factor.type() == factorama.FactorType.generic_between
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -183,7 +179,6 @@ def test_pose_position_prior_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.pose_position_prior
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -197,14 +192,13 @@ def test_pose_orientation_prior_factor():
     pose_var = factorama.PoseVariable(1, pose_init)
     
     # Create factor
-    rotvec_prior = np.array([0.05, 0.15, 0.25])
+    dcm_CW_prior = np.eye(3)
     sigma = 0.05
-    factor = factorama.PoseOrientationPriorFactor(1, pose_var, rotvec_prior, sigma)
+    factor = factorama.PoseOrientationPriorFactor(1, pose_var, dcm_CW_prior, sigma)
     
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.pose_orientation_prior
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -230,7 +224,6 @@ def test_pose_position_between_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.pose_position_between
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -256,7 +249,6 @@ def test_pose_orientation_between_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.pose_orientation_between
-    assert np.isclose(factor.weight(), 1.0 / angle_sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -279,7 +271,6 @@ def test_rotation_prior_factor():
     assert factor.id() == 1
     assert factor.residual_size() == 3
     assert factor.type() == factorama.FactorType.pose_orientation_prior
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()
@@ -304,7 +295,6 @@ def test_bearing_projection_factor_2d():
     assert factor.id() == 1
     assert factor.residual_size() == 2  # 2D projection
     assert factor.type() == factorama.FactorType.bearing_observation  # Uses existing enum
-    assert np.isclose(factor.weight(), 1.0 / sigma)
     
     # Compute residual
     residual = factor.compute_residual()

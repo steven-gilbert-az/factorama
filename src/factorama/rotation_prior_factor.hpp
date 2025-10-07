@@ -1,6 +1,6 @@
 #pragma once
 #include <cassert>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/rotation_variable.hpp"
 #include "factorama/random_utils.hpp"
 
@@ -32,15 +32,11 @@ namespace factorama
                                    RotationVariable* rotation,
                                    const Eigen::Matrix3d &dcm_AB_prior,
                                    double sigma = 1.0)
-            : id_(id), rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma)
+            : rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma)
         {
+            id_ = id;
             assert(rotation != nullptr && "rotation variable cannot be nullptr");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
-        }
-
-        int id() const override
-        {
-            return id_;
         }
 
         int residual_size() const override
@@ -94,7 +90,7 @@ namespace factorama
             return {rotation_};
         }
 
-        double weight() const override
+        double weight() const
         {
             return weight_;
         }
@@ -110,7 +106,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         RotationVariable* rotation_;
         Eigen::Matrix3d dcm_AB_prior_;
         double weight_;

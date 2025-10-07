@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 
 namespace factorama
 {
@@ -25,8 +25,9 @@ namespace factorama
          * @param initial_value Initial vector value (any dimension > 0)
          */
         GenericVariable(int id, const Eigen::VectorXd &initial_value)
-            : id_(id), value_(initial_value)
+            : value_(initial_value)
         {
+            id_ = id;
             if (initial_value.size() == 0)
             {
                 throw std::runtime_error("GenericVariable: initial_value must have non-zero size");
@@ -55,26 +56,12 @@ namespace factorama
             value_ += dx;
         }
 
-        int id() const override { return id_; }
-
         VariableType::VariableTypeEnum type() const override
         {
             return VariableType::generic;
         }
 
-        bool is_constant() const override { return is_constant_; }
         void set_is_constant(bool val) { is_constant_ = val; }
-
-        std::string name() const override
-        {
-            return "Generic" + std::to_string(id());
-        }
-
-        void print() const override
-        {
-            std::cout << name() << std::endl;
-            std::cout << "Value: " << value_.transpose() << std::endl;
-        }
         
         std::shared_ptr<Variable> clone() const override 
         {
@@ -82,8 +69,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         Eigen::VectorXd value_;
-        bool is_constant_ = false;
     };
 }

@@ -14,6 +14,8 @@
 namespace factorama
 {
 
+    constexpr double precision_tol = 1e-9;
+
     bool is_approx_equal(const Eigen::MatrixXd &a, const Eigen::MatrixXd &b, double tol = 1e-9)
     {
         if (a.rows() != b.rows())

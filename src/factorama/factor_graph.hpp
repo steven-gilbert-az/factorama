@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 #include <Eigen/Sparse>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 
 namespace factorama
 {

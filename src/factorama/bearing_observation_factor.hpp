@@ -1,5 +1,5 @@
 #pragma once
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/landmark_variable.hpp"
 #include <memory>
@@ -40,21 +40,17 @@ namespace factorama
             LandmarkVariable* landmark_var,
             const Eigen::Vector3d &bearing_C_observed,
             double angle_sigma = 1.0)
-            : id_(id),
-              pose_var_(pose_var),
+            : pose_var_(pose_var),
               landmark_var_(landmark_var),
               bearing_C_obs_(bearing_C_observed.normalized()),
               weight_(1.0 / angle_sigma)
         {
+            id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
             assert(landmark_var != nullptr && "landmark_var cannot be nullptr");
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
         }
 
-        int id() const override
-        {
-            return id_;
-        }
 
         Eigen::VectorXd compute_residual() const override
         {
@@ -73,11 +69,6 @@ namespace factorama
             return 3;
         }
 
-        std::string name() const override
-        {
-            return "BearingObs";
-        }
-
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const override;
 
         std::vector<Variable *> variables() override
@@ -85,7 +76,7 @@ namespace factorama
             return {pose_var_, landmark_var_};
         }
 
-        double weight() const override
+        double weight() const
         {
             return weight_;
         }
@@ -96,7 +87,6 @@ namespace factorama
         }
 
     private:
-        int id_;
         PoseVariable* pose_var_;
         LandmarkVariable* landmark_var_;
         Eigen::Vector3d bearing_C_obs_;

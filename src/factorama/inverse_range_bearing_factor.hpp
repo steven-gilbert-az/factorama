@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <Eigen/Core>
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
 
@@ -43,20 +43,15 @@ namespace factorama
             InverseRangeVariable* inverse_range_variable,
             const Eigen::Vector3d &bearing_C_observed,
             double angle_sigma = 1.0)
-            : id_(id),
-              pose_var_(pose_var),
+            : pose_var_(pose_var),
               inverse_range_var_(inverse_range_variable),
               bearing_C_obs_(bearing_C_observed.normalized()),
               weight_(1.0 / angle_sigma)
         {
+            id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
             assert(inverse_range_variable != nullptr && "inverse_range_variable cannot be nullptr");
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
-        }
-
-        int id() const override
-        {
-            return id_;
         }
 
         std::vector<Variable *> variables() override
@@ -102,18 +97,12 @@ namespace factorama
             return bearing_C_obs_;
         }
 
-        std::string name() const override
-        {
-            return "InverseRangeBearing";
-        }
-
         FactorType::FactorTypeEnum type() const override
         {
             return FactorType::inverse_range_bearing;
         }
 
     private:
-        int id_;
         PoseVariable* pose_var_;
         InverseRangeVariable* inverse_range_var_;
         Eigen::Vector3d bearing_C_obs_; // In camera frame, normalized

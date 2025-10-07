@@ -1,6 +1,6 @@
 #pragma once
 
-#include "factorama/types.hpp"
+#include "factorama/base_types.hpp"
 #include "factorama/random_utils.hpp"
 #include <Eigen/Dense>
 #include <iostream>
@@ -28,30 +28,20 @@ namespace factorama
          * @param dcm_AB Rotation matrix from frame A to frame B
          */
         RotationVariable(int id, const Eigen::Matrix3d &dcm_AB)
-            : id_(id), dcm_AB_(dcm_AB)
+            : dcm_AB_(dcm_AB)
         {
+            id_ = id;
             value_ = LogMapSO3(dcm_AB_);
         }
 
         int size() const override { return 3; }
-
-        int id() const override
-        {
-            return id_;
-        }
 
         virtual VariableType::VariableTypeEnum type() const
         {
             return VariableType::extrinsic_rotation;
         }
 
-        bool is_constant() const override { return is_constant_; }
         void set_is_constant(bool val) { is_constant_ = val; }
-
-        std::string name() const override
-        {
-            return "ExtrinsicRotation" + std::to_string(id());
-        }
 
         const Eigen::VectorXd &value() const override
         {
@@ -76,7 +66,7 @@ namespace factorama
 
         void print() const override
         {
-            std::cout << "RotationVariable (Camera-to-External) ID " << id_ << std::endl;
+            std::cout << "RotationVariable ID " << id_ << std::endl;
             std::cout << dcm_AB_ << std::endl;
         }
 
@@ -87,10 +77,8 @@ namespace factorama
         }
 
     private:
-        int id_;
         Eigen::VectorXd value_;
         Eigen::Matrix3d dcm_AB_;
-        bool is_constant_ = false;
     };
 
 } // namespace factorama
