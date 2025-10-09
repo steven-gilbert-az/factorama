@@ -6,7 +6,7 @@ import numpy
 import numpy.typing
 import scipy.sparse
 import typing
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 class BearingObservationFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
@@ -300,6 +300,7 @@ class OptimizerSettings:
     def step_tolerance(self, arg0: typing.SupportsFloat) -> None:
         ...
 class OptimizerStats:
+    status: OptimizerStatus
     valid: bool
     def __init__(self) -> None:
         ...
@@ -338,6 +339,55 @@ class OptimizerStats:
         ...
     @residual_norm.setter
     def residual_norm(self, arg0: typing.SupportsFloat) -> None:
+        ...
+class OptimizerStatus:
+    """
+    Members:
+    
+      SUCCESS
+    
+      RUNNING
+    
+      SINGULAR_HESSIAN
+    
+      ILL_CONDITIONED
+    
+      DIVERGED
+    
+      FAILED
+    """
+    DIVERGED: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.DIVERGED: 4>
+    FAILED: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.FAILED: 5>
+    ILL_CONDITIONED: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.ILL_CONDITIONED: 3>
+    RUNNING: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.RUNNING: 1>
+    SINGULAR_HESSIAN: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.SINGULAR_HESSIAN: 2>
+    SUCCESS: typing.ClassVar[OptimizerStatus]  # value = <OptimizerStatus.SUCCESS: 0>
+    __members__: typing.ClassVar[dict[str, OptimizerStatus]]  # value = {'SUCCESS': <OptimizerStatus.SUCCESS: 0>, 'RUNNING': <OptimizerStatus.RUNNING: 1>, 'SINGULAR_HESSIAN': <OptimizerStatus.SINGULAR_HESSIAN: 2>, 'ILL_CONDITIONED': <OptimizerStatus.ILL_CONDITIONED: 3>, 'DIVERGED': <OptimizerStatus.DIVERGED: 4>, 'FAILED': <OptimizerStatus.FAILED: 5>}
+    def __eq__(self, other: typing.Any) -> bool:
+        ...
+    def __getstate__(self) -> int:
+        ...
+    def __hash__(self) -> int:
+        ...
+    def __index__(self) -> int:
+        ...
+    def __init__(self, value: typing.SupportsInt) -> None:
+        ...
+    def __int__(self) -> int:
+        ...
+    def __ne__(self, other: typing.Any) -> bool:
+        ...
+    def __repr__(self) -> str:
+        ...
+    def __setstate__(self, state: typing.SupportsInt) -> None:
+        ...
+    def __str__(self) -> str:
+        ...
+    @property
+    def name(self) -> str:
+        ...
+    @property
+    def value(self) -> int:
         ...
 class PoseOrientationBetweenFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose1: PoseVariable, pose2: PoseVariable, calibration_rotation_12: RotationVariable, angle_sigma: typing.SupportsFloat = 1.0) -> None:

@@ -194,6 +194,14 @@ PYBIND11_MODULE(_factorama, m) {
         .value("GaussNewton", factorama::OptimizerMethod::GaussNewton)
         .value("LevenbergMarquardt", factorama::OptimizerMethod::LevenbergMarquardt);
 
+    py::enum_<factorama::OptimizerStatus>(m, "OptimizerStatus")
+        .value("SUCCESS", factorama::OptimizerStatus::SUCCESS)
+        .value("RUNNING", factorama::OptimizerStatus::RUNNING)
+        .value("SINGULAR_HESSIAN", factorama::OptimizerStatus::SINGULAR_HESSIAN)
+        .value("ILL_CONDITIONED", factorama::OptimizerStatus::ILL_CONDITIONED)
+        .value("DIVERGED", factorama::OptimizerStatus::DIVERGED)
+        .value("FAILED", factorama::OptimizerStatus::FAILED);
+
     py::class_<factorama::OptimizerSettings>(m, "OptimizerSettings")
         .def(py::init<>())
         .def_readwrite("method", &factorama::OptimizerSettings::method)
@@ -211,6 +219,7 @@ PYBIND11_MODULE(_factorama, m) {
     py::class_<factorama::OptimizerStats>(m, "OptimizerStats")
         .def(py::init<>())
         .def_readwrite("valid", &factorama::OptimizerStats::valid)
+        .def_readwrite("status", &factorama::OptimizerStats::status)
         .def_readwrite("chi2", &factorama::OptimizerStats::chi2)
         .def_readwrite("delta_norm", &factorama::OptimizerStats::delta_norm)
         .def_readwrite("residual_norm", &factorama::OptimizerStats::residual_norm)

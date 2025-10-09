@@ -28,13 +28,55 @@ namespace factorama
         sparse_solver_.compute(H);
         if (sparse_solver_.info() != Eigen::Success)
         {
-            throw std::runtime_error("[SparseOptimizer] Sparse Cholesky factorization failed.");
+            current_stats_.valid = false;
+            current_stats_.status = OptimizerStatus::FAILED;
+            if (settings_.verbose)
+            {
+                std::cerr << "[SparseOptimizer] Sparse Cholesky factorization failed.\n";
+            }
+            return;
+        }
+
+        // Check for singular/ill-conditioned matrix via diagonal elements
+        Eigen::VectorXd D = sparse_solver_.vectorD().cwiseAbs();
+        double min_diag = D.minCoeff();
+        double max_diag = D.maxCoeff();
+
+        if (min_diag < 1e-14)
+        {
+            current_stats_.valid = false;
+            current_stats_.status = OptimizerStatus::SINGULAR_HESSIAN;
+            if (settings_.verbose)
+            {
+                std::cerr << "[SparseOptimizer] Hessian is singular (min diagonal = " << min_diag << ")\n";
+            }
+            return;
+        }
+
+        // Check condition number estimate: max/min diagonal ratio
+        double cond_estimate = max_diag / min_diag;
+        if (cond_estimate > 1e12)
+        {
+            current_stats_.valid = false;
+            current_stats_.status = OptimizerStatus::ILL_CONDITIONED;
+            if (settings_.verbose)
+            {
+                std::cerr << "[SparseOptimizer] Hessian is ill-conditioned (condition estimate = "
+                          << cond_estimate << ")\n";
+            }
+            return;
         }
 
         Eigen::VectorXd dx = sparse_solver_.solve(b);
         if (sparse_solver_.info() != Eigen::Success)
         {
-            throw std::runtime_error("[SparseOptimizer] Failed to solve linear system.");
+            current_stats_.valid = false;
+            current_stats_.status = OptimizerStatus::FAILED;
+            if (settings_.verbose)
+            {
+                std::cerr << "[SparseOptimizer] Failed to solve linear system.\n";
+            }
+            return;
         }
 
         dx *= settings_.learning_rate;
@@ -113,6 +155,7 @@ namespace factorama
         // Initialize stats
         current_stats_ = OptimizerStats{};
         current_stats_.valid = true;
+        current_stats_.status = OptimizerStatus::RUNNING;
         current_stats_.current_iteration = 0;
 
         // Store initial residual for convergence checking
@@ -166,6 +209,19 @@ namespace factorama
             {
                 std::cerr << "[SparseOptimizer] Error in iteration " << i << ": " << e.what() << std::endl;
                 current_stats_.valid = false;
+                current_stats_.status = OptimizerStatus::FAILED;
+                break;
+            }
+
+            // Check if step failed due to matrix issues
+            if (current_stats_.status == OptimizerStatus::SINGULAR_HESSIAN ||
+                current_stats_.status == OptimizerStatus::ILL_CONDITIONED ||
+                current_stats_.status == OptimizerStatus::FAILED)
+            {
+                if (settings_.verbose)
+                {
+                    std::cout << "[SparseOptimizer] Stopping optimization due to error status.\n";
+                }
                 break;
             }
 
@@ -177,6 +233,7 @@ namespace factorama
                     std::cout << "[SparseOptimizer] Converged: Step norm (" << current_stats_.delta_norm
                               << ") below tolerance (" << settings_.step_tolerance << ")\n";
                 }
+                current_stats_.status = OptimizerStatus::SUCCESS;
                 break;
             }
 
@@ -190,6 +247,15 @@ namespace factorama
                 {
                     std::cout << "[SparseOptimizer] Aborted: residual went up - residual improvement: " << residual_improvement << std::endl;
                 }
+                // Check if we've diverged beyond the initial state
+                if (current_stats_.residual_norm >= initial_stats_.residual_norm)
+                {
+                    current_stats_.status = OptimizerStatus::DIVERGED;
+                }
+                else
+                {
+                    current_stats_.status = OptimizerStatus::SUCCESS;
+                }
                 break;
             }
             else if (residual_improvement < settings_.residual_tolerance)
@@ -199,6 +265,7 @@ namespace factorama
                     std::cout << "[SparseOptimizer] Converged: Residual improvement (" << residual_improvement
                               << ") below tolerance (" << settings_.residual_tolerance << ")\n";
                 }
+                current_stats_.status = OptimizerStatus::SUCCESS;
                 break;
             }
 
@@ -211,12 +278,19 @@ namespace factorama
                               << " > 10 * " << initial_stats_.residual_norm << ")\n";
                 }
                 current_stats_.valid = false;
+                current_stats_.status = OptimizerStatus::DIVERGED;
                 break;
             }
         }
 
         auto end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed_sec = end_time - start_time;
+
+        // Set final status if still RUNNING (max iterations reached)
+        if (current_stats_.status == OptimizerStatus::RUNNING)
+        {
+            current_stats_.status = OptimizerStatus::SUCCESS;
+        }
 
         if (settings_.verbose)
         {
@@ -230,6 +304,7 @@ namespace factorama
                       << " %\n";
             std::cout << "Total time: " << elapsed_sec.count() << " seconds\n";
             std::cout << "Optimization " << (current_stats_.valid ? "SUCCESS" : "FAILED") << "\n";
+            std::cout << "Status: " << static_cast<int>(current_stats_.status) << "\n";
             std::cout << "===============================\n";
         }
 
@@ -287,6 +362,26 @@ namespace factorama
                 if (settings_.verbose)
                 {
                     std::cout << "[LM] Factorization failed, increasing lambda to " << current_stats_.damping_parameter << "\n";
+                }
+                continue;
+            }
+
+            // Check for singular/ill-conditioned matrix via diagonal elements
+            Eigen::VectorXd D = sparse_solver_.vectorD().cwiseAbs();
+            double min_diag = D.minCoeff();
+            double max_diag = D.maxCoeff();
+
+            if (min_diag < 1e-14 || (max_diag / min_diag) > 1e12)
+            {
+                // Hessian is ill-conditioned, increase damping and try again
+                current_stats_.damping_parameter *= settings_.lambda_up_factor;
+                lm_attempts++;
+                if (settings_.verbose)
+                {
+                    std::cout << "[LM] Hessian is "
+                              << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
+                              << " (min diag=" << min_diag << ", cond est=" << (max_diag/min_diag)
+                              << "), increasing lambda to " << current_stats_.damping_parameter << "\n";
                 }
                 continue;
             }
@@ -386,7 +481,22 @@ namespace factorama
 
         // If no step was accepted, we're done (convergence or failure)
         if (!step_accepted)
-        {
+        {   
+
+            double initial_cost = initial_stats_.chi2 * 0.5;
+            if(current_cost < initial_cost) {
+                // cost has gone down since the beginning, so we will call this a win
+                current_stats_.valid = true;
+                current_stats_.status = OptimizerStatus::SUCCESS;
+
+            }
+            else {
+                current_stats_.valid = false;
+                current_stats_.status = (current_stats_.damping_parameter >= settings_.max_lambda)
+                                        ? OptimizerStatus::ILL_CONDITIONED
+                                        : OptimizerStatus::FAILED;
+            }
+            
             if (settings_.verbose)
             {
                 std::cout << "[LM] No acceptable step found after " << max_lm_attempts << " attempts\n";
@@ -458,9 +568,27 @@ namespace factorama
         {
             if (settings_.verbose)
             {
-                std::cerr << "[SparseOptimizer] Sparse Cholesky factorization failed." << std::endl;
+                std::cerr << "[SparseOptimizer] Sparse Cholesky factorization failed for covariance estimation.\n";
             }
             return;
+        }
+
+        // Check for singular/ill-conditioned matrix via diagonal elements
+        Eigen::VectorXd D = sparse_solver_.vectorD().cwiseAbs();
+        double min_diag = D.minCoeff();
+        double max_diag = D.maxCoeff();
+        double cond_estimate = max_diag / min_diag;
+
+        if (min_diag < 1e-14 || cond_estimate > 1e12)
+        {
+            if (settings_.verbose)
+            {
+                std::cerr << "[SparseOptimizer] Hessian is "
+                          << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
+                          << " (min diag=" << min_diag << ", cond est=" << cond_estimate
+                          << ") - covariance estimation may be unreliable.\n";
+            }
+            // Note: We still allow covariance estimation to proceed, but warn the user
         }
 
         cached_hessian_valid_for_covariance_est_ = true;

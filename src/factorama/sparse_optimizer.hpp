@@ -16,6 +16,19 @@ namespace factorama
   };
 
   /**
+   * @brief Optimization status codes
+   */
+  enum class OptimizerStatus
+  {
+    SUCCESS,           ///< Optimization completed successfully (converged or max iterations)
+    RUNNING,           ///< Optimization is in progress
+    SINGULAR_HESSIAN,  ///< Hessian matrix is singular (not invertible)
+    ILL_CONDITIONED,   ///< Hessian matrix is ill-conditioned (nearly singular)
+    DIVERGED,          ///< Optimization diverged (residual growing)
+    FAILED             ///< Generic failure (e.g., factorization or solve failed)
+  };
+
+  /**
    * @brief Configuration settings for sparse optimization
    *
    * Controls convergence criteria, algorithm selection, and damping parameters.
@@ -62,14 +75,15 @@ namespace factorama
    */
   struct OptimizerStats
   {
-    bool valid = false;          ///< Whether these statistics are valid
-    double chi2 = -1.0;          ///< Chi-squared cost (||residual||^2)
-    double delta_norm = -1.0;    ///< Norm of optimization step
-    double residual_norm = -1.0; ///< Norm of residual vector
-    int current_iteration = 0;   ///< Current iteration number
-    int rank = -1;               ///< Matrix rank (if computed)
+    bool valid = false;                           ///< Whether these statistics are valid
+    OptimizerStatus status = OptimizerStatus::RUNNING; ///< Current optimization status
+    double chi2 = -1.0;                           ///< Chi-squared cost (||residual||^2)
+    double delta_norm = -1.0;                     ///< Norm of optimization step
+    double residual_norm = -1.0;                  ///< Norm of residual vector
+    int current_iteration = 0;                    ///< Current iteration number
+    int rank = -1;                                ///< Matrix rank (if computed)
 
-    double damping_parameter = 1e-3; ///< Levenberg-Marquardt damping parameter (lambda)
+    double damping_parameter = 1e-3;              ///< Levenberg-Marquardt damping parameter (lambda)
   };
 
   /**

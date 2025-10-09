@@ -309,6 +309,11 @@ namespace factorama
         num_residuals_ = row_offset;
         num_values_ = col_offset;
 
+        if(num_residuals_ < num_values_) {
+            // The problem is guaranteed to be singular, so throw an error
+            throw std::runtime_error("num residuals - " + std::to_string(num_residuals_) + ", should be >= num_values - " + std::to_string(num_values_));
+        }
+
         // First, figure out the number of elements in each column
         // std::vector<int> num_sparse_rows(num_values_, 0); // num sparse rows in each column
         Eigen::VectorXi num_sparse_rows = Eigen::VectorXi::Zero(num_values_);

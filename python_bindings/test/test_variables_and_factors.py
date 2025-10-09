@@ -304,58 +304,70 @@ def test_bearing_projection_factor_2d():
 def test_factor_graph_with_variables():
     """Test factor graph with variables"""
     graph = factorama.FactorGraph()
-    
+
     # Create variables
     dcm_AB = np.eye(3)
     rot_var = factorama.RotationVariable(1, dcm_AB)
-    
+
     origin_pos = np.array([0.0, 0.0, 0.0])
     bearing_W = np.array([1.0, 0.0, 0.0])
     inv_range_var = factorama.InverseRangeVariable(2, origin_pos, bearing_W, 10.0)
-    
+
     # Add to graph
     graph.add_variable(rot_var)
     graph.add_variable(inv_range_var)
-    
+
     assert graph.num_variables() == 2
-    
+
+    # Add prior factors
+    rot_prior = factorama.RotationPriorFactor(1, rot_var, dcm_AB, 1.0)
+    inv_range_value = np.array([1.0 / 10.0])
+    inv_range_prior = factorama.GenericPriorFactor(2, inv_range_var, inv_range_value, 1.0)
+    graph.add_factor(rot_prior)
+    graph.add_factor(inv_range_prior)
+
     # Finalize structure
     graph.finalize_structure()
     assert graph.num_values() == 4  # 3 + 1
+    assert graph.num_residuals() == 4  # 3 + 1
 
 
 def test_factor_graph_with_factors():
     """Test adding factors to factor graph"""
     graph = factorama.FactorGraph()
-    
+
     # Create variables
     pose_init = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     pose_var = factorama.PoseVariable(1, pose_init)
-    
+
     value_init = np.array([1.0, 2.0, 3.0])
     generic_var = factorama.GenericVariable(2, value_init)
-    
+
     graph.add_variable(pose_var)
     graph.add_variable(generic_var)
-    
+
     # Create and add factors
     pos_prior = np.array([0.1, 0.1, 0.1])
     pos_factor = factorama.PosePositionPriorFactor(1, pose_var, pos_prior, 0.1)
-    
+
+    dcm_prior = np.eye(3)
+    ori_factor = factorama.PoseOrientationPriorFactor(2, pose_var, dcm_prior, 0.1)
+
     prior_value = np.array([1.1, 2.1, 3.1])
-    generic_factor = factorama.GenericPriorFactor(2, generic_var, prior_value, 0.1)
-    
+    generic_factor = factorama.GenericPriorFactor(3, generic_var, prior_value, 0.1)
+
     graph.add_factor(pos_factor)
+    graph.add_factor(ori_factor)
     graph.add_factor(generic_factor)
-    
+
     # Finalize and check
     graph.finalize_structure()
     assert graph.num_variables() == 2
-    assert graph.num_residuals() == 6  # 3 + 3
-    
+    assert graph.num_residuals() == 9  # 3 + 3 + 3
+
     # Compute residuals
     residuals = graph.compute_full_residual_vector()
-    assert len(residuals) == 6
+    assert len(residuals) == 9
 
 
 if __name__ == "__main__":

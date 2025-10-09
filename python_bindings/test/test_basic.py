@@ -70,23 +70,30 @@ def test_generic_variable_creation():
 def test_factor_graph_with_variables():
     """Test adding variables to factor graph"""
     graph = factorama.FactorGraph()
-    
+
     # Create variables
     pose_init = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     pose_var = factorama.PoseVariable(1, pose_init)
-    
+
     landmark_pos = np.array([5.0, 0.0, 0.0])
     landmark_var = factorama.LandmarkVariable(2, landmark_pos)
-    
+
     # Add to graph
     graph.add_variable(pose_var)
     graph.add_variable(landmark_var)
-    
+
     assert graph.num_variables() == 2
-    
+
+    # Add prior factors to make the graph well-conditioned (need at least 9 residuals for 9 values)
+    pose_prior = factorama.GenericPriorFactor(1, pose_var, pose_init, 1.0)
+    landmark_prior = factorama.GenericPriorFactor(2, landmark_var, landmark_pos, 1.0)
+    graph.add_factor(pose_prior)
+    graph.add_factor(landmark_prior)
+
     # Finalize structure
     graph.finalize_structure()
     assert graph.num_values() == 9  # 6 + 3
+    assert graph.num_residuals() == 9  # 6 + 3
 
 
 def test_optimizer_settings():
@@ -112,18 +119,23 @@ def test_optimizer_settings():
 def test_optimizer_creation():
     """Test sparse optimizer creation"""
     optimizer = factorama.SparseOptimizer()
-    
+
     # Create a simple factor graph
     graph = factorama.FactorGraph()
     pose_init = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     pose_var = factorama.PoseVariable(1, pose_init)
     graph.add_variable(pose_var)
+
+    # Add prior factor
+    pose_prior = factorama.GenericPriorFactor(1, pose_var, pose_init, 1.0)
+    graph.add_factor(pose_prior)
+
     graph.finalize_structure()
-    
+
     # Setup optimizer
     settings = factorama.OptimizerSettings()
     optimizer.setup(graph, settings)
-    
+
     # Verify settings
     retrieved_settings = optimizer.settings()
     assert retrieved_settings.max_num_iterations == 100

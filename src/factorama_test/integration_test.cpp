@@ -20,6 +20,7 @@ struct TestScenario {
     bool should_run_jacobian_test = false;
     double jacobian_tolerance = 1e-6;
     bool verbose_output = false;
+    bool expect_failure = false; // If true, expect optimizer to fail with invalid status
 };
 
 // Optimization result structure
@@ -31,35 +32,49 @@ struct OptimizationResult {
 };
 
 // Common optimization test pipeline
-OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSettings& settings, bool run_jacobian_test = false, double jacobian_tol = 1e-6, bool verbose = false) {
+OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSettings& settings, bool run_jacobian_test = false, double jacobian_tol = 1e-6, bool verbose = false, bool expect_failure = false) {
     OptimizationResult result;
-    
+
     graph.finalize_structure();
-    
+
     if (verbose) {
         std::cout << "**** INITIAL FACTOR GRAPH ****" << std::endl;
         graph.print_structure();
         graph.print_variables();
     }
-    
-    // Run jacobian test if requested
-    if(run_jacobian_test){
+
+    // Run jacobian test if requested (only for non-failure cases)
+    if(run_jacobian_test && !expect_failure){
         REQUIRE(graph.detailed_factor_test(jacobian_tol, true));
     }
-    
-    
+
+
     // Get initial residual norm
     result.initial_norm = graph.compute_full_residual_vector().norm();
-    
+
     // Create copy for optimization
     std::shared_ptr<FactorGraph> graph_copy = std::make_shared<FactorGraph>(graph);
     graph_copy->finalize_structure();
-    
+
     // Run optimization
     SparseOptimizer optimizer;
     optimizer.setup(graph_copy, settings);
     optimizer.optimize();
-    
+
+    if (expect_failure) {
+        // Check that optimization failed with appropriate status
+        std::cout << "Optimizer status: " << static_cast<int>(optimizer.current_stats_.status) << std::endl;
+        std::cout << "Optimizer valid: " << optimizer.current_stats_.valid << std::endl;
+        REQUIRE(optimizer.current_stats_.valid == false);
+        REQUIRE((optimizer.current_stats_.status == OptimizerStatus::SINGULAR_HESSIAN ||
+                 optimizer.current_stats_.status == OptimizerStatus::ILL_CONDITIONED ||
+                 optimizer.current_stats_.status == OptimizerStatus::FAILED));
+    } else {
+        // Check that optimization status is SUCCESS
+        REQUIRE(optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+        REQUIRE(optimizer.current_stats_.valid == true);
+    }
+
     // Get final residual norm
     result.final_norm = graph_copy->compute_full_residual_vector().norm();
     result.converged = (result.final_norm < result.initial_norm);
@@ -69,17 +84,17 @@ OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSetti
         graph_copy->print_variables();
     }
 
-    // Test covariance estimation (should not crash)
-    if (verbose) {
+    // Test covariance estimation (should not crash) - only for successful optimizations
+    if (verbose && !expect_failure) {
         std::cout << "**** TESTING COVARIANCE ESTIMATION ****" << std::endl;
+        optimizer.print_all_covariances();
     }
-    optimizer.print_all_covariances();
 
-    // Run post-optimization jacobian test if requested
-    if (run_jacobian_test) {
+    // Run post-optimization jacobian test if requested (only for non-failure cases)
+    if (run_jacobian_test && !expect_failure) {
         REQUIRE(graph_copy->detailed_factor_test(jacobian_tol, true));
     }
-    
+
     return result;
 }
 
@@ -102,7 +117,7 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, false);
+                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
             },
             settings1,
             false, 1e-6, true
@@ -120,7 +135,7 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, false);
+                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
             },
             settings2,
             false, 1e-6, true
@@ -138,7 +153,7 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, false);
+                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
             },
             settings3,
             false, 1e-6, true
@@ -156,7 +171,7 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, false);
+                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, true);
             },
             settings4,
             false, 1e-6, true
@@ -175,7 +190,7 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, false, 0.004, 5.0);
+                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, true, 0.004, 5.0);
             },
             settings5,
             true, 1e-6, true
@@ -252,14 +267,14 @@ TEST_CASE("Consolidated Integration Tests")
                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
                 std::vector<Eigen::Vector3d> gt_landmark_positions;
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, false);
+                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, true);
             },
             settings9,
             false, 1e-6, true
         });
     }
     
-    // Scenario 10: BearingProjectionFactor2D with prior factors  
+    // Scenario 10: BearingProjectionFactor2D with prior factors
     {
         OptimizerSettings settings10;
         settings10.method = OptimizerMethod::GaussNewton;
@@ -276,7 +291,45 @@ TEST_CASE("Consolidated Integration Tests")
             false, 1e-6, true
         });
     }
-    
+
+    // ===== FAILURE CASES: Test that optimizer correctly detects ill-conditioned problems =====
+
+    // Scenario 11: Landmarks without priors - should FAIL
+    {
+        OptimizerSettings settings11;
+        settings11.method = OptimizerMethod::GaussNewton;
+        settings11.verbose = true;
+        scenarios.push_back({
+            "FAILURE TEST: Landmarks without priors (expect ill-conditioned)",
+            []() {
+                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                std::vector<Eigen::Vector3d> gt_landmark_positions;
+                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, false);
+            },
+            settings11,
+            false, 1e-6, true, true  // expect_failure = true
+        });
+    }
+
+    // Scenario 12: Inverse range without priors - should FAIL
+    {
+        OptimizerSettings settings12;
+        settings12.method = OptimizerMethod::GaussNewton;
+        settings12.verbose = true;
+        scenarios.push_back({
+            "FAILURE TEST: Inverse range without priors (expect ill-conditioned)",
+            []() {
+                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                std::vector<Eigen::Vector3d> gt_landmark_positions;
+                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, false);
+            },
+            settings12,
+            false, 1e-6, true, true  // expect_failure = true
+        });
+    }
+
     // Run all scenarios
     int passed = 0;
     int total = scenarios.size();
@@ -288,20 +341,23 @@ TEST_CASE("Consolidated Integration Tests")
         
         try {
             auto graph = scenario.create_graph();
-            
-            auto result = run_optimization_test(graph, scenario.settings, scenario.should_run_jacobian_test, scenario.jacobian_tolerance, scenario.verbose_output);
-            
+
+            auto result = run_optimization_test(graph, scenario.settings, scenario.should_run_jacobian_test, scenario.jacobian_tolerance, scenario.verbose_output, scenario.expect_failure);
+
             std::cout << "Initial residual norm: " << result.initial_norm << std::endl;
             std::cout << "Final residual norm: " << result.final_norm << std::endl;
-            
+
             // Special handling for calibration scenario
             if (scenario.name.find("relative orientation alignment") != std::string::npos) {
                 // This would require returning the optimized graph from run_optimization_test
                 // Simplified for now
                 std::cout << "Calibration result validation skipped in consolidated test" << std::endl;
             }
-            
-            REQUIRE(result.converged);
+
+            // For failure cases, we don't expect convergence
+            if (!scenario.expect_failure) {
+                REQUIRE(result.converged);
+            }
             passed++;
             std::cout << "PASSED" << std::endl;
             

@@ -46,18 +46,25 @@ TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
 
     // Create factor and graph
     auto factor = std::make_shared<BearingObservationFactor>(0, pose.get(), landmark.get(), expected_bearing_C, 1.0);
+    auto prior1 = std::make_shared<PoseOrientationPriorFactor>(1, pose.get(), Eigen::Matrix3d::Identity(), 1.0);
+    auto prior2 = std::make_shared<PosePositionPriorFactor>(2, pose.get(), Eigen::Vector3d::Zero(), 1.0);
+    auto prior3 = std::make_shared<GenericPriorFactor>(3, landmark.get(), landmark_pos, 1.0);
+
     FactorGraph graph;
     graph.add_variable(pose);
     graph.add_variable(landmark);
     graph.add_factor(factor);
+    graph.add_factor(prior1);
+    graph.add_factor(prior2);
+    graph.add_factor(prior3);
     graph.finalize_structure();
 
     SECTION("Residual should be near zero for perfect measurement")
     {
         Eigen::VectorXd residual = graph.compute_full_residual_vector();
-
-        REQUIRE(residual.size() == 3); // Because bearing residual is a 3D reprojection error
-        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero()));
+        CAPTURE(residual);
+        REQUIRE(residual.size() == 12); // bearing (3) + pose orientation prior (3) + pose position prior (3) + landmark prior (3)
+        REQUIRE(is_approx_equal(residual, Eigen::VectorXd::Zero(12)));
     }
 
     SECTION("Residual should increase after landmark perturbation")
@@ -67,14 +74,14 @@ TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
 
         Eigen::VectorXd residual = graph.compute_full_residual_vector();
 
-        REQUIRE(residual.size() == 3);
+        REQUIRE(residual.size() == 12);
 
         double norm = residual.norm();
         INFO("Residual norm after perturbation: " << norm);
 
         // Should be small but non-zero
         REQUIRE(norm > 0.0);
-        REQUIRE(norm < 0.05); // sanity bound, since 0.1m shift at 5m shouldn't cause huge error
+        REQUIRE(norm < 0.15); // sanity bound, adjusted for additional prior residuals
     }
 }
 
@@ -214,6 +221,10 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         FactorGraph graph;
         graph.add_variable(landmark1);
         graph.add_variable(landmark2);
+        auto prior1 = std::make_shared<GenericPriorFactor>(1, landmark1.get(), landmark1_init, 1.0);
+        auto prior2 = std::make_shared<GenericPriorFactor>(2, landmark2.get(), landmark2_init, 1.0);
+        graph.add_factor(prior1);
+        graph.add_factor(prior2);
         graph.finalize_structure();
 
         // Create increment vector (landmark1: 3D, landmark2: 3D = 6D total)
@@ -248,6 +259,8 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         FactorGraph graph;
         graph.add_variable(var1);
         graph.add_variable(var2);
+        auto prior = std::make_shared<GenericPriorFactor>(1, var2.get(), Eigen::Vector3d(4.0, 5.0, 6.0), 1.0);
+        graph.add_factor(prior);
         graph.finalize_structure();
 
         // Create increment vector (only var2 contributes to num_values)
@@ -276,6 +289,8 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         dx.setZero();
         REQUIRE_THROWS(graph.apply_increment(dx));
 
+        auto prior = std::make_shared<GenericPriorFactor>(1, var.get(), Eigen::Vector3d(1.0, 2.0, 3.0), 1.0);
+        graph.add_factor(prior);
         graph.finalize_structure();
 
         // Test error with wrong increment size
@@ -296,6 +311,10 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         FactorGraph graph;
         graph.add_variable(landmark1);
         graph.add_variable(landmark2);
+        auto prior1 = std::make_shared<GenericPriorFactor>(1, landmark1.get(), Eigen::Vector3d(1.0, 2.0, 3.0), 1.0);
+        auto prior2 = std::make_shared<GenericPriorFactor>(2, landmark2.get(), Eigen::Vector3d(4.0, 5.0, 6.0), 1.0);
+        graph.add_factor(prior1);
+        graph.add_factor(prior2);
         graph.finalize_structure();
 
         // Get initial variable vector

@@ -95,13 +95,17 @@ def optimize_graph(graph):
     
     print("\nOptimizing...")
     optimizer.optimize()
-    
+
     # Print results
     print("\nOptimization complete!")
     print(f"  Final robot pose: {robot_pose.value()}")
     print(f"  Final iterations: {optimizer.current_stats.current_iteration}")
     print(f"  Final chi2: {optimizer.current_stats.chi2}")
-    
+    print(f"  Status: {optimizer.current_stats.status}")
+
+    # Verify optimization succeeded
+    assert optimizer.current_stats.status == factorama.OptimizerStatus.SUCCESS
+
     return optimizer
 
 
