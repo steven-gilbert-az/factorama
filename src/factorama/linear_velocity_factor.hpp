@@ -36,7 +36,8 @@ namespace factorama
                              Variable* var_2,
                              Variable* velocity_variable,
                              double dt,
-                             double sigma = 1.0);
+                             double sigma = 1.0,
+                             int initial_index = 0);
 
         int residual_size() const override { return velocity_variable_->size(); }
         double weight() const { return weight_; }
@@ -52,6 +53,7 @@ namespace factorama
         Variable* velocity_variable_;
         double dt_;  // delta time from var1 to var2
         double weight_;
+        int initial_index_;
     };
 
 } // namespace factorama

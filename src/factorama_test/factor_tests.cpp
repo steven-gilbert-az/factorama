@@ -1260,6 +1260,36 @@ TEST_CASE("LinearVelocityFactor: analytical vs numerical Jacobians", "[linear_ve
 
     for (size_t i = 0; i < J_analytic.size(); ++i)
     {
-        REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+    }
+}
+
+TEST_CASE("LinearVelocityFactor: initial_index constrains subset of state", "[linear_velocity]")
+{
+    // 6DOF variables (e.g., pose = position + rotation)
+    Eigen::Matrix<double, 6, 1> var1_val, var2_val;
+    var1_val << 0, 0, 0, 0.1, 0.2, 0.3;
+    var2_val << 2, 4, 6, 0.1, 0.2, 0.3;
+
+    auto var1 = std::make_shared<GenericVariable>(0, var1_val);
+    auto var2 = std::make_shared<GenericVariable>(1, var2_val);
+    auto vel_var = std::make_shared<GenericVariable>(2, Eigen::Vector3d(1, 2, 3));
+
+    double dt = 2.0;
+    int initial_index = 0;
+
+    auto factor = std::make_shared<LinearVelocityFactor>(0, var1.get(), var2.get(), vel_var.get(), dt, 1.0, initial_index);
+
+    Eigen::VectorXd residual = factor->compute_residual();
+    REQUIRE(residual.size() == 3);
+    REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), precision_tol));
+
+    std::vector<Eigen::MatrixXd> J_analytic, J_numeric;
+    factor->compute_jacobians(J_analytic);
+    ComputeNumericalJacobians(*factor, J_numeric);
+
+    for (size_t i = 0; i < J_analytic.size(); ++i)
+    {
+        REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
     }
 }

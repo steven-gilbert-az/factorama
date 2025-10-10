@@ -8,11 +8,13 @@ namespace factorama
                                                Variable *var_2,
                                                Variable *velocity_variable,
                                                double dt,
-                                               double sigma) : var_1_(var_1),
-                                                               var_2_(var_2),
-                                                               velocity_variable_(velocity_variable),
-                                                               dt_(dt),
-                                                               weight_(1.0 / sigma)
+                                               double sigma,
+                                               int initial_index) : var_1_(var_1),
+                                                                    var_2_(var_2),
+                                                                    velocity_variable_(velocity_variable),
+                                                                    dt_(dt),
+                                                                    weight_(1.0 / sigma),
+                                                                    initial_index_(initial_index)
     {
         id_ = id;
         assert(var_1 != nullptr && "var_1 cannot be nullptr");
@@ -27,11 +29,11 @@ namespace factorama
         assert(sigma > 0.0 && "LinearVelocityFactor: sigma must be greater than zero");
     }
 
-
     // The residual is essentially in units of var1 (e.g. for landmarks this would be meters)
     Eigen::VectorXd LinearVelocityFactor::compute_residual() const
     {
-        Eigen::VectorXd diff = var_2_->value() - var_1_->value();
+        int residual_dim = residual_size();
+        Eigen::VectorXd diff = var_2_->value().segment(initial_index_, residual_dim) - var_1_->value().segment(initial_index_, residual_dim);
         Eigen::VectorXd res = diff - velocity_variable_->value() * dt_;
         return weight_ * res;
     }
@@ -48,7 +50,9 @@ namespace factorama
         }
         else
         {
-            jacobians.emplace_back(-weight_ * Eigen::MatrixXd::Identity(dim, dim));
+            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(dim,var_1_->size());
+            J.block(0, initial_index_, dim, dim).diagonal().setConstant(-weight_);
+            jacobians.emplace_back(J);
         }
 
         if (var_2_->is_constant())
@@ -57,7 +61,9 @@ namespace factorama
         }
         else
         {
-            jacobians.emplace_back(weight_ * Eigen::MatrixXd::Identity(dim, dim));
+            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(dim, var_2_->size());
+            J.block(0, initial_index_, dim, dim).diagonal().setConstant(weight_);
+            jacobians.emplace_back(J);
         }
 
         if (velocity_variable_->is_constant())
@@ -66,7 +72,7 @@ namespace factorama
         }
         else
         {
-            jacobians.emplace_back(-weight_  * dt_* Eigen::MatrixXd::Identity(dim, dim));
+            jacobians.emplace_back(-weight_ * dt_ * Eigen::MatrixXd::Identity(dim, dim));
         }
     }
 
