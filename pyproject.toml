@@ -8,7 +8,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "factorama"
-version = "1.0.6"
+version = "1.0.7"
 description = "Factor graph optimization library with Python bindings"
 authors = [{ name = "Steven Gilbert" }]
 license = { text = "MIT" }
