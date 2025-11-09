@@ -25,7 +25,7 @@ def test_rotation_variable_creation():
     
     # Test constant flag
     assert not rot_var.is_constant()
-    rot_var.set_is_constant(True)
+    rot_var.set_constant(True)
     assert rot_var.is_constant()
 
 

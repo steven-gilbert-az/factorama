@@ -61,8 +61,6 @@ namespace factorama
             return VariableType::generic;
         }
 
-        void set_is_constant(bool val) { is_constant_ = val; }
-        
         std::shared_ptr<Variable> clone() const override 
         {
             return std::make_shared<GenericVariable>(*this);

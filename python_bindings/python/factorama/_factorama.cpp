@@ -23,6 +23,7 @@
 #include <factorama/generic_variable.hpp>
 #include <factorama/rotation_variable.hpp>
 #include <factorama/inverse_range_variable.hpp>
+#include <factorama/plane_variable.hpp>
 #include <factorama/bearing_observation_factor.hpp>
 #include <factorama/generic_prior_factor.hpp>
 #include <factorama/inverse_range_bearing_factor.hpp>
@@ -32,6 +33,8 @@
 #include <factorama/pose_between_factors.hpp>
 #include <factorama/rotation_prior_factor.hpp>
 #include <factorama/bearing_projection_factor_2d.hpp>
+#include <factorama/plane_factor.hpp>
+#include <factorama/plane_prior_factor.hpp>
 #include <factorama/random_utils.hpp>
 
 namespace py = pybind11;
@@ -46,7 +49,8 @@ PYBIND11_MODULE(_factorama, m) {
         .value("landmark", factorama::VariableType::landmark)
         .value("inverse_range_landmark", factorama::VariableType::inverse_range_landmark)
         .value("extrinsic_rotation", factorama::VariableType::extrinsic_rotation)
-        .value("generic", factorama::VariableType::generic);
+        .value("generic", factorama::VariableType::generic)
+        .value("plane", factorama::VariableType::plane);
 
     py::enum_<factorama::FactorType::FactorTypeEnum>(m, "FactorType")
         .value("none", factorama::FactorType::none)
@@ -57,7 +61,9 @@ PYBIND11_MODULE(_factorama, m) {
         .value("pose_position_prior", factorama::FactorType::pose_position_prior)
         .value("pose_orientation_prior", factorama::FactorType::pose_orientation_prior)
         .value("pose_position_between", factorama::FactorType::pose_position_between)
-        .value("pose_orientation_between", factorama::FactorType::pose_orientation_between);
+        .value("pose_orientation_between", factorama::FactorType::pose_orientation_between)
+        .value("plane_factor", factorama::FactorType::plane_factor)
+        .value("plane_prior", factorama::FactorType::plane_prior);
 
     // Bind base classes
     py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable", DOC(factorama, Variable))
@@ -69,6 +75,7 @@ PYBIND11_MODULE(_factorama, m) {
         .def("type", &factorama::Variable::type)
         .def("name", &factorama::Variable::name)
         .def("is_constant", &factorama::Variable::is_constant)
+        .def("set_constant", &factorama::Variable::set_constant)
         .def("clone", &factorama::Variable::clone);
 
     py::class_<factorama::Factor, std::shared_ptr<factorama::Factor>>(m, "Factor")
@@ -89,29 +96,25 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("id"), py::arg("pos_W"), py::arg("dcm_CW"))
         .def("pos_W", &factorama::PoseVariable::pos_W)
         .def("rot_CW", &factorama::PoseVariable::rot_CW)
-        .def("dcm_CW", &factorama::PoseVariable::dcm_CW)
-        .def("set_is_constant", &factorama::PoseVariable::set_is_constant);
+        .def("dcm_CW", &factorama::PoseVariable::dcm_CW);
 
     py::class_<factorama::LandmarkVariable, std::shared_ptr<factorama::LandmarkVariable>, factorama::Variable>(m, "LandmarkVariable")
         .def(py::init<int, const Eigen::Vector3d&>(),
              "Create a LandmarkVariable with 3D position",
              py::arg("id"), py::arg("pos_W_init"))
-        .def("pos_W", &factorama::LandmarkVariable::pos_W)
-        .def("set_is_constant", &factorama::LandmarkVariable::set_is_constant);
+        .def("pos_W", &factorama::LandmarkVariable::pos_W);
 
     py::class_<factorama::GenericVariable, std::shared_ptr<factorama::GenericVariable>, factorama::Variable>(m, "GenericVariable")
         .def(py::init<int, const Eigen::VectorXd&>(),
              "Create a GenericVariable with arbitrary dimension",
-             py::arg("id"), py::arg("initial_value"))
-        .def("set_is_constant", &factorama::GenericVariable::set_is_constant);
+             py::arg("id"), py::arg("initial_value"));
 
     py::class_<factorama::RotationVariable, std::shared_ptr<factorama::RotationVariable>, factorama::Variable>(m, "RotationVariable")
         .def(py::init<int, const Eigen::Matrix3d&>(),
              "Create a RotationVariable with DCM",
              py::arg("id"), py::arg("dcm_AB"))
         .def("dcm_AB", &factorama::RotationVariable::dcm_AB, py::return_value_policy::reference)
-        .def("rotation", &factorama::RotationVariable::rotation, py::return_value_policy::reference)
-        .def("set_is_constant", &factorama::RotationVariable::set_is_constant);
+        .def("rotation", &factorama::RotationVariable::rotation, py::return_value_policy::reference);
 
     py::class_<factorama::InverseRangeVariable, std::shared_ptr<factorama::InverseRangeVariable>, factorama::Variable>(m, "InverseRangeVariable")
         .def(py::init<int, const Eigen::Vector3d&, const Eigen::Vector3d&, double>(),
@@ -122,8 +125,15 @@ PYBIND11_MODULE(_factorama, m) {
         .def("bearing_W", &factorama::InverseRangeVariable::bearing_W, py::return_value_policy::reference)
         .def("inverse_range", &factorama::InverseRangeVariable::inverse_range)
         .def_readwrite("minimum_inverse_range", &factorama::InverseRangeVariable::minimum_inverse_range_)
-        .def_readwrite("maximum_inverse_range", &factorama::InverseRangeVariable::maximum_inverse_range_)
-        .def("set_is_constant", &factorama::InverseRangeVariable::set_is_constant);
+        .def_readwrite("maximum_inverse_range", &factorama::InverseRangeVariable::maximum_inverse_range_);
+
+    py::class_<factorama::PlaneVariable, std::shared_ptr<factorama::PlaneVariable>, factorama::Variable>(m, "PlaneVariable")
+        .def(py::init<int, const Eigen::Vector3d&, double>(),
+             "Create a PlaneVariable with normal vector and distance",
+             py::arg("id"), py::arg("normal_vector"), py::arg("distance"))
+        .def("unit_vector", &factorama::PlaneVariable::unit_vector, py::return_value_policy::reference)
+        .def("distance_from_origin", &factorama::PlaneVariable::distance_from_origin)
+        .def("distance_from_point", &factorama::PlaneVariable::distance_from_point);
 
     // Bind factor classes
     py::class_<factorama::BearingObservationFactor, std::shared_ptr<factorama::BearingObservationFactor>, factorama::Factor>(m, "BearingObservationFactor")
@@ -186,8 +196,19 @@ PYBIND11_MODULE(_factorama, m) {
     py::class_<factorama::BearingProjectionFactor2D, std::shared_ptr<factorama::BearingProjectionFactor2D>, factorama::Factor>(m, "BearingProjectionFactor2D")
         .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, const Eigen::Vector3d&, double, double>(),
              "Create a BearingProjectionFactor2D",
-             py::arg("id"), py::arg("pose"), py::arg("landmark"), py::arg("bearing_C_observed"), 
+             py::arg("id"), py::arg("pose"), py::arg("landmark"), py::arg("bearing_C_observed"),
              py::arg("sigma") = 1.0, py::arg("along_tolerance_epsilon") = 1e-6);
+
+    py::class_<factorama::PlaneFactor, std::shared_ptr<factorama::PlaneFactor>, factorama::Factor>(m, "PlaneFactor")
+        .def(py::init<int, factorama::Variable*, factorama::PlaneVariable*, double>(),
+             "Create a PlaneFactor",
+             py::arg("id"), py::arg("point_var"), py::arg("plane_var"), py::arg("sigma") = 1.0);
+
+    py::class_<factorama::PlanePriorFactor, std::shared_ptr<factorama::PlanePriorFactor>, factorama::Factor>(m, "PlanePriorFactor")
+        .def(py::init<int, factorama::PlaneVariable*, const Eigen::Vector3d&, double, double, double>(),
+             "Create a PlanePriorFactor",
+             py::arg("id"), py::arg("plane"), py::arg("normal_prior"), py::arg("distance_prior"),
+             py::arg("normal_sigma") = 1.0, py::arg("distance_sigma") = 1.0);
 
     // Optimizer enums and settings
     py::enum_<factorama::OptimizerMethod>(m, "OptimizerMethod")

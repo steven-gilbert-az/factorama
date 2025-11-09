@@ -6,6 +6,7 @@
 #include "factorama/generic_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/landmark_variable.hpp"
+#include "factorama/plane_variable.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/rotation_variable.hpp"
 
@@ -69,7 +70,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::Matrix<double, 6, 1> pose_init;
         pose_init << 1.0, 2.0, 3.0, 0.1, 0.2, 0.3;
         auto original = std::make_shared<PoseVariable>(42, pose_init);
-        original->set_is_constant(true);
+        original->set_constant(true);
 
         // Clone the variable
         auto cloned_base = original->clone();
@@ -90,7 +91,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::Matrix<double, 6, 1> increment;
         increment << 0.1, 0.1, 0.1, 0.01, 0.01, 0.01;
 
-        cloned->set_is_constant(false);
+        cloned->set_constant(false);
         cloned->apply_increment(increment);
 
         // Original should be unchanged
@@ -107,7 +108,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Create original landmark variable
         Eigen::Vector3d pos_init(5.0, -2.0, 1.5);
         auto original = std::make_shared<LandmarkVariable>(123, pos_init);
-        original->set_is_constant(true);
+        original->set_constant(true);
 
         // Clone the variable
         auto cloned_base = original->clone();
@@ -126,7 +127,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Verify independent modification
         Eigen::Vector3d increment(0.2, -0.3, 0.1);
 
-        cloned->set_is_constant(false);
+        cloned->set_constant(false);
         cloned->apply_increment(increment);
 
         // Original should be unchanged
@@ -145,7 +146,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::Vector3d bearing_W(1.0, 1.0, 0.0); // Will be normalized
         double initial_range = 5.0;
         auto original = std::make_shared<InverseRangeVariable>(456, origin_W, bearing_W, initial_range);
-        original->set_is_constant(true);
+        original->set_constant(true);
 
         // Clone the variable
         auto cloned_base = original->clone();
@@ -168,7 +169,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         Eigen::VectorXd increment(1);
         increment[0] = -0.05; // Small change in inverse range
 
-        cloned->set_is_constant(false);
+        cloned->set_constant(false);
         cloned->apply_increment(increment);
 
         // Original should be unchanged
@@ -185,7 +186,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Create original extrinsic rotation variable
         Eigen::Matrix3d dcm_CE = Eigen::AngleAxisd(PI / 4, Eigen::Vector3d::UnitZ()).toRotationMatrix();
         auto original = std::make_shared<RotationVariable>(789, dcm_CE);
-        original->set_is_constant(true);
+        original->set_constant(true);
 
         // Clone the variable
         auto cloned_base = original->clone();
@@ -204,7 +205,7 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Verify independent modification
         Eigen::Vector3d increment(0.05, -0.03, 0.02);
 
-        cloned->set_is_constant(false);
+        cloned->set_constant(false);
         cloned->apply_increment(increment);
 
         // Original should be unchanged
@@ -255,4 +256,88 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
             REQUIRE(cloned.get() != original.get()); // Different objects
         }
     }
+}
+
+
+TEST_CASE("PlaneVariable basic properties", "[plane][variable]")
+{
+    // Create plane with normal (0, 0, 1) at distance 5
+    Eigen::Vector3d normal(0.0, 0.0, 1.0);
+    PlaneVariable plane(1, normal, 5.0);
+
+    REQUIRE(plane.id() == 1);
+    REQUIRE(plane.size() == 4);
+    REQUIRE(is_approx_equal(plane.unit_vector(), normal));
+    REQUIRE(std::abs(plane.distance_from_origin() - 5.0) < precision_tol);
+
+    // Test with non-normalized normal
+    Eigen::Vector3d unnormalized(3.0, 4.0, 0.0);
+    PlaneVariable plane2(2, unnormalized, -2.0);
+    REQUIRE(std::abs(plane2.unit_vector().norm() - 1.0) < precision_tol);
+}
+
+
+TEST_CASE("PlaneVariable distance_from_point", "[plane][variable]")
+{
+    // XY plane at origin (normal = [0, 0, 1], distance = 0)
+    Eigen::Vector3d normal(0.0, 0.0, 1.0);
+    PlaneVariable plane(1, normal, 0.0);
+
+    Eigen::Vector3d point_on_plane(1.0, 2.0, 0.0);
+    REQUIRE(std::abs(plane.distance_from_point(point_on_plane)) < precision_tol);
+
+    Eigen::Vector3d point_above(1.0, 2.0, 3.0);
+    REQUIRE(std::abs(plane.distance_from_point(point_above) - 3.0) < precision_tol);
+
+    Eigen::Vector3d point_below(1.0, 2.0, -2.5);
+    REQUIRE(std::abs(plane.distance_from_point(point_below) + 2.5) < precision_tol);
+}
+
+
+TEST_CASE("PlaneVariable apply_increment", "[plane][variable]")
+{
+    Eigen::Vector3d normal(0.0, 0.0, 1.0);
+    PlaneVariable plane(1, normal, 2.0);
+
+    // Increment normal and distance
+    Eigen::Vector4d dx;
+    dx << 0.1, 0.05, 0.0, 1.5;
+    plane.apply_increment(dx);
+
+    // Normal should still be unit length
+    REQUIRE(std::abs(plane.unit_vector().norm() - 1.0) < precision_tol);
+
+    // Distance should increase by 1.5
+    REQUIRE(std::abs(plane.distance_from_origin() - 3.5) < precision_tol);
+
+    // Value should be consistent
+    REQUIRE(is_approx_equal(plane.value().head<3>(), plane.unit_vector()));
+    REQUIRE(std::abs(plane.value()(3) - plane.distance_from_origin()) < precision_tol);
+}
+
+
+TEST_CASE("PlaneVariable clone", "[plane][variable][clone]")
+{
+    Eigen::Vector3d normal(1.0, 1.0, 1.0);
+    auto original = std::make_shared<PlaneVariable>(42, normal, -3.5);
+    original->set_constant(true);
+
+    auto cloned = std::dynamic_pointer_cast<PlaneVariable>(original->clone());
+
+    REQUIRE(cloned != nullptr);
+    REQUIRE(cloned.get() != original.get());
+    REQUIRE(cloned->id() == original->id());
+    REQUIRE(is_approx_equal(cloned->value(), original->value()));
+    REQUIRE(cloned->is_constant() == original->is_constant());
+
+    // Modify clone
+    Eigen::Vector4d dx;
+    dx << 0.2, 0.1, 0.0, 1.0;
+    cloned->set_constant(false);
+    cloned->apply_increment(dx);
+
+    // Original should be unchanged
+    REQUIRE(is_approx_equal(original->unit_vector(), normal.normalized()));
+    REQUIRE(std::abs(original->distance_from_origin() + 3.5) < precision_tol);
+    REQUIRE(original->is_constant() == true);
 }

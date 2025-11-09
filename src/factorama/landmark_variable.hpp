@@ -52,8 +52,6 @@ namespace factorama
             return VariableType::landmark;
         }
 
-        void set_is_constant(bool val) { is_constant_ = val; }
-
         /**
          * @brief Get 3D position in world frame
          * @return Position vector

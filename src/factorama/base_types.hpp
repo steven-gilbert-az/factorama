@@ -16,6 +16,7 @@ namespace factorama
             inverse_range_landmark,
             extrinsic_rotation,
             generic,
+            plane,
             custom,
             other,
             num_variable_types
@@ -31,6 +32,7 @@ namespace factorama
             names[inverse_range_landmark] = "inverse_range_landmark";
             names[extrinsic_rotation] = "extrinsic_rotation";
             names[generic] = "generic";
+            names[plane] = "plane";
             names[custom] = "custom";
             names[other] = "other";
             return names;
@@ -48,7 +50,8 @@ namespace factorama
                           variable_names[landmark] != nullptr &&
                           variable_names[inverse_range_landmark] != nullptr &&
                           variable_names[extrinsic_rotation] != nullptr &&
-                          variable_names[generic] != nullptr,
+                          variable_names[generic] != nullptr &&
+                          variable_names[plane] != nullptr,
                       "VariableType: all variable names must be non-null");
     }
 
@@ -65,6 +68,8 @@ namespace factorama
             pose_orientation_prior,
             pose_position_between,
             pose_orientation_between,
+            plane_factor,
+            plane_prior,
             custom,
             other,
             num_factor_types
@@ -83,6 +88,8 @@ namespace factorama
             names[pose_orientation_prior] = "pose_orientation_prior";
             names[pose_position_between] = "pose_position_between";
             names[pose_orientation_between] = "pose_orientation_between";
+            names[plane_factor] = "plane_factor";
+            names[plane_prior] = "plane_prior";
             names[custom] = "custom";
             names[other] = "other";
             return names;
@@ -103,7 +110,9 @@ namespace factorama
                           factor_names[pose_position_prior] != nullptr &&
                           factor_names[pose_orientation_prior] != nullptr &&
                           factor_names[pose_position_between] != nullptr &&
-                          factor_names[pose_orientation_between] != nullptr,
+                          factor_names[pose_orientation_between] != nullptr &&
+                          factor_names[plane_factor] != nullptr &&
+                          factor_names[plane_prior] != nullptr,
                       "FactorType: all factor names must be non-null");
     }
 

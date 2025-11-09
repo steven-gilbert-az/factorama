@@ -63,6 +63,27 @@ Eigen::Vector3d LogMapSO3(const Eigen::Matrix3d &R)
     return unskew(scale * (R - R.transpose()));
 }
 
+
+// S2 represents the set of unit vectors on the unit sphere.
+Eigen::Vector3d LogMapS2(const Eigen::Vector3d& base_unit_vector, Eigen::Vector3d& unit_vector) {
+    double cos_theta = base_unit_vector.dot(unit_vector);
+    cos_theta = std::clamp(cos_theta, -1.0, 1.0);
+    double theta = std::acos(cos_theta);
+
+    if (theta < 1e-10) {
+        return Eigen::Vector3d::Zero();
+    }
+        
+    Eigen::Vector3d axis = base_unit_vector.cross(unit_vector);
+    double sin_theta = axis.norm();
+    if (sin_theta < 1e-10) {
+        return Eigen::Vector3d::Zero();
+    }
+
+    axis.normalize();
+    return axis * theta;
+}
+
 Eigen::Matrix3d compute_inverse_right_jacobian_so3(const Eigen::Vector3d &omega)
 {
     double theta = omega.norm();

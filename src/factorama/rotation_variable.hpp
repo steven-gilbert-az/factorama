@@ -41,8 +41,6 @@ namespace factorama
             return VariableType::extrinsic_rotation;
         }
 
-        void set_is_constant(bool val) { is_constant_ = val; }
-
         const Eigen::VectorXd &value() const override
         {
             return value_;

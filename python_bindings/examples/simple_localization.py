@@ -21,7 +21,7 @@ def create_simple_localization_problem():
     # Initial guess: robot at origin with no rotation
     initial_pose = np.array([0.1, 0.1, 0.0, 0.0, 0.0, 0.1])  # Small noise from true pose
     robot_pose = factorama.PoseVariable(1, initial_pose)
-    robot_pose.set_is_constant(True)
+    robot_pose.set_constant(True)
     graph.add_variable(robot_pose)
     
     # Create landmark variables

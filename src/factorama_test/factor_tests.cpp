@@ -10,6 +10,7 @@
 #include "factorama/generic_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/landmark_variable.hpp"
+#include "factorama/plane_variable.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/rotation_variable.hpp"
 
@@ -21,6 +22,8 @@
 #include "factorama/generic_prior_factor.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
 #include "factorama/linear_velocity_factor.hpp"
+#include "factorama/plane_factor.hpp"
+#include "factorama/plane_prior_factor.hpp"
 #include "factorama/pose_between_factors.hpp"
 #include "factorama/pose_prior_factors.hpp"
 #include "factorama/rotation_prior_factor.hpp"
@@ -520,7 +523,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
     auto make_landmark = [](int id, const Eigen::Vector3d &pos)
     {
         auto l = std::make_shared<LandmarkVariable>(id, pos);
-        l->set_is_constant(false);
+        l->set_constant(false);
         return l;
     };
 
@@ -530,7 +533,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto b = make_landmark(1, Eigen::Vector3d(4.0, 6.0, 9.0));
         Eigen::Vector3d expected_vec = b->value() - a->value();
         auto expected = std::make_shared<GenericVariable>(42, expected_vec);
-        expected->set_is_constant(true);
+        expected->set_constant(true);
 
         GenericBetweenFactor factor(42, a.get(), b.get(), expected.get());
 
@@ -551,7 +554,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto b = make_landmark(3, Eigen::Vector3d(1.0, -2.0, 3.0));
         Eigen::Vector3d expected_vec(0.0, 0.0, 0.0); // Expecting zero offset
         auto expected = std::make_shared<GenericVariable>(43, expected_vec);
-        expected->set_is_constant(true);
+        expected->set_constant(true);
         double sigma = 1.0;
 
         GenericBetweenFactor factor(43, a.get(), b.get(), expected.get(), sigma);
@@ -574,7 +577,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
         auto b = make_landmark(5, Eigen::Vector3d(2.0, 2.0, 2.0));
         Eigen::Vector3d expected_vec(0.0, 0.0, 0.0);
         auto expected = std::make_shared<GenericVariable>(44, expected_vec);
-        expected->set_is_constant(true);
+        expected->set_constant(true);
 
         double sigma = 0.5; // weight = 2.0
         GenericBetweenFactor factor(44, a.get(), b.get(), expected.get(), sigma);
@@ -595,9 +598,9 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
     {
         auto a = make_landmark(6, Eigen::Vector3d(1.0, 2.0, 3.0));
         auto b = make_landmark(7, Eigen::Vector3d(2.0, 3.0, 4.0));
-        a->set_is_constant(true);
+        a->set_constant(true);
         auto expected = std::make_shared<GenericVariable>(45, Eigen::Vector3d::Zero());
-        expected->set_is_constant(true);
+        expected->set_constant(true);
 
         GenericBetweenFactor factor(45, a.get(), b.get(), expected.get());
 
@@ -613,9 +616,9 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
     {
         auto a = make_landmark(8, Eigen::Vector3d(1.0, 2.0, 3.0));
         auto b = make_landmark(9, Eigen::Vector3d(4.0, 5.0, 6.0));
-        b->set_is_constant(true);
+        b->set_constant(true);
         auto expected = std::make_shared<GenericVariable>(46, Eigen::Vector3d(1.0, 2.0, 3.0));
-        expected->set_is_constant(true);
+        expected->set_constant(true);
 
         GenericBetweenFactor factor(46, a.get(), b.get(), expected.get());
 
@@ -641,7 +644,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     // Measured relative offset from A to B
     Eigen::Vector3d measured_vec(1, 2, 3);
     auto measured = std::make_shared<GenericVariable>(100, measured_vec);
-    measured->set_is_constant(true);
+    measured->set_constant(true);
 
     // --------------------------
     SECTION("Residual is zero when measurement matches")
@@ -656,7 +659,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     {
         Eigen::Vector3d measured_vec2(1, 2, 3); // expected delta
         auto measured2 = std::make_shared<GenericVariable>(101, measured_vec2);
-        measured2->set_is_constant(true);
+        measured2->set_constant(true);
 
         // Perturb pose B
         pose_b->set_pos_W(Eigen::Vector3d(2, 1, 4)); // actual delta is (2,1,4)
@@ -695,7 +698,7 @@ TEST_CASE("PosePositionBetweenFactor computes correct residuals and jacobians")
     // --------------------------
     SECTION("Jacobian respects constant variables")
     {
-        pose_a->set_is_constant(true);
+        pose_a->set_constant(true);
         PosePositionBetweenFactor factor(103, pose_a.get(), pose_b.get(), measured.get(), 1.0);
 
         std::vector<Eigen::MatrixXd> J;
@@ -815,7 +818,7 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         Eigen::Matrix<double, 6, 1> pose_init;
         pose_init << 1.0, 2.0, 3.0, 0.0, 0.0, 0.0;
         auto pose = std::make_shared<PoseVariable>(0, pose_init);
-        pose->set_is_constant(true);
+        pose->set_constant(true);
 
         Eigen::Vector3d pos_prior(0.0, 0.0, 0.0);
         PosePositionPriorFactor factor(0, pose.get(), pos_prior, 1.0);
@@ -1291,5 +1294,243 @@ TEST_CASE("LinearVelocityFactor: initial_index constrains subset of state", "[li
     for (size_t i = 0; i < J_analytic.size(); ++i)
     {
         REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+    }
+}
+
+TEST_CASE("PlaneFactor: dimensions and residual", "[plane][factor]")
+{
+    // Create a plane with normal (0, 0, 1) at distance 5 (z = 5 plane)
+    Eigen::Vector3d normal(0.0, 0.0, 1.0);
+    auto plane = std::make_shared<PlaneVariable>(1, normal, -5.0);
+
+    // Create a point at (1, 2, 7) - should be 2 units above the plane
+    Eigen::Vector3d point_pos(1.0, 2.0, 7.0);
+    auto point = std::make_shared<LandmarkVariable>(0, point_pos);
+
+    double sigma = 0.5;
+    PlaneFactor factor(0, point.get(), plane.get(), sigma);
+
+    SECTION("Residual dimension is correct")
+    {
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(residual.size() == 1);
+    }
+
+    SECTION("Jacobian dimensions are correct")
+    {
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor.compute_jacobians(jacobians);
+        REQUIRE(jacobians.size() == 2);
+        REQUIRE(jacobians[0].rows() == 1);  // residual size
+        REQUIRE(jacobians[0].cols() == 3);  // point variable size
+        REQUIRE(jacobians[1].rows() == 1);  // residual size
+        REQUIRE(jacobians[1].cols() == 4);  // plane variable size
+    }
+
+    SECTION("Residual value is correct")
+    {
+        // Expected: weight * (n^T * p + d) = (1/0.5) * (1*7 + (-5)) = 2 * 2 = 4
+        double expected_residual = (1.0 / sigma) * 2.0;
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(std::abs(residual(0) - expected_residual) < precision_tol);
+    }
+
+    SECTION("Point on plane has zero residual")
+    {
+        // Point at (3, 4, 5) should be on the z = 5 plane
+        auto point_on_plane = std::make_shared<LandmarkVariable>(2, Eigen::Vector3d(3.0, 4.0, 5.0));
+        PlaneFactor factor_zero(1, point_on_plane.get(), plane.get(), sigma);
+
+        Eigen::VectorXd residual = factor_zero.compute_residual();
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+    }
+}
+
+
+TEST_CASE("PlaneFactor: analytical Jacobian matches numerical", "[plane][factor][jacobian]")
+{
+    SECTION("Simple configuration with unit sigma")
+    {
+        // XY plane at origin
+        Eigen::Vector3d normal(0.0, 0.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, 0.0);
+
+        // Point above the plane
+        auto point = std::make_shared<LandmarkVariable>(0, Eigen::Vector3d(1.0, 2.0, 3.0));
+
+        double sigma = 1.0;
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+        }
+    }
+
+    SECTION("Arbitrary plane and point with non-unit sigma")
+    {
+        // Plane with normal (1, 1, 1) normalized
+        Eigen::Vector3d normal(1.0, 1.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, -2.5);
+
+        // Arbitrary point
+        auto point = std::make_shared<LandmarkVariable>(0, Eigen::Vector3d(2.0, -1.0, 3.5));
+
+        double sigma = 0.2;
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+        }
+    }
+
+    SECTION("Works with GenericVariable as well")
+    {
+        Eigen::Vector3d normal(0.0, 1.0, 0.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, 3.0);
+
+        // Use GenericVariable instead of LandmarkVariable
+        auto point = std::make_shared<GenericVariable>(0, Eigen::Vector3d(5.0, -2.0, 1.0));
+
+        double sigma = 0.5;
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+        }
+    }
+}
+
+
+TEST_CASE("PlanePriorFactor: dimensions and residual", "[plane][prior][factor]")
+{
+    // Create plane slightly different from prior
+    Eigen::Vector3d normal(0.1, 0.05, 1.0);
+    auto plane = std::make_shared<PlaneVariable>(1, normal, -4.8);
+
+    // Prior values
+    Eigen::Vector3d prior_normal(0.0, 0.0, 1.0);
+    double prior_distance = -5.0;
+    double normal_sigma = 0.1;
+    double distance_sigma = 0.5;
+
+    PlanePriorFactor factor(0, plane.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+
+    SECTION("Residual dimension is correct")
+    {
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(residual.size() == 4);
+    }
+
+    SECTION("Jacobian dimensions are correct")
+    {
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor.compute_jacobians(jacobians);
+        REQUIRE(jacobians.size() == 1);
+        REQUIRE(jacobians[0].rows() == 4);  // residual size
+        REQUIRE(jacobians[0].cols() == 4);  // plane variable size
+    }
+
+    SECTION("Zero residual when plane matches prior")
+    {
+        auto plane_at_prior = std::make_shared<PlaneVariable>(2, prior_normal, prior_distance);
+        PlanePriorFactor factor_zero(1, plane_at_prior.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+
+        Eigen::VectorXd residual = factor_zero.compute_residual();
+        REQUIRE(residual.norm() < precision_tol);
+    }
+
+    SECTION("Distance residual computed correctly")
+    {
+        // Plane with correct normal but wrong distance
+        auto plane_dist_only = std::make_shared<PlaneVariable>(3, prior_normal, -4.0);
+        PlanePriorFactor factor_dist(2, plane_dist_only.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+
+        Eigen::VectorXd residual = factor_dist.compute_residual();
+        
+        // Normal residual should be near zero
+        REQUIRE(residual.head<3>().norm() < precision_tol);
+        
+        // Distance residual should be (1/0.5) * (-4.0 - (-5.0)) = 2.0
+        REQUIRE(std::abs(residual(3) - 2.0) < precision_tol);
+    }
+}
+
+
+TEST_CASE("PlanePriorFactor: analytical Jacobian matches numerical", "[plane][prior][factor][jacobian]")
+{
+    SECTION("Simple configuration")
+    {
+        Eigen::Vector3d normal(0.0, 0.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, 0.0);
+
+        Eigen::Vector3d prior_normal(0.1, 0.0, 1.0);
+        double prior_distance = -1.0;
+        
+        auto factor = std::make_shared<PlanePriorFactor>(0, plane.get(), prior_normal, prior_distance, 0.1, 0.5);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+        REQUIRE(is_approx_equal(J_analytic[0], J_numeric[0], 1e-6));
+    }
+
+    SECTION("Arbitrary plane with different sigmas")
+    {
+        Eigen::Vector3d normal(1.0, 1.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, -2.5);
+
+        Eigen::Vector3d prior_normal(0.0, 0.0, 1.0);
+        double prior_distance = -3.0;
+        double normal_sigma = 0.05;
+        double distance_sigma = 1.0;
+        
+        auto factor = std::make_shared<PlanePriorFactor>(0, plane.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+        
+        CAPTURE(J_analytic[0]);
+        CAPTURE(J_numeric[0]);
+        REQUIRE(is_approx_equal(J_analytic[0], J_numeric[0], 1e-6));
     }
 }

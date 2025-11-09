@@ -66,6 +66,8 @@ target_sources(factorama
         src/factorama/inverse_range_bearing_factor.cpp
         src/factorama/inverse_range_variable.cpp
         src/factorama/linear_velocity_factor.cpp
+        src/factorama/plane_factor.cpp
+        src/factorama/plane_prior_factor.cpp
         src/factorama/pose_prior_factors.cpp
         src/factorama/pose_variable.cpp
         src/factorama/sparse_optimizer.cpp

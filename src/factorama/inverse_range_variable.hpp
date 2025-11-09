@@ -47,7 +47,6 @@ namespace factorama
         const Eigen::Vector3d &origin_pos_W() const { return origin_pos_W_; }
         const Eigen::Vector3d &bearing_W() const { return bearing_W_; }
         VariableType::VariableTypeEnum type() const override { return VariableType::inverse_range_landmark; }
-        void set_is_constant(bool val) { is_constant_ = val; }
         double inverse_range() const { return inverse_range_value_[0]; }
         void clip_inverse_range();
         void set_value_from_vector(const Eigen::VectorXd &x) override;

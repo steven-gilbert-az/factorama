@@ -26,7 +26,7 @@ int main() {
 
     Eigen::Vector3d landmark_pos2(0.0, -1.0, 6.0);  // the second landmark will be constant
     auto landmark2 = std::make_shared<LandmarkVariable>(3, landmark_pos);
-    landmark2->set_is_constant(true);
+    landmark2->set_constant(true);
 
 
     // Create factors

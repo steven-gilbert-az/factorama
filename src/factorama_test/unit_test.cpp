@@ -254,7 +254,7 @@ TEST_CASE("FactorGraph apply_increment", "[FactorGraph][apply_increment]")
         auto var2 = std::make_shared<LandmarkVariable>(2, Eigen::Vector3d(4.0, 5.0, 6.0));
 
         // Make var1 constant
-        var1->set_is_constant(true);
+        var1->set_constant(true);
 
         FactorGraph graph;
         graph.add_variable(var1);

@@ -16,20 +16,20 @@ void run_example() {
     // Camera 1: At origin, looking forward
     Eigen::Matrix<double, 6, 1> pose1_vec = Eigen::Matrix<double, 6, 1>::Zero();
     auto camera1 = std::make_shared<PoseVariable>(1, pose1_vec);
-    camera1->set_is_constant(true);  // Known camera positions
+    camera1->set_constant(true);  // Known camera positions
     
     // Camera 2: Moved to the right, still looking forward
     Eigen::Matrix<double, 6, 1> pose2_vec = Eigen::Matrix<double, 6, 1>::Zero();
     pose2_vec[0] = 2.0;  // 2 meters to the right
     auto camera2 = std::make_shared<PoseVariable>(2, pose2_vec);
-    camera2->set_is_constant(true);  // Known camera positions
+    camera2->set_constant(true);  // Known camera positions
     
     // Camera 3: Moved up and back
     Eigen::Matrix<double, 6, 1> pose3_vec = Eigen::Matrix<double, 6, 1>::Zero();
     pose3_vec[1] = 1.0;  // 1 meter up
     pose3_vec[2] = -1.0; // 1 meter back
     auto camera3 = std::make_shared<PoseVariable>(3, pose3_vec);
-    camera3->set_is_constant(true);  // Known camera positions
+    camera3->set_constant(true);  // Known camera positions
 
     std::cout << "Known camera positions:" << std::endl;
     std::cout << "  Camera 1: " << camera1->pos_W().transpose() << std::endl;

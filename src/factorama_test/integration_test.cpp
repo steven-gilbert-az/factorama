@@ -4,9 +4,12 @@
 #include "factorama/pose_variable.hpp"
 #include "factorama/landmark_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
+#include "factorama/plane_variable.hpp"
 #include "factorama/bearing_observation_factor.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
 #include "factorama/bearing_projection_factor_2d.hpp"
+#include "factorama/plane_factor.hpp"
+#include "factorama/plane_prior_factor.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/sparse_optimizer.hpp"
 #include "factorama_test/test_utils.hpp"
@@ -327,6 +330,118 @@ TEST_CASE("Consolidated Integration Tests")
             },
             settings12,
             false, 1e-6, true, true  // expect_failure = true
+        });
+    }
+
+    // Scenario 13: Plane fitting
+    {
+        OptimizerSettings settings13;
+        settings13.method = OptimizerMethod::LevenbergMarquardt;
+        settings13.verbose = true;
+        scenarios.push_back({
+            "Plane fitting with 6 points",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
+
+                // Create 6 points on the plane with small noise
+                std::vector<Eigen::Vector3d> point_positions = {
+                    {0.0, 0.0, 5.0},
+                    {1.0, 0.0, 5.01},
+                    {0.0, 1.0, 4.99},
+                    {-1.0, 0.0, 5.02},
+                    {0.0, -1.0, 4.98},
+                    {0.5, 0.5, 5.0}
+                };
+
+                // Create point variables (held constant - these are our measurements)
+                std::vector<std::shared_ptr<LandmarkVariable>> points;
+                for (const auto& pos : point_positions) {
+                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                    point->set_constant(true);
+                    points.push_back(point);
+                    graph.add_variable(point);
+                }
+
+                // Create plane variable with incorrect initial guess
+                Eigen::Vector3d initial_normal(0.1, 0.1, 1.0);  // Slightly wrong orientation
+                double initial_distance = -4.5;  // Slightly wrong distance
+                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                graph.add_variable(plane);
+
+                // Add plane factors connecting each point to the plane
+                double sigma = 0.1;
+                for (auto& point : points) {
+                    auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), sigma);
+                    graph.add_factor(factor);
+                }
+
+                return graph;
+            },
+            settings13,
+            true, 1e-6, true
+        });
+    }
+
+    // Scenario 14: Plane fitting with prior
+    {
+        OptimizerSettings settings14;
+        settings14.method = OptimizerMethod::LevenbergMarquardt;
+        settings14.verbose = true;
+        scenarios.push_back({
+            "Plane fitting with points and prior constraint",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth plane: approximately z = 5
+                // Create 4 points with more noise this time
+                std::vector<Eigen::Vector3d> point_positions = {
+                    {0.0, 0.0, 5.1},
+                    {1.0, 0.0, 4.9},
+                    {0.0, 1.0, 5.05},
+                    {-1.0, -1.0, 4.95}
+                };
+
+                // Create point variables (held constant)
+                std::vector<std::shared_ptr<LandmarkVariable>> points;
+                for (const auto& pos : point_positions) {
+                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                    point->set_constant(true);
+                    points.push_back(point);
+                    graph.add_variable(point);
+                }
+
+                // Create plane variable with poor initial guess
+                Eigen::Vector3d initial_normal(0.3, 0.2, 1.0);
+                double initial_distance = -4.0;
+                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                graph.add_variable(plane);
+
+                // Add plane factors connecting each point to the plane
+                double point_sigma = 0.2;
+                for (auto& point : points) {
+                    auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), point_sigma);
+                    graph.add_factor(factor);
+                }
+
+                // Add prior constraint to help constrain the solution
+                Eigen::Vector3d prior_normal(0.0, 0.0, 1.0);
+                double prior_distance = -5.0;
+                double normal_sigma = 0.5;  // Relatively weak prior on orientation
+                double distance_sigma = 1.0;  // Weak prior on distance
+                auto prior_factor = std::make_shared<PlanePriorFactor>(
+                    factor_id++, plane.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+                graph.add_factor(prior_factor);
+
+                return graph;
+            },
+            settings14,
+            true, 1e-6, true
         });
     }
 

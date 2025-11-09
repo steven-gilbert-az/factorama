@@ -41,7 +41,6 @@ namespace factorama
         int size() const override { return 6; }
         const Eigen::VectorXd &value() const override { return pose_CW_; }
         VariableType::VariableTypeEnum type() const override { return VariableType::pose; }
-        void set_is_constant(bool val) { is_constant_ = val; }
 
         /**
          * @brief Get camera position in world frame

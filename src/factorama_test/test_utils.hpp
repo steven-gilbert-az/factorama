@@ -196,7 +196,7 @@ namespace factorama
 
             if (constant_pose || i == 0)
             {
-                pose->set_is_constant(true);
+                pose->set_constant(true);
             }
             else if (prior_factors)
             {
@@ -313,7 +313,7 @@ namespace factorama
             auto pose = std::make_shared<PoseVariable>(var_id++, cam_pose);
             if (constant_pose || i == 0)
             {
-                pose->set_is_constant(true);
+                pose->set_constant(true);
             }
             else if (prior_factors)
             {
@@ -425,11 +425,11 @@ namespace factorama
             }
 
             auto cam_pose_var = std::make_shared<PoseVariable>(var_id++, cam_pose);
-            cam_pose_var->set_is_constant(true);
+            cam_pose_var->set_constant(true);
             graph.add_variable(cam_pose_var);
 
             auto imu_pose_var = std::make_shared<PoseVariable>(var_id++, imu_pose);
-            imu_pose_var->set_is_constant(true);
+            imu_pose_var->set_constant(true);
             graph.add_variable(imu_pose_var);
             // Create pose between factor
             auto factor = std::make_shared<PoseOrientationBetweenFactor>(factor_id++, cam_pose_var.get(), imu_pose_var.get(), extrinsic_rotation_IC.get(), noise_sigma);
@@ -540,7 +540,7 @@ namespace factorama
 
             if (constant_pose || i == 0)
             {
-                pose->set_is_constant(true);
+                pose->set_constant(true);
             }
             else if (prior_factors)
             {
