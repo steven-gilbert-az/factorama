@@ -6,11 +6,16 @@ import numpy
 import numpy.typing
 import scipy.sparse
 import typing
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingObservationFactor2D', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'Pose2DPriorFactor', 'Pose2DVariable', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RangeBearingFactor2D', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 class BearingObservationFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a BearingObservationFactor
+        """
+class BearingObservationFactor2D(Factor):
+    def __init__(self, id: typing.SupportsInt, pose_var: Pose2DVariable, landmark_var: Variable, bearing_angle_obs: typing.SupportsFloat, angle_sigma: typing.SupportsFloat = 1.0) -> None:
+        """
+        Create a BearingObservationFactor2D
         """
 class BearingProjectionFactor2D(Factor):
     def __init__(self, id: typing.SupportsInt, pose: PoseVariable, landmark: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], sigma: typing.SupportsFloat = 1.0, along_tolerance_epsilon: typing.SupportsFloat = 1e-06) -> None:
@@ -110,19 +115,28 @@ class FactorType:
       plane_factor
     
       plane_prior
+    
+      bearing_observation_2d
+    
+      range_bearing_2d
+    
+      pose_2d_prior
     """
-    __members__: typing.ClassVar[dict[str, FactorType]]  # value = {'none': <FactorType.none: 0>, 'bearing_observation': <FactorType.bearing_observation: 1>, 'inverse_range_bearing': <FactorType.inverse_range_bearing: 2>, 'generic_prior': <FactorType.generic_prior: 3>, 'generic_between': <FactorType.generic_between: 4>, 'pose_position_prior': <FactorType.pose_position_prior: 5>, 'pose_orientation_prior': <FactorType.pose_orientation_prior: 6>, 'pose_position_between': <FactorType.pose_position_between: 7>, 'pose_orientation_between': <FactorType.pose_orientation_between: 8>, 'plane_factor': <FactorType.plane_factor: 9>, 'plane_prior': <FactorType.plane_prior: 10>}
+    __members__: typing.ClassVar[dict[str, FactorType]]  # value = {'none': <FactorType.none: 0>, 'bearing_observation': <FactorType.bearing_observation: 1>, 'inverse_range_bearing': <FactorType.inverse_range_bearing: 2>, 'generic_prior': <FactorType.generic_prior: 3>, 'generic_between': <FactorType.generic_between: 4>, 'pose_position_prior': <FactorType.pose_position_prior: 5>, 'pose_orientation_prior': <FactorType.pose_orientation_prior: 6>, 'pose_position_between': <FactorType.pose_position_between: 7>, 'pose_orientation_between': <FactorType.pose_orientation_between: 8>, 'plane_factor': <FactorType.plane_factor: 9>, 'plane_prior': <FactorType.plane_prior: 10>, 'bearing_observation_2d': <FactorType.bearing_observation_2d: 11>, 'range_bearing_2d': <FactorType.range_bearing_2d: 12>, 'pose_2d_prior': <FactorType.pose_2d_prior: 13>}
     bearing_observation: typing.ClassVar[FactorType]  # value = <FactorType.bearing_observation: 1>
+    bearing_observation_2d: typing.ClassVar[FactorType]  # value = <FactorType.bearing_observation_2d: 11>
     generic_between: typing.ClassVar[FactorType]  # value = <FactorType.generic_between: 4>
     generic_prior: typing.ClassVar[FactorType]  # value = <FactorType.generic_prior: 3>
     inverse_range_bearing: typing.ClassVar[FactorType]  # value = <FactorType.inverse_range_bearing: 2>
     none: typing.ClassVar[FactorType]  # value = <FactorType.none: 0>
     plane_factor: typing.ClassVar[FactorType]  # value = <FactorType.plane_factor: 9>
     plane_prior: typing.ClassVar[FactorType]  # value = <FactorType.plane_prior: 10>
+    pose_2d_prior: typing.ClassVar[FactorType]  # value = <FactorType.pose_2d_prior: 13>
     pose_orientation_between: typing.ClassVar[FactorType]  # value = <FactorType.pose_orientation_between: 8>
     pose_orientation_prior: typing.ClassVar[FactorType]  # value = <FactorType.pose_orientation_prior: 6>
     pose_position_between: typing.ClassVar[FactorType]  # value = <FactorType.pose_position_between: 7>
     pose_position_prior: typing.ClassVar[FactorType]  # value = <FactorType.pose_position_prior: 5>
+    range_bearing_2d: typing.ClassVar[FactorType]  # value = <FactorType.range_bearing_2d: 12>
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:
@@ -390,9 +404,15 @@ class OptimizerStatus:
     def value(self) -> int:
         ...
 class PlaneFactor(Factor):
+    @typing.overload
     def __init__(self, id: typing.SupportsInt, point_var: Variable, plane_var: PlaneVariable, sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a PlaneFactor
+        """
+    @typing.overload
+    def __init__(self, id: typing.SupportsInt, point_var: Variable, plane_var: PlaneVariable, sigma: typing.SupportsFloat, do_distance_scaling: bool, dist_scaling_r0: typing.SupportsFloat, dist_scaling_p0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"]) -> None:
+        """
+        Create a PlaneFactor with distance scaling
         """
 class PlanePriorFactor(Factor):
     def __init__(self, id: typing.SupportsInt, plane: PlaneVariable, normal_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], distance_prior: typing.SupportsFloat, normal_sigma: typing.SupportsFloat = 1.0, distance_sigma: typing.SupportsFloat = 1.0) -> None:
@@ -409,6 +429,26 @@ class PlaneVariable(Variable):
     def distance_from_point(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"]) -> float:
         ...
     def unit_vector(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
+        ...
+class Pose2DPriorFactor(Factor):
+    def __init__(self, id: typing.SupportsInt, pose_var: Pose2DVariable, pose_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], position_sigma: typing.SupportsFloat, angle_sigma: typing.SupportsFloat) -> None:
+        """
+        Create a Pose2DPriorFactor
+        """
+class Pose2DVariable(Variable):
+    def __init__(self, id: typing.SupportsInt, pose_2d: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"]) -> None:
+        """
+        Create a Pose2DVariable with 2D pose [x, y, theta]
+        """
+    def dcm_2d(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[2, 2]"]:
+        ...
+    def pos_2d(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[2, 1]"]:
+        ...
+    def set_pos_2d(self, arg0: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[2, 1]"]) -> None:
+        ...
+    def set_theta(self, arg0: typing.SupportsFloat) -> None:
+        ...
+    def theta(self) -> float:
         ...
 class PoseOrientationBetweenFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose1: PoseVariable, pose2: PoseVariable, calibration_rotation_12: RotationVariable, angle_sigma: typing.SupportsFloat = 1.0) -> None:
@@ -447,6 +487,11 @@ class PoseVariable(Variable):
         ...
     def rot_CW(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
+class RangeBearingFactor2D(Factor):
+    def __init__(self, id: typing.SupportsInt, pose_var: Pose2DVariable, landmark_var: Variable, range_obs: typing.SupportsFloat, bearing_angle_obs: typing.SupportsFloat, range_sigma: typing.SupportsFloat = 1.0, bearing_sigma: typing.SupportsFloat = 1.0) -> None:
+        """
+        Create a RangeBearingFactor2D
+        """
 class RotationPriorFactor(Factor):
     def __init__(self, id: typing.SupportsInt, rotation: RotationVariable, dcm_AB_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """
@@ -520,8 +565,10 @@ class VariableType:
       generic
     
       plane
+    
+      pose_2d
     """
-    __members__: typing.ClassVar[dict[str, VariableType]]  # value = {'none': <VariableType.none: 0>, 'pose': <VariableType.pose: 1>, 'landmark': <VariableType.landmark: 2>, 'inverse_range_landmark': <VariableType.inverse_range_landmark: 3>, 'extrinsic_rotation': <VariableType.extrinsic_rotation: 4>, 'generic': <VariableType.generic: 5>, 'plane': <VariableType.plane: 6>}
+    __members__: typing.ClassVar[dict[str, VariableType]]  # value = {'none': <VariableType.none: 0>, 'pose': <VariableType.pose: 1>, 'landmark': <VariableType.landmark: 2>, 'inverse_range_landmark': <VariableType.inverse_range_landmark: 3>, 'extrinsic_rotation': <VariableType.extrinsic_rotation: 4>, 'generic': <VariableType.generic: 5>, 'plane': <VariableType.plane: 6>, 'pose_2d': <VariableType.pose_2d: 7>}
     extrinsic_rotation: typing.ClassVar[VariableType]  # value = <VariableType.extrinsic_rotation: 4>
     generic: typing.ClassVar[VariableType]  # value = <VariableType.generic: 5>
     inverse_range_landmark: typing.ClassVar[VariableType]  # value = <VariableType.inverse_range_landmark: 3>
@@ -529,6 +576,7 @@ class VariableType:
     none: typing.ClassVar[VariableType]  # value = <VariableType.none: 0>
     plane: typing.ClassVar[VariableType]  # value = <VariableType.plane: 6>
     pose: typing.ClassVar[VariableType]  # value = <VariableType.pose: 1>
+    pose_2d: typing.ClassVar[VariableType]  # value = <VariableType.pose_2d: 7>
     def __eq__(self, other: typing.Any) -> bool:
         ...
     def __getstate__(self) -> int:

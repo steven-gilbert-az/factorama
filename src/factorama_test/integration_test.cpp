@@ -2,14 +2,20 @@
 #include <random>
 #include <functional>
 #include "factorama/pose_variable.hpp"
+#include "factorama/pose_2d_variable.hpp"
 #include "factorama/landmark_variable.hpp"
+#include "factorama/generic_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/plane_variable.hpp"
 #include "factorama/bearing_observation_factor.hpp"
+#include "factorama/bearing_observation_factor_2d.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
 #include "factorama/bearing_projection_factor_2d.hpp"
 #include "factorama/plane_factor.hpp"
 #include "factorama/plane_prior_factor.hpp"
+#include "factorama/pose_2d_prior_factor.hpp"
+#include "factorama/range_bearing_factor_2d.hpp"
+#include "factorama/generic_prior_factor.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/sparse_optimizer.hpp"
 #include "factorama_test/test_utils.hpp"
@@ -441,6 +447,313 @@ TEST_CASE("Consolidated Integration Tests")
                 return graph;
             },
             settings14,
+            true, 1e-6, true
+        });
+    }
+
+    // Scenario 15: Plane fitting with distance scaling
+    {
+        OptimizerSettings settings15;
+        settings15.method = OptimizerMethod::LevenbergMarquardt;
+        settings15.verbose = true;
+        scenarios.push_back({
+            "Plane fitting with distance scaling enabled",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
+                // Create points at varying distances from a scaling origin
+                std::vector<Eigen::Vector3d> point_positions = {
+                    {0.0, 0.0, 5.0},    // close to origin
+                    {2.0, 0.0, 5.01},   // medium distance
+                    {0.0, 3.0, 4.99},   // medium distance
+                    {-4.0, 0.0, 5.02},  // far from origin
+                    {0.0, -5.0, 4.98},  // very far from origin
+                    {1.0, 1.0, 5.0}     // close to origin
+                };
+
+                // Create point variables (held constant - these are our measurements)
+                std::vector<std::shared_ptr<LandmarkVariable>> points;
+                for (const auto& pos : point_positions) {
+                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                    point->set_constant(true);
+                    points.push_back(point);
+                    graph.add_variable(point);
+                }
+
+                // Create plane variable with incorrect initial guess
+                Eigen::Vector3d initial_normal(0.1, 0.1, 1.0);
+                double initial_distance = -4.5;
+                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                graph.add_variable(plane);
+
+                // Add plane factors with distance scaling
+                // Points farther from origin will have less weight
+                double sigma = 0.1;
+                bool do_distance_scaling = true;
+                double dist_scaling_r0 = 3.0;  // characteristic scaling distance
+                Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 5.0);  // scaling origin on the plane
+
+                for (auto& point : points) {
+                    auto factor = std::make_shared<PlaneFactor>(
+                        factor_id++, point.get(), plane.get(), sigma,
+                        do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+                    graph.add_factor(factor);
+                }
+
+                return graph;
+            },
+            settings15,
+            true, 1e-6, true
+        });
+    }
+
+    // Scenario 16: 2D SLAM with poses, landmarks, priors, and bearing observations
+    {
+        OptimizerSettings settings16;
+        settings16.method = OptimizerMethod::LevenbergMarquardt;
+        settings16.verbose = true;
+        settings16.max_num_iterations = 50;
+        scenarios.push_back({
+            "2D SLAM with poses, landmarks, and bearing observations",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth: 3 poses in a triangular configuration
+                // Pose 0: origin, facing east (0 radians)
+                // Pose 1: east of origin, facing north (π/2 radians)
+                // Pose 2: north of origin, facing west (π radians)
+                std::vector<Eigen::Vector3d> gt_poses = {
+                    {0.0, 0.0, 0.0},           // x, y, theta
+                    {3.0, 0.0, PI / 2},
+                    {1.5, 2.5, PI}
+                };
+
+                // Ground truth: 4 landmarks forming a square in the middle
+                std::vector<Eigen::Vector2d> gt_landmarks = {
+                    {1.0, 1.0},   // Landmark 0
+                    {2.0, 1.0},   // Landmark 1
+                    {2.0, 2.0},   // Landmark 2
+                    {1.0, 2.0}    // Landmark 3
+                };
+
+                // Create pose variables with noisy initial guesses
+                std::vector<std::shared_ptr<Pose2DVariable>> poses;
+                for (size_t i = 0; i < gt_poses.size(); ++i) {
+                    // Add noise to initial guess
+                    Eigen::Vector3d noisy_pose = gt_poses[i];
+                    noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);  // x noise
+                    noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
+                    noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
+
+                    auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+                    poses.push_back(pose);
+                    graph.add_variable(pose);
+                }
+
+                // Create landmark variables with noisy initial guesses
+                std::vector<std::shared_ptr<GenericVariable>> landmarks;
+                for (size_t i = 0; i < gt_landmarks.size(); ++i) {
+                    // Add noise to initial guess
+                    Eigen::Vector2d noisy_landmark = gt_landmarks[i];
+                    noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
+                    noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
+
+                    auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
+                    landmarks.push_back(landmark);
+                    graph.add_variable(landmark);
+                }
+
+                // Add pose priors (all poses have priors based on ground truth)
+                double pose_position_sigma = 0.5;
+                double pose_angle_sigma = 0.2;
+                for (size_t i = 0; i < poses.size(); ++i) {
+                    auto pose_prior = std::make_shared<Pose2DPriorFactor>(
+                        factor_id++, poses[i].get(), gt_poses[i],
+                        pose_position_sigma, pose_angle_sigma);
+                    graph.add_factor(pose_prior);
+                }
+
+                // Add landmark priors (weaker priors)
+                double landmark_sigma = 1.0;
+                for (size_t i = 0; i < landmarks.size(); ++i) {
+                    auto landmark_prior = std::make_shared<GenericPriorFactor>(
+                        factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
+                    graph.add_factor(landmark_prior);
+                }
+
+                // Add bearing observations from poses to landmarks
+                // Compute ground truth bearing angles and add observations
+                double bearing_sigma = 0.05;  // radians
+
+                // Pose 0 can see landmarks 0, 1, 3
+                std::vector<std::pair<int, int>> observations = {
+                    {0, 0}, {0, 1}, {0, 3},  // Pose 0 sees landmarks 0, 1, 3
+                    {1, 0}, {1, 1}, {1, 2},  // Pose 1 sees landmarks 0, 1, 2
+                    {2, 1}, {2, 2}, {2, 3}   // Pose 2 sees landmarks 1, 2, 3
+                };
+
+                for (const auto& obs : observations) {
+                    int pose_idx = obs.first;
+                    int landmark_idx = obs.second;
+
+                    // Compute ground truth bearing angle
+                    Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
+                    double pose_theta = gt_poses[pose_idx](2);
+                    Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
+
+                    // Delta in world frame
+                    Eigen::Vector2d delta_world = landmark_pos - pose_pos;
+
+                    // Rotate to pose frame
+                    double c = std::cos(pose_theta);
+                    double s = std::sin(pose_theta);
+                    Eigen::Matrix2d R_T;
+                    R_T << c, s, -s, c;
+                    Eigen::Vector2d delta_local = R_T * delta_world;
+
+                    // Compute bearing angle in pose frame
+                    double bearing_angle = std::atan2(delta_local(1), delta_local(0));
+
+                    // Create bearing observation factor
+                    auto bearing_factor = std::make_shared<BearingObservationFactor2D>(
+                        factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
+                        bearing_angle, bearing_sigma);
+                    graph.add_factor(bearing_factor);
+                }
+
+                return graph;
+            },
+            settings16,
+            true, 1e-6, true
+        });
+    }
+
+    // Scenario 17: 2D SLAM with poses, landmarks, and range-bearing observations
+    {
+        OptimizerSettings settings17;
+        settings17.method = OptimizerMethod::LevenbergMarquardt;
+        settings17.verbose = true;
+        settings17.max_num_iterations = 50;
+        scenarios.push_back({
+            "2D SLAM with poses, landmarks, and range-bearing observations",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth: 3 poses in a triangular configuration
+                // Pose 0: origin, facing east (0 radians)
+                // Pose 1: east of origin, facing north (π/2 radians)
+                // Pose 2: north of origin, facing west (π radians)
+                std::vector<Eigen::Vector3d> gt_poses = {
+                    {0.0, 0.0, 0.0},           // x, y, theta
+                    {3.0, 0.0, PI / 2},
+                    {1.5, 2.5, PI}
+                };
+
+                // Ground truth: 4 landmarks forming a square in the middle
+                std::vector<Eigen::Vector2d> gt_landmarks = {
+                    {1.0, 1.0},   // Landmark 0
+                    {2.0, 1.0},   // Landmark 1
+                    {2.0, 2.0},   // Landmark 2
+                    {1.0, 2.0}    // Landmark 3
+                };
+
+                // Create pose variables with noisy initial guesses
+                std::vector<std::shared_ptr<Pose2DVariable>> poses;
+                for (size_t i = 0; i < gt_poses.size(); ++i) {
+                    // Add noise to initial guess
+                    Eigen::Vector3d noisy_pose = gt_poses[i];
+                    noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);  // x noise
+                    noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
+                    noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
+
+                    auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+                    poses.push_back(pose);
+                    graph.add_variable(pose);
+                }
+
+                // Create landmark variables with noisy initial guesses
+                std::vector<std::shared_ptr<GenericVariable>> landmarks;
+                for (size_t i = 0; i < gt_landmarks.size(); ++i) {
+                    // Add noise to initial guess
+                    Eigen::Vector2d noisy_landmark = gt_landmarks[i];
+                    noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
+                    noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
+
+                    auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
+                    landmarks.push_back(landmark);
+                    graph.add_variable(landmark);
+                }
+
+                // Add pose priors (all poses have priors based on ground truth)
+                double pose_position_sigma = 0.5;
+                double pose_angle_sigma = 0.2;
+                for (size_t i = 0; i < poses.size(); ++i) {
+                    auto pose_prior = std::make_shared<Pose2DPriorFactor>(
+                        factor_id++, poses[i].get(), gt_poses[i],
+                        pose_position_sigma, pose_angle_sigma);
+                    graph.add_factor(pose_prior);
+                }
+
+                // Add landmark priors (weaker priors)
+                double landmark_sigma = 1.0;
+                for (size_t i = 0; i < landmarks.size(); ++i) {
+                    auto landmark_prior = std::make_shared<GenericPriorFactor>(
+                        factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
+                    graph.add_factor(landmark_prior);
+                }
+
+                // Add range-bearing observations from poses to landmarks
+                // Compute ground truth range and bearing angles and add observations
+                double range_sigma = 0.1;     // meters
+                double bearing_sigma = 0.05;  // radians
+
+                // Pose 0 can see landmarks 0, 1, 3
+                std::vector<std::pair<int, int>> observations = {
+                    {0, 0}, {0, 1}, {0, 3},  // Pose 0 sees landmarks 0, 1, 3
+                    {1, 0}, {1, 1}, {1, 2},  // Pose 1 sees landmarks 0, 1, 2
+                    {2, 1}, {2, 2}, {2, 3}   // Pose 2 sees landmarks 1, 2, 3
+                };
+
+                for (const auto& obs : observations) {
+                    int pose_idx = obs.first;
+                    int landmark_idx = obs.second;
+
+                    // Compute ground truth range and bearing
+                    Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
+                    double pose_theta = gt_poses[pose_idx](2);
+                    Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
+
+                    // Delta in world frame
+                    Eigen::Vector2d delta_world = landmark_pos - pose_pos;
+
+                    // Rotate to pose frame
+                    double c = std::cos(pose_theta);
+                    double s = std::sin(pose_theta);
+                    Eigen::Matrix2d R_T;
+                    R_T << c, s, -s, c;
+                    Eigen::Vector2d delta_local = R_T * delta_world;
+
+                    // Compute range and bearing in pose frame
+                    double range = delta_local.norm();
+                    double bearing_angle = std::atan2(delta_local(1), delta_local(0));
+
+                    // Create range-bearing observation factor
+                    auto rb_factor = std::make_shared<RangeBearingFactor2D>(
+                        factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
+                        range, bearing_angle, range_sigma, bearing_sigma);
+                    graph.add_factor(rb_factor);
+                }
+
+                return graph;
+            },
+            settings17,
             true, 1e-6, true
         });
     }

@@ -60,6 +60,7 @@ add_library(factorama)
 target_sources(factorama
     PRIVATE
         src/factorama/bearing_observation_factor.cpp
+        src/factorama/bearing_observation_factor_2d.cpp
         src/factorama/bearing_projection_factor_2d.cpp
         src/factorama/factor_graph.cpp
         src/factorama/generic_between_factor.cpp
@@ -68,8 +69,11 @@ target_sources(factorama
         src/factorama/linear_velocity_factor.cpp
         src/factorama/plane_factor.cpp
         src/factorama/plane_prior_factor.cpp
+        src/factorama/pose_2d_prior_factor.cpp
+        src/factorama/pose_2d_variable.cpp
         src/factorama/pose_prior_factors.cpp
         src/factorama/pose_variable.cpp
+        src/factorama/range_bearing_factor_2d.cpp
         src/factorama/sparse_optimizer.cpp
         src/factorama/pose_between_factors.cpp
         src/factorama/random_utils.cpp

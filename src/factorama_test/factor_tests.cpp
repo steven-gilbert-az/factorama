@@ -11,12 +11,14 @@
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/landmark_variable.hpp"
 #include "factorama/plane_variable.hpp"
+#include "factorama/pose_2d_variable.hpp"
 #include "factorama/pose_variable.hpp"
 #include "factorama/rotation_variable.hpp"
 
 
 // Factors
 #include "factorama/bearing_observation_factor.hpp"
+#include "factorama/bearing_observation_factor_2d.hpp"
 #include "factorama/bearing_projection_factor_2d.hpp"
 #include "factorama/generic_between_factor.hpp"
 #include "factorama/generic_prior_factor.hpp"
@@ -24,8 +26,10 @@
 #include "factorama/linear_velocity_factor.hpp"
 #include "factorama/plane_factor.hpp"
 #include "factorama/plane_prior_factor.hpp"
+#include "factorama/pose_2d_prior_factor.hpp"
 #include "factorama/pose_between_factors.hpp"
 #include "factorama/pose_prior_factors.hpp"
+#include "factorama/range_bearing_factor_2d.hpp"
 #include "factorama/rotation_prior_factor.hpp"
 
 using namespace factorama;
@@ -1432,6 +1436,104 @@ TEST_CASE("PlaneFactor: analytical Jacobian matches numerical", "[plane][factor]
 }
 
 
+TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numerical", "[plane][factor][jacobian][distance_scaling]")
+{
+    SECTION("Distance scaling with simple configuration")
+    {
+        // XY plane at origin
+        Eigen::Vector3d normal(0.0, 0.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, 0.0);
+
+        // Point above the plane at (1, 2, 3)
+        auto point = std::make_shared<LandmarkVariable>(0, Eigen::Vector3d(1.0, 2.0, 3.0));
+
+        double sigma = 1.0;
+        bool do_distance_scaling = true;
+        double dist_scaling_r0 = 5.0;  // scaling distance
+        Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 0.0);  // scaling origin
+
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
+                                                     do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+        }
+    }
+
+    SECTION("Distance scaling with arbitrary plane and point offset from origin")
+    {
+        // Plane with normal (1, 1, 1) normalized
+        Eigen::Vector3d normal(1.0, 1.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, -2.5);
+
+        // Point far from scaling origin
+        auto point = std::make_shared<LandmarkVariable>(0, Eigen::Vector3d(5.0, 3.0, 8.0));
+
+        double sigma = 0.2;
+        bool do_distance_scaling = true;
+        double dist_scaling_r0 = 10.0;
+        Eigen::Vector3d dist_scaling_p0(2.0, 1.0, 3.0);  // non-zero scaling origin
+
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
+                                                     do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
+        }
+    }
+
+    SECTION("Distance scaling effect on residual magnitude")
+    {
+        Eigen::Vector3d normal(0.0, 0.0, 1.0);
+        auto plane = std::make_shared<PlaneVariable>(1, normal, 0.0);
+
+        // Point at distance 10 from scaling origin
+        auto point = std::make_shared<LandmarkVariable>(0, Eigen::Vector3d(0.0, 0.0, 10.0));
+
+        double sigma = 1.0;
+        double dist_scaling_r0 = 5.0;
+        Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 0.0);
+
+        // Test with distance scaling
+        auto factor_scaled = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
+                                                           true, dist_scaling_r0, dist_scaling_p0);
+
+        // Test without distance scaling
+        auto factor_unscaled = std::make_shared<PlaneFactor>(1, point.get(), plane.get(), sigma);
+
+        Eigen::VectorXd res_scaled = factor_scaled->compute_residual();
+        Eigen::VectorXd res_unscaled = factor_unscaled->compute_residual();
+
+        // Scaled residual should be smaller due to distance scaling
+        // scale = 1 + r/r0 = 1 + 10/5 = 3, so scaled residual should be ~1/3 of unscaled
+        REQUIRE(std::abs(res_scaled(0)) < std::abs(res_unscaled(0)));
+        REQUIRE(std::abs(res_scaled(0) * 3.0 - res_unscaled(0)) < precision_tol);
+    }
+}
+
+
 TEST_CASE("PlanePriorFactor: dimensions and residual", "[plane][prior][factor]")
 {
     // Create plane slightly different from prior
@@ -1532,5 +1634,510 @@ TEST_CASE("PlanePriorFactor: analytical Jacobian matches numerical", "[plane][pr
         CAPTURE(J_analytic[0]);
         CAPTURE(J_numeric[0]);
         REQUIRE(is_approx_equal(J_analytic[0], J_numeric[0], 1e-6));
+    }
+}
+
+
+TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "[jacobian][bearing][2d]")
+{
+    SECTION("Simple configuration: pose at origin, landmark at (3, 0)")
+    {
+        // Pose at origin with zero rotation
+        Eigen::Vector3d pose_state(0.0, 0.0, 0.0);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark directly ahead on x-axis
+        Eigen::Vector2d landmark_pos(3.0, 0.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Bearing angle should be 0 (pointing along x-axis in pose frame)
+        double bearing_angle_obs = 0.0;
+        double sigma = 0.1;
+
+        auto factor = std::make_shared<BearingObservationFactor2D>(
+            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Rotated pose: 45 degrees")
+    {
+        // Pose at (1, 2) with 45 degree rotation
+        Eigen::Vector3d pose_state(1.0, 2.0, PI / 4);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark offset from pose
+        Eigen::Vector2d landmark_pos(4.0, 5.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Compute expected bearing angle
+        Eigen::Vector2d delta_world = landmark_pos - pose_state.head<2>();
+        Eigen::Matrix2d R_T = pose->dcm_2d().transpose();
+        Eigen::Vector2d delta_local = R_T * delta_world;
+        double bearing_angle_obs = std::atan2(delta_local(1), delta_local(0));
+
+        double sigma = 0.05;
+
+        auto factor = std::make_shared<BearingObservationFactor2D>(
+            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Negative rotation and offset landmark")
+    {
+        // Pose at (-2, 3) with -60 degree rotation
+        Eigen::Vector3d pose_state(-2.0, 3.0, -PI / 3);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark behind and to the side
+        Eigen::Vector2d landmark_pos(-5.0, 1.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Compute expected bearing angle
+        Eigen::Vector2d delta_world = landmark_pos - pose_state.head<2>();
+        Eigen::Matrix2d R_T = pose->dcm_2d().transpose();
+        Eigen::Vector2d delta_local = R_T * delta_world;
+        double bearing_angle_obs = std::atan2(delta_local(1), delta_local(0));
+
+        double sigma = 0.2;
+
+        auto factor = std::make_shared<BearingObservationFactor2D>(
+            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Test residual wrapping across ±π boundary")
+    {
+        // Pose at origin with zero rotation
+        Eigen::Vector3d pose_state(0.0, 0.0, 0.0);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark behind (negative x direction)
+        Eigen::Vector2d landmark_pos(-3.0, 0.1);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Observed bearing near +π
+        double bearing_angle_obs = PI - 0.05;
+        double sigma = 0.1;
+
+        auto factor = std::make_shared<BearingObservationFactor2D>(
+            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+
+        // Compute residual - should be small and wrapped properly
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 1);
+
+        // The actual bearing is approximately π (pointing backwards)
+        // So residual should be small, not ~2π
+        REQUIRE(std::abs(residual(0)) < 1.0);
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+}
+
+
+TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian][prior][2d]")
+{
+    SECTION("Simple configuration: prior at origin")
+    {
+        // Pose slightly offset from origin
+        Eigen::Vector3d pose_state(0.1, 0.2, 0.05);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Prior at origin
+        Eigen::Vector3d pose_prior(0.0, 0.0, 0.0);
+        double position_sigma = 0.5;
+        double angle_sigma = 0.1;
+
+        auto factor = std::make_shared<Pose2DPriorFactor>(
+            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Arbitrary pose and prior")
+    {
+        // Pose at some arbitrary location
+        Eigen::Vector3d pose_state(2.5, -1.3, PI / 3);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Prior offset from pose
+        Eigen::Vector3d pose_prior(2.0, -1.0, PI / 4);
+        double position_sigma = 0.2;
+        double angle_sigma = 0.05;
+
+        auto factor = std::make_shared<Pose2DPriorFactor>(
+            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Critical test: angle wrapping at +π boundary")
+    {
+        // Current pose at angle near -π
+        Eigen::Vector3d pose_state(0.0, 0.0, -PI + 0.05);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Prior at angle near +π (should be nearly the same angle!)
+        Eigen::Vector3d pose_prior(0.0, 0.0, PI - 0.05);
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+
+        auto factor = std::make_shared<Pose2DPriorFactor>(
+            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+
+        // Compute residual
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 3);
+
+        // Position residuals should be zero
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+        REQUIRE(std::abs(residual(1)) < precision_tol);
+
+        // Angle residual should be small (NOT ~2π!)
+        // The actual angular difference is -π+0.05 - (π-0.05) = -2π+0.1
+        // After wrapping, this should be approximately 0.1 radians
+        double angle_weight = 1.0 / angle_sigma;
+        double expected_angle_error = 0.1;  // Wrapped difference
+        REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Critical test: angle wrapping at -π boundary")
+    {
+        // Current pose at angle near +π
+        Eigen::Vector3d pose_state(1.0, 2.0, PI - 0.03);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Prior at angle near -π (should be nearly the same angle!)
+        Eigen::Vector3d pose_prior(1.0, 2.0, -PI + 0.03);
+        double position_sigma = 0.5;
+        double angle_sigma = 0.2;
+
+        auto factor = std::make_shared<Pose2DPriorFactor>(
+            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+
+        // Compute residual
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 3);
+
+        // Position residuals should be zero
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+        REQUIRE(std::abs(residual(1)) < precision_tol);
+
+        // Angle residual should be small (NOT ~2π!)
+        // The actual angular difference is π-0.03 - (-π+0.03) = 2π-0.06
+        // After wrapping, this should be approximately -0.06 radians
+        double angle_weight = 1.0 / angle_sigma;
+        double expected_angle_error = -0.06;  // Wrapped difference
+        REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Test: exact match at π (both sides)")
+    {
+        // Current pose at exactly +π
+        Eigen::Vector3d pose_state(0.0, 0.0, PI);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Prior at exactly -π (same angle as +π!)
+        Eigen::Vector3d pose_prior(0.0, 0.0, -PI);
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+
+        auto factor = std::make_shared<Pose2DPriorFactor>(
+            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+
+        // Compute residual
+        Eigen::VectorXd residual = factor->compute_residual();
+
+        // All residuals should be essentially zero
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+        REQUIRE(std::abs(residual(1)) < precision_tol);
+        REQUIRE(std::abs(residual(2)) < 1e-6);  // Angle difference should be ~0, not 2π
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+}
+
+
+TEST_CASE("RangeBearingFactor2D: basic functionality", "[range_bearing][2d]")
+{
+    SECTION("Residual dimensions and near-zero error at truth")
+    {
+        // Pose at origin with zero rotation
+        Eigen::Vector3d pose_state(0.0, 0.0, 0.0);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark at known position
+        Eigen::Vector2d landmark_pos(3.0, 4.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Ground truth range and bearing
+        double range_obs = 5.0;  // sqrt(3^2 + 4^2)
+        double bearing_angle_obs = std::atan2(4.0, 3.0);  // atan2(y, x)
+        double range_sigma = 0.1;
+        double bearing_sigma = 0.05;
+
+        auto factor = std::make_shared<RangeBearingFactor2D>(
+            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs,
+            range_sigma, bearing_sigma);
+
+        // Check residual size
+        REQUIRE(factor->residual_size() == 2);
+
+        // Compute residual - should be near zero since we're at ground truth
+        Eigen::VectorXd res = factor->compute_residual();
+        REQUIRE(res.size() == 2);
+        REQUIRE(std::abs(res(0)) < 1e-9);  // range error
+        REQUIRE(std::abs(res(1)) < 1e-9);  // bearing error
+
+        // Check weights
+        REQUIRE(std::abs(factor->range_weight() - 1.0 / range_sigma) < 1e-9);
+        REQUIRE(std::abs(factor->bearing_weight() - 1.0 / bearing_sigma) < 1e-9);
+    }
+
+    SECTION("Jacobian dimensions")
+    {
+        // Simple configuration
+        Eigen::Vector3d pose_state(1.0, 1.0, 0.0);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        Eigen::Vector2d landmark_pos(4.0, 5.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        double range_obs = 5.0;
+        double bearing_angle_obs = 0.0;
+
+        auto factor = std::make_shared<RangeBearingFactor2D>(
+            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
+
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor->compute_jacobians(jacobians);
+
+        REQUIRE(jacobians.size() == 2);
+        REQUIRE(jacobians[0].rows() == 2);  // 2D residual
+        REQUIRE(jacobians[0].cols() == 3);  // w.r.t. [x, y, theta]
+        REQUIRE(jacobians[1].rows() == 2);  // 2D residual
+        REQUIRE(jacobians[1].cols() == 2);  // w.r.t. [lx, ly]
+    }
+}
+
+
+TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacobian][range_bearing][2d]")
+{
+    SECTION("Pose at origin, landmark at (3, 4)")
+    {
+        // Pose at origin with zero rotation
+        Eigen::Vector3d pose_state(0.0, 0.0, 0.0);
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark position
+        Eigen::Vector2d landmark_pos(3.0, 4.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Range and bearing
+        double range_obs = 5.0;
+        double bearing_angle_obs = std::atan2(4.0, 3.0);
+        double range_sigma = 0.2;
+        double bearing_sigma = 0.1;
+
+        auto factor = std::make_shared<RangeBearingFactor2D>(
+            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs,
+            range_sigma, bearing_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Rotated pose at 30 degrees")
+    {
+        // Pose with rotation
+        Eigen::Vector3d pose_state(1.0, 2.0, PI / 6);  // 30 degrees
+        auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
+
+        // Landmark offset from pose
+        Eigen::Vector2d landmark_pos(5.0, 6.0);
+        auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
+
+        // Compute expected measurements
+        Eigen::Vector2d delta_world = landmark_pos - pose_state.head<2>();
+        double c = std::cos(PI / 6);
+        double s = std::sin(PI / 6);
+        Eigen::Matrix2d R_T;
+        R_T << c, s, -s, c;
+        Eigen::Vector2d delta_local = R_T * delta_world;
+
+        double range_obs = delta_local.norm();
+        double bearing_angle_obs = std::atan2(delta_local(1), delta_local(0));
+
+        auto factor = std::make_shared<RangeBearingFactor2D>(
+            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
     }
 }

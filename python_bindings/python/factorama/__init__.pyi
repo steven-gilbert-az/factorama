@@ -6,6 +6,7 @@ A Python interface to the Factorama C++ factor graph optimization library.
 """
 from __future__ import annotations
 from factorama._factorama import BearingObservationFactor
+from factorama._factorama import BearingObservationFactor2D
 from factorama._factorama import BearingProjectionFactor2D
 from factorama._factorama import Factor
 from factorama._factorama import FactorGraph
@@ -20,6 +21,9 @@ from factorama._factorama import LinearVelocityFactor
 from factorama._factorama import PlaneFactor
 from factorama._factorama import PlanePriorFactor
 from factorama._factorama import PlaneVariable
+from factorama._factorama import Pose2DPriorFactor
+from factorama._factorama import Pose2DVariable
+from factorama._factorama import RangeBearingFactor2D
 from factorama._factorama import OptimizerMethod
 from factorama._factorama import OptimizerSettings
 from factorama._factorama import OptimizerStats
@@ -47,5 +51,5 @@ def PlotFactorGraph(
     plot_3d: bool = True
 ) -> Any: ...
 
-__all__: list[str] = ['BearingObservationFactor', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'PlotFactorGraph', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingObservationFactor2D', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'PlotFactorGraph', 'Pose2DPriorFactor', 'Pose2DVariable', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RangeBearingFactor2D', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 __version__: str

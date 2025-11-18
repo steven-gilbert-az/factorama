@@ -17,6 +17,7 @@ namespace factorama
             extrinsic_rotation,
             generic,
             plane,
+            pose_2d,
             custom,
             other,
             num_variable_types
@@ -33,6 +34,7 @@ namespace factorama
             names[extrinsic_rotation] = "extrinsic_rotation";
             names[generic] = "generic";
             names[plane] = "plane";
+            names[pose_2d] = "pose_2d";
             names[custom] = "custom";
             names[other] = "other";
             return names;
@@ -51,7 +53,8 @@ namespace factorama
                           variable_names[inverse_range_landmark] != nullptr &&
                           variable_names[extrinsic_rotation] != nullptr &&
                           variable_names[generic] != nullptr &&
-                          variable_names[plane] != nullptr,
+                          variable_names[plane] != nullptr &&
+                          variable_names[pose_2d] != nullptr,
                       "VariableType: all variable names must be non-null");
     }
 
@@ -70,6 +73,9 @@ namespace factorama
             pose_orientation_between,
             plane_factor,
             plane_prior,
+            bearing_observation_2d,
+            range_bearing_2d,
+            pose_2d_prior,
             custom,
             other,
             num_factor_types
@@ -90,6 +96,9 @@ namespace factorama
             names[pose_orientation_between] = "pose_orientation_between";
             names[plane_factor] = "plane_factor";
             names[plane_prior] = "plane_prior";
+            names[bearing_observation_2d] = "bearing_observation_2d";
+            names[range_bearing_2d] = "range_bearing_2d";
+            names[pose_2d_prior] = "pose_2d_prior";
             names[custom] = "custom";
             names[other] = "other";
             return names;
@@ -112,7 +121,10 @@ namespace factorama
                           factor_names[pose_position_between] != nullptr &&
                           factor_names[pose_orientation_between] != nullptr &&
                           factor_names[plane_factor] != nullptr &&
-                          factor_names[plane_prior] != nullptr,
+                          factor_names[plane_prior] != nullptr &&
+                          factor_names[bearing_observation_2d] != nullptr &&
+                          factor_names[range_bearing_2d] != nullptr &&
+                          factor_names[pose_2d_prior] != nullptr,
                       "FactorType: all factor names must be non-null");
     }
 

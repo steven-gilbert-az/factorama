@@ -370,6 +370,195 @@ def test_factor_graph_with_factors():
     assert len(residuals) == 9
 
 
+def test_2d_slam_with_bearing_and_range_bearing():
+    """Test 2D SLAM scenario with mix of bearing-only and range-bearing factors"""
+    # Ground truth: 2 poses and 4 landmarks
+    # Pose 0: origin, facing east (0 radians)
+    # Pose 1: east of origin, facing north (π/2 radians)
+    gt_poses = [
+        np.array([0.0, 0.0, 0.0]),          # x, y, theta
+        np.array([3.0, 0.0, np.pi / 2])
+    ]
+
+    # 4 landmarks forming a square
+    gt_landmarks = [
+        np.array([1.0, 1.0]),   # Landmark 0
+        np.array([2.0, 1.0]),   # Landmark 1
+        np.array([2.0, 2.0]),   # Landmark 2
+        np.array([1.0, 2.0])    # Landmark 3
+    ]
+
+    # Create factor graph
+    graph = factorama.FactorGraph()
+    var_id = 0
+    factor_id = 0
+
+    # Create pose variables with noisy initial guesses
+    poses = []
+    for i, gt_pose in enumerate(gt_poses):
+        noisy_pose = gt_pose.copy()
+        noisy_pose[0] += 0.2 * (0.1 if i == 0 else 0.3)  # x noise
+        noisy_pose[1] += 0.15 * (-0.2 if i == 1 else 0.2) # y noise
+        noisy_pose[2] += 0.1 * (0.15 if i == 1 else -0.1) # theta noise
+
+        pose = factorama.Pose2DVariable(var_id, noisy_pose)
+        var_id += 1
+        poses.append(pose)
+        graph.add_variable(pose)
+
+    # Create landmark variables with noisy initial guesses
+    landmarks = []
+    for i, gt_landmark in enumerate(gt_landmarks):
+        noisy_landmark = gt_landmark.copy()
+        noisy_landmark[0] += 0.1 * (0.2 if i % 2 == 0 else -0.15)
+        noisy_landmark[1] += 0.1 * (-0.1 if i // 2 == 0 else 0.2)
+
+        landmark = factorama.GenericVariable(var_id, noisy_landmark)
+        var_id += 1
+        landmarks.append(landmark)
+        graph.add_variable(landmark)
+
+    # Add pose priors
+    pose_position_sigma = 0.5
+    pose_angle_sigma = 0.2
+    for i, (pose, gt_pose) in enumerate(zip(poses, gt_poses)):
+        pose_prior = factorama.Pose2DPriorFactor(
+            factor_id, pose, gt_pose, pose_position_sigma, pose_angle_sigma)
+        factor_id += 1
+        graph.add_factor(pose_prior)
+
+    # Add landmark priors (weaker)
+    landmark_sigma = 1.0
+    for landmark, gt_landmark in zip(landmarks, gt_landmarks):
+        landmark_prior = factorama.GenericPriorFactor(
+            factor_id, landmark, gt_landmark, landmark_sigma)
+        factor_id += 1
+        graph.add_factor(landmark_prior)
+
+    # Mix of observations:
+    # - Pose 0 sees landmarks 0, 1 with bearing-only
+    # - Pose 0 sees landmark 2 with range-bearing
+    # - Pose 1 sees landmarks 1, 2 with range-bearing
+    # - Pose 1 sees landmark 3 with bearing-only
+
+    bearing_sigma = 0.05  # radians
+    range_sigma = 0.1     # meters
+
+    # Helper function to compute bearing and range
+    def compute_observation(pose_gt, landmark_gt):
+        pose_pos = pose_gt[:2]
+        pose_theta = pose_gt[2]
+
+        # Delta in world frame
+        delta_world = landmark_gt - pose_pos
+
+        # Rotate to pose frame
+        c = np.cos(pose_theta)
+        s = np.sin(pose_theta)
+        R_T = np.array([[c, s], [-s, c]])
+        delta_local = R_T @ delta_world
+
+        range_obs = np.linalg.norm(delta_local)
+        bearing_obs = np.arctan2(delta_local[1], delta_local[0])
+
+        return range_obs, bearing_obs
+
+    # Pose 0, Landmark 0: bearing-only
+    _, bearing = compute_observation(gt_poses[0], gt_landmarks[0])
+    factor = factorama.BearingObservationFactor2D(
+        factor_id, poses[0], landmarks[0], bearing, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Pose 0, Landmark 1: bearing-only
+    _, bearing = compute_observation(gt_poses[0], gt_landmarks[1])
+    factor = factorama.BearingObservationFactor2D(
+        factor_id, poses[0], landmarks[1], bearing, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Pose 0, Landmark 2: range-bearing
+    range_obs, bearing = compute_observation(gt_poses[0], gt_landmarks[2])
+    factor = factorama.RangeBearingFactor2D(
+        factor_id, poses[0], landmarks[2], range_obs, bearing,
+        range_sigma, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Pose 1, Landmark 1: range-bearing
+    range_obs, bearing = compute_observation(gt_poses[1], gt_landmarks[1])
+    factor = factorama.RangeBearingFactor2D(
+        factor_id, poses[1], landmarks[1], range_obs, bearing,
+        range_sigma, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Pose 1, Landmark 2: range-bearing
+    range_obs, bearing = compute_observation(gt_poses[1], gt_landmarks[2])
+    factor = factorama.RangeBearingFactor2D(
+        factor_id, poses[1], landmarks[2], range_obs, bearing,
+        range_sigma, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Pose 1, Landmark 3: bearing-only
+    _, bearing = compute_observation(gt_poses[1], gt_landmarks[3])
+    factor = factorama.BearingObservationFactor2D(
+        factor_id, poses[1], landmarks[3], bearing, bearing_sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Finalize and optimize
+    graph.finalize_structure()
+
+    # Check graph structure
+    assert graph.num_variables() == 6  # 2 poses + 4 landmarks
+    expected_residuals = (
+        2 * 3 +  # 2 pose priors (3 residuals each)
+        4 * 2 +  # 4 landmark priors (2 residuals each)
+        3 * 1 +  # 3 bearing-only factors (1 residual each)
+        3 * 2    # 3 range-bearing factors (2 residuals each)
+    )
+    assert graph.num_residuals() == expected_residuals
+
+    # Setup optimizer
+    optimizer = factorama.SparseOptimizer()
+    settings = factorama.OptimizerSettings()
+    settings.method = factorama.OptimizerMethod.LevenbergMarquardt
+    settings.max_num_iterations = 50
+    settings.verbose = False
+
+    optimizer.setup(graph, settings)
+
+    # Get initial residual norm
+    initial_residual = graph.compute_full_residual_vector()
+    initial_norm = np.linalg.norm(initial_residual)
+
+    # Optimize
+    optimizer.optimize()
+
+    # Get final residual norm
+    final_residual = graph.compute_full_residual_vector()
+    final_norm = np.linalg.norm(final_residual)
+
+    # Check convergence
+    assert optimizer.current_stats.status == factorama.OptimizerStatus.SUCCESS
+    assert final_norm < initial_norm  # Should have improved
+    assert final_norm < 1.0  # Should converge to small residual
+
+    # Check that poses are close to ground truth
+    for i, (pose, gt_pose) in enumerate(zip(poses, gt_poses)):
+        optimized_pose = pose.value()
+        # Position should be within ~1cm
+        assert np.allclose(optimized_pose[:2], gt_pose[:2], atol=0.01)
+        # Angle should be within ~1 degree
+        angle_diff = np.abs(optimized_pose[2] - gt_pose[2])
+        # Handle angle wrapping
+        if angle_diff > np.pi:
+            angle_diff = 2 * np.pi - angle_diff
+        assert angle_diff < 0.02  # ~1 degree
+
+
 if __name__ == "__main__":
     test_rotation_variable_creation()
     test_inverse_range_variable_creation()
@@ -385,4 +574,5 @@ if __name__ == "__main__":
     test_bearing_projection_factor_2d()
     test_factor_graph_with_variables()
     test_factor_graph_with_factors()
+    test_2d_slam_with_bearing_and_range_bearing()
     print("All tests passed!")

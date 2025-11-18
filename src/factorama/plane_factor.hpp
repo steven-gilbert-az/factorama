@@ -33,6 +33,14 @@ namespace factorama
                     PlaneVariable* plane_var,
                     double sigma = 1.0);
 
+        PlaneFactor(int id,
+                    Variable* point_var,
+                    PlaneVariable* plane_var,
+                    double sigma,
+                    bool do_distance_scaling,
+                    double dist_scaling_r0,
+                    Eigen::Vector3d dist_scaling_p0);
+
         int residual_size() const override { return 1; }
         double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::plane_factor; }
@@ -46,6 +54,9 @@ namespace factorama
         Variable* point_var_;
         PlaneVariable* plane_var_;
         double weight_;
+        bool do_distance_scaling_;
+        double dist_scaling_r0_;
+        Eigen::Vector3d dist_scaling_p0_;
     };
 
 } // namespace factorama

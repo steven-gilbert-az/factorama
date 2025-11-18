@@ -19,17 +19,21 @@
 #include <factorama/factor_graph.hpp>
 #include <factorama/sparse_optimizer.hpp>
 #include <factorama/pose_variable.hpp>
+#include <factorama/pose_2d_variable.hpp>
 #include <factorama/landmark_variable.hpp>
 #include <factorama/generic_variable.hpp>
 #include <factorama/rotation_variable.hpp>
 #include <factorama/inverse_range_variable.hpp>
 #include <factorama/plane_variable.hpp>
 #include <factorama/bearing_observation_factor.hpp>
+#include <factorama/bearing_observation_factor_2d.hpp>
+#include <factorama/range_bearing_factor_2d.hpp>
 #include <factorama/generic_prior_factor.hpp>
 #include <factorama/inverse_range_bearing_factor.hpp>
 #include <factorama/generic_between_factor.hpp>
 #include <factorama/linear_velocity_factor.hpp>
 #include <factorama/pose_prior_factors.hpp>
+#include <factorama/pose_2d_prior_factor.hpp>
 #include <factorama/pose_between_factors.hpp>
 #include <factorama/rotation_prior_factor.hpp>
 #include <factorama/bearing_projection_factor_2d.hpp>
@@ -50,7 +54,8 @@ PYBIND11_MODULE(_factorama, m) {
         .value("inverse_range_landmark", factorama::VariableType::inverse_range_landmark)
         .value("extrinsic_rotation", factorama::VariableType::extrinsic_rotation)
         .value("generic", factorama::VariableType::generic)
-        .value("plane", factorama::VariableType::plane);
+        .value("plane", factorama::VariableType::plane)
+        .value("pose_2d", factorama::VariableType::pose_2d);
 
     py::enum_<factorama::FactorType::FactorTypeEnum>(m, "FactorType")
         .value("none", factorama::FactorType::none)
@@ -63,7 +68,10 @@ PYBIND11_MODULE(_factorama, m) {
         .value("pose_position_between", factorama::FactorType::pose_position_between)
         .value("pose_orientation_between", factorama::FactorType::pose_orientation_between)
         .value("plane_factor", factorama::FactorType::plane_factor)
-        .value("plane_prior", factorama::FactorType::plane_prior);
+        .value("plane_prior", factorama::FactorType::plane_prior)
+        .value("bearing_observation_2d", factorama::FactorType::bearing_observation_2d)
+        .value("range_bearing_2d", factorama::FactorType::range_bearing_2d)
+        .value("pose_2d_prior", factorama::FactorType::pose_2d_prior);
 
     // Bind base classes
     py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable", DOC(factorama, Variable))
@@ -135,6 +143,16 @@ PYBIND11_MODULE(_factorama, m) {
         .def("distance_from_origin", &factorama::PlaneVariable::distance_from_origin)
         .def("distance_from_point", &factorama::PlaneVariable::distance_from_point);
 
+    py::class_<factorama::Pose2DVariable, std::shared_ptr<factorama::Pose2DVariable>, factorama::Variable>(m, "Pose2DVariable")
+        .def(py::init<int, const Eigen::Vector3d&>(),
+             "Create a Pose2DVariable with 2D pose [x, y, theta]",
+             py::arg("id"), py::arg("pose_2d"))
+        .def("pos_2d", &factorama::Pose2DVariable::pos_2d)
+        .def("theta", &factorama::Pose2DVariable::theta)
+        .def("dcm_2d", &factorama::Pose2DVariable::dcm_2d)
+        .def("set_pos_2d", &factorama::Pose2DVariable::set_pos_2d)
+        .def("set_theta", &factorama::Pose2DVariable::set_theta);
+
     // Bind factor classes
     py::class_<factorama::BearingObservationFactor, std::shared_ptr<factorama::BearingObservationFactor>, factorama::Factor>(m, "BearingObservationFactor")
         .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, 
@@ -202,13 +220,36 @@ PYBIND11_MODULE(_factorama, m) {
     py::class_<factorama::PlaneFactor, std::shared_ptr<factorama::PlaneFactor>, factorama::Factor>(m, "PlaneFactor")
         .def(py::init<int, factorama::Variable*, factorama::PlaneVariable*, double>(),
              "Create a PlaneFactor",
-             py::arg("id"), py::arg("point_var"), py::arg("plane_var"), py::arg("sigma") = 1.0);
+             py::arg("id"), py::arg("point_var"), py::arg("plane_var"), py::arg("sigma") = 1.0)
+        .def(py::init<int, factorama::Variable*, factorama::PlaneVariable*, double, bool, double, const Eigen::Vector3d&>(),
+             "Create a PlaneFactor with distance scaling",
+             py::arg("id"), py::arg("point_var"), py::arg("plane_var"), py::arg("sigma"),
+             py::arg("do_distance_scaling"), py::arg("dist_scaling_r0"), py::arg("dist_scaling_p0"));
 
     py::class_<factorama::PlanePriorFactor, std::shared_ptr<factorama::PlanePriorFactor>, factorama::Factor>(m, "PlanePriorFactor")
         .def(py::init<int, factorama::PlaneVariable*, const Eigen::Vector3d&, double, double, double>(),
              "Create a PlanePriorFactor",
              py::arg("id"), py::arg("plane"), py::arg("normal_prior"), py::arg("distance_prior"),
              py::arg("normal_sigma") = 1.0, py::arg("distance_sigma") = 1.0);
+
+    py::class_<factorama::BearingObservationFactor2D, std::shared_ptr<factorama::BearingObservationFactor2D>, factorama::Factor>(m, "BearingObservationFactor2D")
+        .def(py::init<int, factorama::Pose2DVariable*, factorama::Variable*, double, double>(),
+             "Create a BearingObservationFactor2D",
+             py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"),
+             py::arg("bearing_angle_obs"), py::arg("angle_sigma") = 1.0);
+
+    py::class_<factorama::RangeBearingFactor2D, std::shared_ptr<factorama::RangeBearingFactor2D>, factorama::Factor>(m, "RangeBearingFactor2D")
+        .def(py::init<int, factorama::Pose2DVariable*, factorama::Variable*, double, double, double, double>(),
+             "Create a RangeBearingFactor2D",
+             py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"),
+             py::arg("range_obs"), py::arg("bearing_angle_obs"),
+             py::arg("range_sigma") = 1.0, py::arg("bearing_sigma") = 1.0);
+
+    py::class_<factorama::Pose2DPriorFactor, std::shared_ptr<factorama::Pose2DPriorFactor>, factorama::Factor>(m, "Pose2DPriorFactor")
+        .def(py::init<int, factorama::Pose2DVariable*, const Eigen::Vector3d&, double, double>(),
+             "Create a Pose2DPriorFactor",
+             py::arg("id"), py::arg("pose_var"), py::arg("pose_prior"),
+             py::arg("position_sigma"), py::arg("angle_sigma"));
 
     // Optimizer enums and settings
     py::enum_<factorama::OptimizerMethod>(m, "OptimizerMethod")
