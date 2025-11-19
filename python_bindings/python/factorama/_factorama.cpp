@@ -34,6 +34,7 @@
 #include <factorama/linear_velocity_factor.hpp>
 #include <factorama/pose_prior_factors.hpp>
 #include <factorama/pose_2d_prior_factor.hpp>
+#include <factorama/pose_2d_between_factor.hpp>
 #include <factorama/pose_between_factors.hpp>
 #include <factorama/rotation_prior_factor.hpp>
 #include <factorama/bearing_projection_factor_2d.hpp>
@@ -71,7 +72,8 @@ PYBIND11_MODULE(_factorama, m) {
         .value("plane_prior", factorama::FactorType::plane_prior)
         .value("bearing_observation_2d", factorama::FactorType::bearing_observation_2d)
         .value("range_bearing_2d", factorama::FactorType::range_bearing_2d)
-        .value("pose_2d_prior", factorama::FactorType::pose_2d_prior);
+        .value("pose_2d_prior", factorama::FactorType::pose_2d_prior)
+        .value("pose_2d_between", factorama::FactorType::pose_2d_between);
 
     // Bind base classes
     py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable", DOC(factorama, Variable))
@@ -249,6 +251,12 @@ PYBIND11_MODULE(_factorama, m) {
         .def(py::init<int, factorama::Pose2DVariable*, const Eigen::Vector3d&, double, double>(),
              "Create a Pose2DPriorFactor",
              py::arg("id"), py::arg("pose_var"), py::arg("pose_prior"),
+             py::arg("position_sigma"), py::arg("angle_sigma"));
+
+    py::class_<factorama::Pose2DBetweenFactor, std::shared_ptr<factorama::Pose2DBetweenFactor>, factorama::Factor>(m, "Pose2DBetweenFactor")
+        .def(py::init<int, factorama::Pose2DVariable*, factorama::Pose2DVariable*, factorama::Variable*, double, double>(),
+             "Create a Pose2DBetweenFactor",
+             py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_between_variable"),
              py::arg("position_sigma"), py::arg("angle_sigma"));
 
     // Optimizer enums and settings

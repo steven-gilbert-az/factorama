@@ -69,6 +69,7 @@ target_sources(factorama
         src/factorama/linear_velocity_factor.cpp
         src/factorama/plane_factor.cpp
         src/factorama/plane_prior_factor.cpp
+        src/factorama/pose_2d_between_factor.cpp
         src/factorama/pose_2d_prior_factor.cpp
         src/factorama/pose_2d_variable.cpp
         src/factorama/pose_prior_factors.cpp

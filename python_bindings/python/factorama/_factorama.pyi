@@ -6,7 +6,7 @@ import numpy
 import numpy.typing
 import scipy.sparse
 import typing
-__all__: list[str] = ['BearingObservationFactor', 'BearingObservationFactor2D', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'Pose2DPriorFactor', 'Pose2DVariable', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RangeBearingFactor2D', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
+__all__: list[str] = ['BearingObservationFactor', 'BearingObservationFactor2D', 'BearingProjectionFactor2D', 'ExpMapSO3', 'Factor', 'FactorGraph', 'FactorType', 'GenericBetweenFactor', 'GenericPriorFactor', 'GenericVariable', 'InverseRangeBearingFactor', 'InverseRangeVariable', 'LandmarkVariable', 'LinearVelocityFactor', 'LogMapSO3', 'OptimizerMethod', 'OptimizerSettings', 'OptimizerStats', 'OptimizerStatus', 'PlaneFactor', 'PlanePriorFactor', 'PlaneVariable', 'Pose2DBetweenFactor', 'Pose2DPriorFactor', 'Pose2DVariable', 'PoseOrientationBetweenFactor', 'PoseOrientationPriorFactor', 'PosePositionBetweenFactor', 'PosePositionPriorFactor', 'PoseVariable', 'RangeBearingFactor2D', 'RotationPriorFactor', 'RotationVariable', 'SparseOptimizer', 'Variable', 'VariableType']
 class BearingObservationFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: PoseVariable, landmark_var: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
@@ -121,8 +121,10 @@ class FactorType:
       range_bearing_2d
     
       pose_2d_prior
+    
+      pose_2d_between
     """
-    __members__: typing.ClassVar[dict[str, FactorType]]  # value = {'none': <FactorType.none: 0>, 'bearing_observation': <FactorType.bearing_observation: 1>, 'inverse_range_bearing': <FactorType.inverse_range_bearing: 2>, 'generic_prior': <FactorType.generic_prior: 3>, 'generic_between': <FactorType.generic_between: 4>, 'pose_position_prior': <FactorType.pose_position_prior: 5>, 'pose_orientation_prior': <FactorType.pose_orientation_prior: 6>, 'pose_position_between': <FactorType.pose_position_between: 7>, 'pose_orientation_between': <FactorType.pose_orientation_between: 8>, 'plane_factor': <FactorType.plane_factor: 9>, 'plane_prior': <FactorType.plane_prior: 10>, 'bearing_observation_2d': <FactorType.bearing_observation_2d: 11>, 'range_bearing_2d': <FactorType.range_bearing_2d: 12>, 'pose_2d_prior': <FactorType.pose_2d_prior: 13>}
+    __members__: typing.ClassVar[dict[str, FactorType]]  # value = {'none': <FactorType.none: 0>, 'bearing_observation': <FactorType.bearing_observation: 1>, 'inverse_range_bearing': <FactorType.inverse_range_bearing: 2>, 'generic_prior': <FactorType.generic_prior: 3>, 'generic_between': <FactorType.generic_between: 4>, 'pose_position_prior': <FactorType.pose_position_prior: 5>, 'pose_orientation_prior': <FactorType.pose_orientation_prior: 6>, 'pose_position_between': <FactorType.pose_position_between: 7>, 'pose_orientation_between': <FactorType.pose_orientation_between: 8>, 'plane_factor': <FactorType.plane_factor: 9>, 'plane_prior': <FactorType.plane_prior: 10>, 'bearing_observation_2d': <FactorType.bearing_observation_2d: 11>, 'range_bearing_2d': <FactorType.range_bearing_2d: 12>, 'pose_2d_prior': <FactorType.pose_2d_prior: 13>, 'pose_2d_between': <FactorType.pose_2d_between: 14>}
     bearing_observation: typing.ClassVar[FactorType]  # value = <FactorType.bearing_observation: 1>
     bearing_observation_2d: typing.ClassVar[FactorType]  # value = <FactorType.bearing_observation_2d: 11>
     generic_between: typing.ClassVar[FactorType]  # value = <FactorType.generic_between: 4>
@@ -131,6 +133,7 @@ class FactorType:
     none: typing.ClassVar[FactorType]  # value = <FactorType.none: 0>
     plane_factor: typing.ClassVar[FactorType]  # value = <FactorType.plane_factor: 9>
     plane_prior: typing.ClassVar[FactorType]  # value = <FactorType.plane_prior: 10>
+    pose_2d_between: typing.ClassVar[FactorType]  # value = <FactorType.pose_2d_between: 14>
     pose_2d_prior: typing.ClassVar[FactorType]  # value = <FactorType.pose_2d_prior: 13>
     pose_orientation_between: typing.ClassVar[FactorType]  # value = <FactorType.pose_orientation_between: 8>
     pose_orientation_prior: typing.ClassVar[FactorType]  # value = <FactorType.pose_orientation_prior: 6>
@@ -430,6 +433,11 @@ class PlaneVariable(Variable):
         ...
     def unit_vector(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
+class Pose2DBetweenFactor(Factor):
+    def __init__(self, id: typing.SupportsInt, pose_a: Pose2DVariable, pose_b: Pose2DVariable, measured_between_variable: Variable, position_sigma: typing.SupportsFloat, angle_sigma: typing.SupportsFloat) -> None:
+        """
+        Create a Pose2DBetweenFactor
+        """
 class Pose2DPriorFactor(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: Pose2DVariable, pose_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], position_sigma: typing.SupportsFloat, angle_sigma: typing.SupportsFloat) -> None:
         """

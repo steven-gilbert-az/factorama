@@ -14,6 +14,7 @@
 #include "factorama/plane_factor.hpp"
 #include "factorama/plane_prior_factor.hpp"
 #include "factorama/pose_2d_prior_factor.hpp"
+#include "factorama/pose_2d_between_factor.hpp"
 #include "factorama/range_bearing_factor_2d.hpp"
 #include "factorama/generic_prior_factor.hpp"
 #include "factorama/factor_graph.hpp"
@@ -626,6 +627,25 @@ TEST_CASE("Consolidated Integration Tests")
                     graph.add_factor(bearing_factor);
                 }
 
+                // Add between factors connecting consecutive poses
+                double between_position_sigma = 0.1;
+                double between_angle_sigma = 0.05;
+                for (size_t i = 0; i < poses.size() - 1; ++i) {
+                    // Compute ground truth relative pose
+                    Eigen::Vector3d relative_pose;
+                    relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
+                    relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
+
+                    auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
+                    measured_between->set_constant(true);
+                    graph.add_variable(measured_between);
+
+                    auto between_factor = std::make_shared<Pose2DBetweenFactor>(
+                        factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
+                        between_position_sigma, between_angle_sigma);
+                    graph.add_factor(between_factor);
+                }
+
                 return graph;
             },
             settings16,
@@ -749,6 +769,25 @@ TEST_CASE("Consolidated Integration Tests")
                         factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
                         range, bearing_angle, range_sigma, bearing_sigma);
                     graph.add_factor(rb_factor);
+                }
+
+                // Add between factors connecting consecutive poses
+                double between_position_sigma = 0.1;
+                double between_angle_sigma = 0.05;
+                for (size_t i = 0; i < poses.size() - 1; ++i) {
+                    // Compute ground truth relative pose
+                    Eigen::Vector3d relative_pose;
+                    relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
+                    relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
+
+                    auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
+                    measured_between->set_constant(true);
+                    graph.add_variable(measured_between);
+
+                    auto between_factor = std::make_shared<Pose2DBetweenFactor>(
+                        factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
+                        between_position_sigma, between_angle_sigma);
+                    graph.add_factor(between_factor);
                 }
 
                 return graph;

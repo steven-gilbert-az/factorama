@@ -27,6 +27,7 @@
 #include "factorama/plane_factor.hpp"
 #include "factorama/plane_prior_factor.hpp"
 #include "factorama/pose_2d_prior_factor.hpp"
+#include "factorama/pose_2d_between_factor.hpp"
 #include "factorama/pose_between_factors.hpp"
 #include "factorama/pose_prior_factors.hpp"
 #include "factorama/range_bearing_factor_2d.hpp"
@@ -1987,6 +1988,224 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         ComputeNumericalJacobians(*factor, J_numeric);
 
         REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+}
+
+TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobian][between][2d]")
+{
+    SECTION("Simple configuration: both poses at origin")
+    {
+        // First pose at origin
+        Eigen::Vector3d pose_a_state(0.0, 0.0, 0.0);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Second pose slightly offset
+        Eigen::Vector3d pose_b_state(1.0, 0.5, 0.1);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured between (expected relative pose)
+        Eigen::Vector3d measured_between(1.0, 0.5, 0.1);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.1;
+        double angle_sigma = 0.05;
+
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Arbitrary poses with non-zero rotation")
+    {
+        // First pose at arbitrary location
+        Eigen::Vector3d pose_a_state(2.0, -1.0, PI / 4);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Second pose at different location
+        Eigen::Vector3d pose_b_state(3.5, 0.5, PI / 3);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured between (different from actual to create non-zero residual)
+        Eigen::Vector3d measured_between(1.0, 1.0, 0.0);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.2;
+        double angle_sigma = 0.1;
+
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Critical test: angle wrapping at +π boundary")
+    {
+        // First pose at angle near -π
+        Eigen::Vector3d pose_a_state(0.0, 0.0, -PI + 0.05);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Second pose at angle near +π
+        Eigen::Vector3d pose_b_state(0.0, 0.0, PI - 0.05);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured between: the relative angle should be small (wrapped)
+        Eigen::Vector3d measured_between(0.0, 0.0, 0.0);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+
+        // Compute residual
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 3);
+
+        // Position residuals should be zero
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+        REQUIRE(std::abs(residual(1)) < precision_tol);
+
+        // Angle residual should be small (NOT ~2π!)
+        // The actual relative angle is (π-0.05) - (-π+0.05) = 2π-0.1
+        // After wrapping, this should be approximately -0.1 radians
+        double angle_weight = 1.0 / angle_sigma;
+        double expected_angle_error = -0.1;  // Wrapped difference
+        REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Critical test: angle wrapping at -π boundary")
+    {
+        // First pose at angle near +π
+        Eigen::Vector3d pose_a_state(1.0, 2.0, PI - 0.03);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Second pose at angle near -π
+        Eigen::Vector3d pose_b_state(1.0, 2.0, -PI + 0.03);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured between: the relative angle should be small (wrapped)
+        Eigen::Vector3d measured_between(0.0, 0.0, 0.0);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.5;
+        double angle_sigma = 0.2;
+
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+
+        // Compute residual
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.size() == 3);
+
+        // Position residuals should be zero
+        REQUIRE(std::abs(residual(0)) < precision_tol);
+        REQUIRE(std::abs(residual(1)) < precision_tol);
+
+        // Angle residual should be small (NOT ~2π!)
+        // The actual relative angle is (-π+0.03) - (π-0.03) = -2π+0.06
+        // After wrapping, this should be approximately 0.06 radians
+        double angle_weight = 1.0 / angle_sigma;
+        double expected_angle_error = 0.06;  // Wrapped difference
+        REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
+
+        // Test Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Test with solveable measured variable")
+    {
+        // First pose
+        Eigen::Vector3d pose_a_state(1.0, 2.0, 0.3);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Second pose
+        Eigen::Vector3d pose_b_state(2.5, 3.5, 0.8);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured between (not constant - can be optimized)
+        Eigen::Vector3d measured_between(1.0, 1.0, 0.5);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+        measured_var->set_constant(false);  // Make it solveable
+
+        double position_sigma = 0.1;
+        double angle_sigma = 0.05;
+
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+
+        // Test Jacobians with respect to all three variables
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+        REQUIRE(J_analytic.size() == 3);  // pose_a, pose_b, measured_between
 
         for (size_t i = 0; i < J_analytic.size(); ++i)
         {

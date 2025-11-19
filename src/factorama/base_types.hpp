@@ -76,6 +76,7 @@ namespace factorama
             bearing_observation_2d,
             range_bearing_2d,
             pose_2d_prior,
+            pose_2d_between,
             custom,
             other,
             num_factor_types
@@ -99,6 +100,7 @@ namespace factorama
             names[bearing_observation_2d] = "bearing_observation_2d";
             names[range_bearing_2d] = "range_bearing_2d";
             names[pose_2d_prior] = "pose_2d_prior";
+            names[pose_2d_between] = "pose_2d_between";
             names[custom] = "custom";
             names[other] = "other";
             return names;
@@ -124,7 +126,8 @@ namespace factorama
                           factor_names[plane_prior] != nullptr &&
                           factor_names[bearing_observation_2d] != nullptr &&
                           factor_names[range_bearing_2d] != nullptr &&
-                          factor_names[pose_2d_prior] != nullptr,
+                          factor_names[pose_2d_prior] != nullptr &&
+                          factor_names[pose_2d_between] != nullptr,
                       "FactorType: all factor names must be non-null");
     }
 

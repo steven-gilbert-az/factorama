@@ -508,16 +508,37 @@ def test_2d_slam_with_bearing_and_range_bearing():
     factor_id += 1
     graph.add_factor(factor)
 
+    # Add between factor connecting consecutive poses
+    between_position_sigma = 0.1
+    between_angle_sigma = 0.05
+    # Compute ground truth relative pose
+    relative_pose = np.array([
+        gt_poses[1][0] - gt_poses[0][0],  # dx
+        gt_poses[1][1] - gt_poses[0][1],  # dy
+        gt_poses[1][2] - gt_poses[0][2]   # dtheta
+    ])
+    measured_between = factorama.GenericVariable(var_id, relative_pose)
+    var_id += 1
+    measured_between.set_constant(True)
+    graph.add_variable(measured_between)
+
+    between_factor = factorama.Pose2DBetweenFactor(
+        factor_id, poses[0], poses[1], measured_between,
+        between_position_sigma, between_angle_sigma)
+    factor_id += 1
+    graph.add_factor(between_factor)
+
     # Finalize and optimize
     graph.finalize_structure()
 
     # Check graph structure
-    assert graph.num_variables() == 6  # 2 poses + 4 landmarks
+    assert graph.num_variables() == 7  # 2 poses + 4 landmarks + 1 between measurement
     expected_residuals = (
         2 * 3 +  # 2 pose priors (3 residuals each)
         4 * 2 +  # 4 landmark priors (2 residuals each)
         3 * 1 +  # 3 bearing-only factors (1 residual each)
-        3 * 2    # 3 range-bearing factors (2 residuals each)
+        3 * 2 +  # 3 range-bearing factors (2 residuals each)
+        1 * 3    # 1 between factor (3 residuals)
     )
     assert graph.num_residuals() == expected_residuals
 
