@@ -14,7 +14,7 @@ namespace factorama
      * Used for planar SLAM, 2D robot navigation, and other 2D problems.
      *
      * @code
-     * Eigen::Vector3d initial_pose(1.0, 2.0, M_PI/4);  // x, y, theta
+     * Eigen::Vector3d initial_pose(1.0, 2.0, PI/4);  // x, y, theta
      * auto pose = std::make_shared<Pose2DVariable>(1, initial_pose);
      * @endcode
      */

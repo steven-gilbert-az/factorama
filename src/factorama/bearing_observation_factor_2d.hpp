@@ -15,7 +15,7 @@ namespace factorama
      * pose's local reference frame.
      *
      * @code
-     * double bearing_angle = M_PI/4;  // 45 degrees in pose frame
+     * double bearing_angle = PI/4;  // 45 degrees in pose frame
      * double sigma = 0.1;  // rad
      * auto factor = std::make_shared<BearingObservationFactor2D>(
      *     factor_id++, pose_var, landmark_var, bearing_angle, sigma);

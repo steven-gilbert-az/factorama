@@ -17,7 +17,7 @@ namespace factorama
      *
      * @code
      * double range = 5.0;  // meters
-     * double bearing_angle = M_PI/4;  // 45 degrees in pose frame
+     * double bearing_angle = PI/4;  // 45 degrees in pose frame
      * double range_sigma = 0.2;  // m
      * double bearing_sigma = 0.1;  // rad
      * auto factor = std::make_shared<RangeBearingFactor2D>(

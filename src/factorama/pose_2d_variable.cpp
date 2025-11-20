@@ -1,4 +1,5 @@
 #include "pose_2d_variable.hpp"
+#include "factorama/random_utils.hpp"
 #include <cmath>
 #include <stdexcept>
 
@@ -68,7 +69,7 @@ namespace factorama
     {
         std::cout << name() << std::endl;
         std::cout << "Position: [" << pose_2d_(0) << ", " << pose_2d_(1) << "]" << std::endl;
-        std::cout << "Theta: " << pose_2d_(2) << " rad (" << (pose_2d_(2) * 180.0 / M_PI) << " deg)" << std::endl;
+        std::cout << "Theta: " << pose_2d_(2) << " rad (" << (pose_2d_(2) * 180.0 / PI) << " deg)" << std::endl;
     }
 
     std::shared_ptr<Variable> Pose2DVariable::clone() const

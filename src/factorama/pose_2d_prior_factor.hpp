@@ -14,7 +14,7 @@ namespace factorama
      * Handles angle wrapping gracefully - angles near -π and π are treated as equivalent.
      *
      * @code
-     * Eigen::Vector3d prior_pose(1.0, 2.0, M_PI/4);  // x, y, theta
+     * Eigen::Vector3d prior_pose(1.0, 2.0, PI/4);  // x, y, theta
      * double position_sigma = 0.5;
      * double angle_sigma = 0.1;
      * auto pose_prior = std::make_shared<Pose2DPriorFactor>(

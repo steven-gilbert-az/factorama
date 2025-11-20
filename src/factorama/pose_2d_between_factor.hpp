@@ -19,7 +19,7 @@ namespace factorama
      *   angle_error = wrap((theta_b - theta_a) - measured_between[2])
      *
      * @code
-     * Eigen::Vector3d measured_between(1.0, 0.5, M_PI/6);  // dx, dy, dtheta
+     * Eigen::Vector3d measured_between(1.0, 0.5, PI/6);  // dx, dy, dtheta
      * auto between_var = std::make_shared<GenericVariable>(var_id++, measured_between);
      * double position_sigma = 0.1;
      * double angle_sigma = 0.05;
