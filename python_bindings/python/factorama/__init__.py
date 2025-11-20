@@ -20,16 +20,17 @@ except Exception:
     __version__ = "unknown"
 
 
-def PlotFactorGraph(factor_graph, axis_handle=None, plot_covariance=False, optimizer=None, plot_3d=True):
+def PlotFactorGraph(factor_graph, axis_handle=None, plot_covariance=False, optimizer=None, plot_3d=True, plot_measurements=True):
     """
     Plot a factor graph showing poses and landmarks.
 
     Args:
         factor_graph: FactorGraph object to visualize
         axis_handle: Optional matplotlib axis handle (if None, creates new figure)
-        plot_covariance: Whether to plot covariance ellipses (requires optimizer)
+        plot_covariance: Whether to plot covariance ellipses/ellipsoids (requires optimizer)
         optimizer: SparseOptimizer object (required if plot_covariance=True)
         plot_3d: If True, creates 3D plot; if False, creates 2D plot (x,y only)
+        plot_measurements: Whether to plot bearing/range-bearing measurement lines (default True)
 
     Returns:
         matplotlib axis handle
@@ -38,6 +39,7 @@ def PlotFactorGraph(factor_graph, axis_handle=None, plot_covariance=False, optim
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d import Axes3D
         import numpy as np
+        from matplotlib.patches import Ellipse
     except ImportError:
         raise ImportError("matplotlib and numpy are required for PlotFactorGraph")
 
@@ -54,54 +56,195 @@ def PlotFactorGraph(factor_graph, axis_handle=None, plot_covariance=False, optim
     # Get all variables from the factor graph
     variables = factor_graph.get_all_variables()
 
-    pose_positions = []
-    landmark_positions = []
+    # Separate lists for different variable types
+    pose_3d_positions = []
+    pose_3d_vars = []
+    landmark_3d_positions = []
+    landmark_3d_vars = []
+    pose_2d_positions = []
+    pose_2d_orientations = []
+    pose_2d_vars = []
+    landmark_2d_positions = []
+    landmark_2d_vars = []
 
     # Extract positions from variables
     for var in variables:
         if var.type() == VariableType.pose:
-            # PoseVariable has pos_W() method
+            # 3D PoseVariable has pos_W() method
             pos = var.pos_W()
-            pose_positions.append([pos[0], pos[1], pos[2]])
+            pose_3d_positions.append([pos[0], pos[1], pos[2]])
+            pose_3d_vars.append(var)
         elif var.type() == VariableType.landmark:
-            # LandmarkVariable has pos_W() method
+            # 3D LandmarkVariable has pos_W() method
             pos = var.pos_W()
-            landmark_positions.append([pos[0], pos[1], pos[2]])
+            landmark_3d_positions.append([pos[0], pos[1], pos[2]])
+            landmark_3d_vars.append(var)
+        elif var.type() == VariableType.pose_2d:
+            # 2D Pose2DVariable has pos_2d() and theta() methods
+            pos = var.pos_2d()
+            theta = var.theta()
+            pose_2d_positions.append([pos[0], pos[1]])
+            pose_2d_orientations.append(theta)
+            pose_2d_vars.append(var)
+        elif var.type() == VariableType.generic and var.size() == 2:
+            # 2D landmarks stored as GenericVariable with size 2
+            val = var.value()
+            landmark_2d_positions.append([val[0], val[1]])
+            landmark_2d_vars.append(var)
 
     # Convert to numpy arrays for easier plotting
-    if pose_positions:
-        pose_positions = np.array(pose_positions)
-    if landmark_positions:
-        landmark_positions = np.array(landmark_positions)
+    if pose_3d_positions:
+        pose_3d_positions = np.array(pose_3d_positions)
+    if landmark_3d_positions:
+        landmark_3d_positions = np.array(landmark_3d_positions)
+    if pose_2d_positions:
+        pose_2d_positions = np.array(pose_2d_positions)
+        pose_2d_orientations = np.array(pose_2d_orientations)
+    if landmark_2d_positions:
+        landmark_2d_positions = np.array(landmark_2d_positions)
+
+    # Prepare covariances if requested
+    covariances = {}
+    if plot_covariance and optimizer is not None:
+        optimizer.prepare_to_estimate_covariances()
+
+        # Get covariances for all variables
+        for var in variables:
+            cov_matrix, valid = optimizer.estimate_covariance(var)
+            if valid:
+                covariances[var.id()] = cov_matrix
 
     # Plot poses and landmarks
     if plot_3d:
         # 3D plotting
-        if len(pose_positions) > 0:
-            ax.scatter(pose_positions[:, 0], pose_positions[:, 1], pose_positions[:, 2],
-                      c='green', marker='o', s=50, label='Poses', alpha=0.8)
+        if len(pose_3d_positions) > 0:
+            ax.scatter(pose_3d_positions[:, 0], pose_3d_positions[:, 1], pose_3d_positions[:, 2],
+                      c='green', marker='o', s=50, label='3D Poses', alpha=0.8)
 
-        if len(landmark_positions) > 0:
-            ax.scatter(landmark_positions[:, 0], landmark_positions[:, 1], landmark_positions[:, 2],
-                      c='blue', marker='o', s=50, label='Landmarks', alpha=0.8)
+            # Plot 3D covariance ellipsoids if available
+            if plot_covariance:
+                for i, var in enumerate(pose_3d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        # Extract position covariance (first 3x3 block for position)
+                        if cov.shape[0] >= 3:
+                            pos_cov = cov[:3, :3]
+                            _plot_covariance_ellipsoid_3d(ax, pose_3d_positions[i], pos_cov,
+                                                          color='green', alpha=0.1)
+
+        if len(landmark_3d_positions) > 0:
+            ax.scatter(landmark_3d_positions[:, 0], landmark_3d_positions[:, 1], landmark_3d_positions[:, 2],
+                      c='blue', marker='o', s=50, label='3D Landmarks', alpha=0.8)
+
+            # Plot 3D covariance ellipsoids if available
+            if plot_covariance:
+                for i, var in enumerate(landmark_3d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        if cov.shape[0] >= 3:
+                            _plot_covariance_ellipsoid_3d(ax, landmark_3d_positions[i], cov,
+                                                          color='blue', alpha=0.1)
+
+        if len(pose_2d_positions) > 0:
+            # For 2D poses in 3D plot, set z=0
+            ax.scatter(pose_2d_positions[:, 0], pose_2d_positions[:, 1],
+                      np.zeros(len(pose_2d_positions)),
+                      c='red', marker='^', s=50, label='2D Poses', alpha=0.8)
+
+        if len(landmark_2d_positions) > 0:
+            # For 2D landmarks in 3D plot, set z=0
+            ax.scatter(landmark_2d_positions[:, 0], landmark_2d_positions[:, 1],
+                      np.zeros(len(landmark_2d_positions)),
+                      c='cyan', marker='o', s=50, label='2D Landmarks', alpha=0.8)
 
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
     else:
         # 2D plotting (x, y only)
-        if len(pose_positions) > 0:
-            ax.scatter(pose_positions[:, 0], pose_positions[:, 1],
-                      c='green', marker='o', s=50, label='Poses', alpha=0.8)
+        if len(pose_3d_positions) > 0:
+            ax.scatter(pose_3d_positions[:, 0], pose_3d_positions[:, 1],
+                      c='green', marker='o', s=50, label='3D Poses', alpha=0.8)
 
-        if len(landmark_positions) > 0:
-            ax.scatter(landmark_positions[:, 0], landmark_positions[:, 1],
-                      c='blue', marker='o', s=50, label='Landmarks', alpha=0.8)
+            # Plot 2D projection of position covariance
+            if plot_covariance:
+                for i, var in enumerate(pose_3d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        if cov.shape[0] >= 2:
+                            # Extract x-y covariance (first 2x2 block)
+                            pos_cov_2d = cov[:2, :2]
+                            _plot_covariance_ellipse_2d(ax, pose_3d_positions[i, :2], pos_cov_2d,
+                                                        color='green', alpha=0.2)
+
+        if len(landmark_3d_positions) > 0:
+            ax.scatter(landmark_3d_positions[:, 0], landmark_3d_positions[:, 1],
+                      c='blue', marker='o', s=50, label='3D Landmarks', alpha=0.8)
+
+            # Plot 2D projection of covariance
+            if plot_covariance:
+                for i, var in enumerate(landmark_3d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        if cov.shape[0] >= 2:
+                            pos_cov_2d = cov[:2, :2]
+                            _plot_covariance_ellipse_2d(ax, landmark_3d_positions[i, :2], pos_cov_2d,
+                                                        color='blue', alpha=0.2)
+
+        if len(pose_2d_positions) > 0:
+            ax.scatter(pose_2d_positions[:, 0], pose_2d_positions[:, 1],
+                      c='red', marker='^', s=50, label='2D Poses', alpha=0.8)
+
+            # Plot orientation arrows for 2D poses
+            arrow_length = _compute_arrow_length(pose_2d_positions, landmark_2d_positions,
+                                                 pose_3d_positions, landmark_3d_positions)
+            for i in range(len(pose_2d_positions)):
+                dx = arrow_length * np.cos(pose_2d_orientations[i])
+                dy = arrow_length * np.sin(pose_2d_orientations[i])
+                ax.arrow(pose_2d_positions[i, 0], pose_2d_positions[i, 1], dx, dy,
+                        head_width=arrow_length*0.3, head_length=arrow_length*0.4,
+                        fc='red', ec='red', alpha=0.6, linewidth=1.5)
+
+            # Plot 2D covariance ellipses if available
+            if plot_covariance:
+                for i, var in enumerate(pose_2d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        if cov.shape[0] >= 2:
+                            # Extract x-y covariance (first 2x2 block)
+                            pos_cov_2d = cov[:2, :2]
+                            _plot_covariance_ellipse_2d(ax, pose_2d_positions[i], pos_cov_2d,
+                                                        color='red', alpha=0.2)
+
+        if len(landmark_2d_positions) > 0:
+            ax.scatter(landmark_2d_positions[:, 0], landmark_2d_positions[:, 1],
+                      c='cyan', marker='o', s=50, label='2D Landmarks', alpha=0.8)
+
+            # Plot 2D covariance ellipses if available
+            if plot_covariance:
+                for i, var in enumerate(landmark_2d_vars):
+                    if var.id() in covariances:
+                        cov = covariances[var.id()]
+                        if cov.shape[0] >= 2:
+                            _plot_covariance_ellipse_2d(ax, landmark_2d_positions[i], cov,
+                                                        color='cyan', alpha=0.2)
 
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
 
+    # Plot bearing and range-bearing measurement lines
+    plotted_measurement_types = set()
+    if plot_measurements:
+        factors = factor_graph.get_all_factors()
+        plotted_measurement_types = _plot_bearing_lines(ax, factors, plot_3d)
+
     # Add legend and grid
+    # Add legend entries for measurement lines if they were plotted
+    if 'bearing_3d' in plotted_measurement_types or 'bearing_2d' in plotted_measurement_types:
+        ax.plot([], [], color='orange', linestyle='--', linewidth=1.5, alpha=0.6, label='Bearing measurements')
+    if 'range_bearing_2d' in plotted_measurement_types:
+        ax.plot([], [], color='purple', linestyle='-', linewidth=1.5, alpha=0.7, label='Range-bearing measurements')
+
     ax.legend()
     ax.grid(True, alpha=0.3)
     ax.set_title('Factor Graph Visualization')
@@ -109,29 +252,284 @@ def PlotFactorGraph(factor_graph, axis_handle=None, plot_covariance=False, optim
     # Make axes equal for better visualization
     if plot_3d:
         # For 3D plots, setting equal aspect ratio is more complex
-        if len(pose_positions) > 0 or len(landmark_positions) > 0:
-            all_positions = []
-            if len(pose_positions) > 0:
-                all_positions.append(pose_positions)
-            if len(landmark_positions) > 0:
-                all_positions.append(landmark_positions)
+        all_positions = []
+        if len(pose_3d_positions) > 0:
+            all_positions.append(pose_3d_positions)
+        if len(landmark_3d_positions) > 0:
+            all_positions.append(landmark_3d_positions)
+        if len(pose_2d_positions) > 0:
+            # Add 2D positions with z=0 for bounds calculation
+            pose_2d_with_z = np.column_stack([pose_2d_positions, np.zeros(len(pose_2d_positions))])
+            all_positions.append(pose_2d_with_z)
+        if len(landmark_2d_positions) > 0:
+            landmark_2d_with_z = np.column_stack([landmark_2d_positions, np.zeros(len(landmark_2d_positions))])
+            all_positions.append(landmark_2d_with_z)
 
-            if all_positions:
-                all_positions = np.vstack(all_positions)
-                max_range = np.array([all_positions[:, 0].max() - all_positions[:, 0].min(),
-                                    all_positions[:, 1].max() - all_positions[:, 1].min(),
-                                    all_positions[:, 2].max() - all_positions[:, 2].min()]).max() / 2.0
-                mid_x = (all_positions[:, 0].max() + all_positions[:, 0].min()) * 0.5
-                mid_y = (all_positions[:, 1].max() + all_positions[:, 1].min()) * 0.5
-                mid_z = (all_positions[:, 2].max() + all_positions[:, 2].min()) * 0.5
-                ax.set_xlim(mid_x - max_range, mid_x + max_range)
-                ax.set_ylim(mid_y - max_range, mid_y + max_range)
-                ax.set_zlim(mid_z - max_range, mid_z + max_range)
+        if all_positions:
+            all_positions = np.vstack(all_positions)
+            max_range = np.array([all_positions[:, 0].max() - all_positions[:, 0].min(),
+                                all_positions[:, 1].max() - all_positions[:, 1].min(),
+                                all_positions[:, 2].max() - all_positions[:, 2].min()]).max() / 2.0
+            mid_x = (all_positions[:, 0].max() + all_positions[:, 0].min()) * 0.5
+            mid_y = (all_positions[:, 1].max() + all_positions[:, 1].min()) * 0.5
+            mid_z = (all_positions[:, 2].max() + all_positions[:, 2].min()) * 0.5
+            ax.set_xlim(mid_x - max_range, mid_x + max_range)
+            ax.set_ylim(mid_y - max_range, mid_y + max_range)
+            ax.set_zlim(mid_z - max_range, mid_z + max_range)
     else:
         ax.set_aspect('equal', adjustable='box')
 
-    # TODO: Add covariance plotting when plot_covariance=True and optimizer is provided
-    if plot_covariance and optimizer is not None:
-        print("Covariance plotting not yet implemented")
-
     return ax
+
+
+def _compute_arrow_length(pose_2d_positions, landmark_2d_positions,
+                          pose_3d_positions, landmark_3d_positions):
+    """Compute appropriate arrow length based on data scale."""
+    import numpy as np
+
+    all_2d_positions = []
+    if len(pose_2d_positions) > 0:
+        all_2d_positions.append(pose_2d_positions)
+    if len(landmark_2d_positions) > 0:
+        all_2d_positions.append(landmark_2d_positions)
+    if len(pose_3d_positions) > 0:
+        all_2d_positions.append(pose_3d_positions[:, :2])
+    if len(landmark_3d_positions) > 0:
+        all_2d_positions.append(landmark_3d_positions[:, :2])
+
+    if all_2d_positions:
+        all_2d_positions = np.vstack(all_2d_positions)
+        x_range = all_2d_positions[:, 0].max() - all_2d_positions[:, 0].min()
+        y_range = all_2d_positions[:, 1].max() - all_2d_positions[:, 1].min()
+        avg_range = (x_range + y_range) / 2.0
+        return max(0.05 * avg_range, 0.1)  # 5% of average range, minimum 0.1
+    else:
+        return 0.5  # default
+
+
+def _plot_covariance_ellipse_2d(ax, center, cov_matrix, n_std=1.0, color='blue', alpha=0.3):
+    """
+    Plot a 2D covariance ellipse representing n-sigma confidence region.
+
+    Args:
+        ax: Matplotlib axis
+        center: [x, y] center position
+        cov_matrix: 2x2 covariance matrix
+        n_std: Number of standard deviations (default=1.0 for 1-sigma)
+        color: Ellipse color
+        alpha: Ellipse transparency
+    """
+    import numpy as np
+    from matplotlib.patches import Ellipse
+
+    # Eigenvalue decomposition to get ellipse parameters
+    eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
+
+    # Sort eigenvalues and eigenvectors in descending order
+    order = eigenvalues.argsort()[::-1]
+    eigenvalues = eigenvalues[order]
+    eigenvectors = eigenvectors[:, order]
+
+    # Compute angle of major axis
+    angle = np.degrees(np.arctan2(eigenvectors[1, 0], eigenvectors[0, 0]))
+
+    # Width and height are 2 * n_std * sqrt(eigenvalue)
+    width, height = 2 * n_std * np.sqrt(eigenvalues)
+
+    # Create and add ellipse
+    ellipse = Ellipse(xy=(center[0], center[1]), width=width, height=height,
+                     angle=angle, facecolor=color, alpha=alpha, edgecolor=color, linewidth=1.5)
+    ax.add_patch(ellipse)
+
+
+def _plot_covariance_ellipsoid_3d(ax, center, cov_matrix, n_std=1.0, color='blue', alpha=0.1, resolution=20):
+    """
+    Plot a 3D covariance ellipsoid representing n-sigma confidence region.
+
+    Args:
+        ax: Matplotlib 3D axis
+        center: [x, y, z] center position
+        cov_matrix: 3x3 covariance matrix
+        n_std: Number of standard deviations (default=1.0 for 1-sigma)
+        color: Ellipsoid color
+        alpha: Ellipsoid transparency
+        resolution: Number of points for mesh
+    """
+    import numpy as np
+
+    # Eigenvalue decomposition
+    D, V = np.linalg.eigh(cov_matrix)
+
+    # Generate unit sphere
+    u = np.linspace(0, 2 * np.pi, resolution)
+    v = np.linspace(0, np.pi, resolution)
+    x = np.outer(np.cos(u), np.sin(v))
+    y = np.outer(np.sin(u), np.sin(v))
+    z = np.outer(np.ones_like(u), np.cos(v))
+
+    # Stack into 3×N array for vectorized transformation
+    pts = np.stack([x.flatten(), y.flatten(), z.flatten()])
+
+    # Transform sphere → ellipsoid using eigendecomposition
+    ellipsoid = n_std * V @ np.diag(np.sqrt(D)) @ pts
+
+    # Reshape back to grid and translate to center
+    X = ellipsoid[0].reshape(x.shape) + center[0]
+    Y = ellipsoid[1].reshape(y.shape) + center[1]
+    Z = ellipsoid[2].reshape(z.shape) + center[2]
+
+    # Plot surface
+    ax.plot_surface(X, Y, Z, color=color, alpha=alpha, shade=True, linewidth=0)
+
+
+def _plot_bearing_lines(ax, factors, plot_3d):
+    """
+    Plot bearing and range-bearing measurement lines from poses to landmarks.
+
+    Args:
+        ax: Matplotlib axis (2D or 3D)
+        factors: List of all factors in the graph
+        plot_3d: If True, plotting in 3D; if False, 2D
+
+    Returns:
+        set: Set of measurement types that were plotted ('bearing_3d', 'bearing_2d', 'range_bearing_2d')
+    """
+    import numpy as np
+
+    plotted_types = set()
+
+    for factor in factors:
+        factor_type = factor.type()
+        variables = factor.variables()
+
+        # 3D Bearing Observation Factor
+        if factor_type == FactorType.bearing_observation:
+            if len(variables) < 2:
+                continue
+
+            pose_var = variables[0]
+            landmark_var = variables[1]
+
+            # Get pose position and rotation
+            pos_W = pose_var.pos_W()
+            dcm_CW = pose_var.dcm_CW()
+
+            # Get bearing in camera frame
+            bearing_C = factor.bearing_C_obs()
+
+            # Transform bearing to world frame: bearing_W = dcm_WC @ bearing_C = dcm_CW.T @ bearing_C
+            bearing_W = dcm_CW.T @ bearing_C
+
+            # Compute distance to landmark (for line length)
+            landmark_pos = landmark_var.pos_W()
+            distance = np.linalg.norm(landmark_pos - pos_W)
+
+            # End point of bearing line
+            end_point = pos_W + distance * bearing_W.flatten()
+
+            # Plot the line
+            if plot_3d:
+                ax.plot([pos_W[0], end_point[0]],
+                       [pos_W[1], end_point[1]],
+                       [pos_W[2], end_point[2]],
+                       color='orange', linestyle='--', linewidth=1.5, alpha=0.6)
+            else:
+                # 2D projection (x-y plane)
+                ax.plot([pos_W[0], end_point[0]],
+                       [pos_W[1], end_point[1]],
+                       color='orange', linestyle='--', linewidth=1.5, alpha=0.6)
+
+            plotted_types.add('bearing_3d')
+
+        # 2D Bearing Observation Factor
+        elif factor_type == FactorType.bearing_observation_2d:
+            if len(variables) < 2:
+                continue
+
+            pose_var = variables[0]
+            landmark_var = variables[1]
+
+            # Get pose position and orientation
+            pos_2d = pose_var.pos_2d()
+            theta = pose_var.theta()
+
+            # Get bearing angle in pose frame
+            bearing_angle = factor.bearing_angle_obs()
+
+            # Transform bearing to world frame
+            # Bearing vector in pose frame
+            bearing_pose = np.array([np.cos(bearing_angle), np.sin(bearing_angle)])
+
+            # Rotation matrix from pose to world (2D rotation)
+            c = np.cos(theta)
+            s = np.sin(theta)
+            R_WC = np.array([[c, -s], [s, c]])
+
+            bearing_W = R_WC @ bearing_pose
+
+            # Compute distance to landmark (for line length)
+            landmark_pos = landmark_var.value()
+            distance = np.linalg.norm(landmark_pos.flatten()[:2] - pos_2d.flatten())
+
+            # End point of bearing line
+            end_point = pos_2d.flatten() + distance * bearing_W
+
+            # Plot the line
+            if plot_3d:
+                # Plot at z=0
+                ax.plot([pos_2d[0], end_point[0]],
+                       [pos_2d[1], end_point[1]],
+                       [0, 0],
+                       color='orange', linestyle='--', linewidth=1.5, alpha=0.6)
+            else:
+                ax.plot([pos_2d[0], end_point[0]],
+                       [pos_2d[1], end_point[1]],
+                       color='orange', linestyle='--', linewidth=1.5, alpha=0.6)
+
+            plotted_types.add('bearing_2d')
+
+        # 2D Range-Bearing Factor
+        elif factor_type == FactorType.range_bearing_2d:
+            if len(variables) < 2:
+                continue
+
+            pose_var = variables[0]
+            landmark_var = variables[1]
+
+            # Get pose position and orientation
+            pos_2d = pose_var.pos_2d()
+            theta = pose_var.theta()
+
+            # Get range and bearing measurements
+            range_obs = factor.range_obs()
+            bearing_angle = factor.bearing_angle_obs()
+
+            # Transform bearing to world frame
+            # Bearing vector in pose frame
+            bearing_pose = np.array([np.cos(bearing_angle), np.sin(bearing_angle)])
+
+            # Rotation matrix from pose to world (2D rotation)
+            c = np.cos(theta)
+            s = np.sin(theta)
+            R_WC = np.array([[c, -s], [s, c]])
+
+            bearing_W = R_WC @ bearing_pose
+
+            # End point using measured range
+            end_point = pos_2d.flatten() + range_obs * bearing_W
+
+            # Plot the line (solid line for range-bearing since we have range info)
+            if plot_3d:
+                # Plot at z=0
+                ax.plot([pos_2d[0], end_point[0]],
+                       [pos_2d[1], end_point[1]],
+                       [0, 0],
+                       color='purple', linestyle='-', linewidth=1.5, alpha=0.7)
+            else:
+                ax.plot([pos_2d[0], end_point[0]],
+                       [pos_2d[1], end_point[1]],
+                       color='purple', linestyle='-', linewidth=1.5, alpha=0.7)
+
+            plotted_types.add('range_bearing_2d')
+
+    return plotted_types

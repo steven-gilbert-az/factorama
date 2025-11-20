@@ -81,6 +81,11 @@ namespace factorama
             return weight_;
         }
 
+        Eigen::Vector3d bearing_C_obs() const
+        {
+            return bearing_C_obs_;
+        }
+
         FactorType::FactorTypeEnum type() const override
         {
             return FactorType::bearing_observation;

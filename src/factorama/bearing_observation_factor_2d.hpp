@@ -54,6 +54,8 @@ namespace factorama
 
         double weight() const { return weight_; }
 
+        double bearing_angle_obs() const { return bearing_angle_obs_; }
+
         FactorType::FactorTypeEnum type() const override
         {
             return FactorType::bearing_observation_2d;

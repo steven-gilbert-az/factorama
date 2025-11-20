@@ -12,11 +12,15 @@ class BearingObservationFactor(Factor):
         """
         Create a BearingObservationFactor
         """
+    def bearing_C_obs(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
+        ...
 class BearingObservationFactor2D(Factor):
     def __init__(self, id: typing.SupportsInt, pose_var: Pose2DVariable, landmark_var: Variable, bearing_angle_obs: typing.SupportsFloat, angle_sigma: typing.SupportsFloat = 1.0) -> None:
         """
         Create a BearingObservationFactor2D
         """
+    def bearing_angle_obs(self) -> float:
+        ...
 class BearingProjectionFactor2D(Factor):
     def __init__(self, id: typing.SupportsInt, pose: PoseVariable, landmark: LandmarkVariable, bearing_C_observed: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 1]"], sigma: typing.SupportsFloat = 1.0, along_tolerance_epsilon: typing.SupportsFloat = 1e-06) -> None:
         """
@@ -500,6 +504,10 @@ class RangeBearingFactor2D(Factor):
         """
         Create a RangeBearingFactor2D
         """
+    def bearing_angle_obs(self) -> float:
+        ...
+    def range_obs(self) -> float:
+        ...
 class RotationPriorFactor(Factor):
     def __init__(self, id: typing.SupportsInt, rotation: RotationVariable, dcm_AB_prior: typing.Annotated[numpy.typing.ArrayLike, numpy.float64, "[3, 3]"], sigma: typing.SupportsFloat = 1.0) -> None:
         """

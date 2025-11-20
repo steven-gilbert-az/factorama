@@ -157,11 +157,12 @@ PYBIND11_MODULE(_factorama, m) {
 
     // Bind factor classes
     py::class_<factorama::BearingObservationFactor, std::shared_ptr<factorama::BearingObservationFactor>, factorama::Factor>(m, "BearingObservationFactor")
-        .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*, 
+        .def(py::init<int, factorama::PoseVariable*, factorama::LandmarkVariable*,
                       const Eigen::Vector3d&, double>(),
              "Create a BearingObservationFactor",
-             py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"), 
-             py::arg("bearing_C_observed"), py::arg("angle_sigma") = 1.0);
+             py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"),
+             py::arg("bearing_C_observed"), py::arg("angle_sigma") = 1.0)
+        .def("bearing_C_obs", &factorama::BearingObservationFactor::bearing_C_obs);
 
     py::class_<factorama::GenericPriorFactor, 
                std::shared_ptr<factorama::GenericPriorFactor>, 
@@ -238,14 +239,17 @@ PYBIND11_MODULE(_factorama, m) {
         .def(py::init<int, factorama::Pose2DVariable*, factorama::Variable*, double, double>(),
              "Create a BearingObservationFactor2D",
              py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"),
-             py::arg("bearing_angle_obs"), py::arg("angle_sigma") = 1.0);
+             py::arg("bearing_angle_obs"), py::arg("angle_sigma") = 1.0)
+        .def("bearing_angle_obs", &factorama::BearingObservationFactor2D::bearing_angle_obs);
 
     py::class_<factorama::RangeBearingFactor2D, std::shared_ptr<factorama::RangeBearingFactor2D>, factorama::Factor>(m, "RangeBearingFactor2D")
         .def(py::init<int, factorama::Pose2DVariable*, factorama::Variable*, double, double, double, double>(),
              "Create a RangeBearingFactor2D",
              py::arg("id"), py::arg("pose_var"), py::arg("landmark_var"),
              py::arg("range_obs"), py::arg("bearing_angle_obs"),
-             py::arg("range_sigma") = 1.0, py::arg("bearing_sigma") = 1.0);
+             py::arg("range_sigma") = 1.0, py::arg("bearing_sigma") = 1.0)
+        .def("range_obs", &factorama::RangeBearingFactor2D::range_obs)
+        .def("bearing_angle_obs", &factorama::RangeBearingFactor2D::bearing_angle_obs);
 
     py::class_<factorama::Pose2DPriorFactor, std::shared_ptr<factorama::Pose2DPriorFactor>, factorama::Factor>(m, "Pose2DPriorFactor")
         .def(py::init<int, factorama::Pose2DVariable*, const Eigen::Vector3d&, double, double>(),
