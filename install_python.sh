@@ -15,8 +15,8 @@ rm -rf _skbuild
 
 # Update pip and install/upgrade build dependencies to avoid version conflicts
 echo "Updating build dependencies..."
-pip install --upgrade pip setuptools wheel
-pip install --upgrade "scikit-build-core>=0.10" "pybind11[global]>=2.11" pybind11-stubgen
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install --upgrade "scikit-build-core>=0.10" "pybind11[global]>=2.11" pybind11-stubgen
 
 # Build and install the package using pip (which will use scikit-build-core)
 echo "Building and installing Python package..."

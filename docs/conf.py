@@ -7,8 +7,8 @@ import sys
 project = 'Factorama'
 copyright = '2024, Factorama Contributors'
 author = 'Steven Gilbert'
-version = '1.0.7'
-release = '1.0.7'
+version = '1.0.8'
+release = '1.0.8'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
