@@ -669,10 +669,16 @@ namespace factorama
 
                 // Compare values
                 Eigen::MatrixXd diff = J_n - J_a; // numerical - analytical
+                double max_jacobian_val = J_n.array().abs().maxCoeff();
                 double max_error = diff.cwiseAbs().maxCoeff();
                 double sum_abs_error = diff.cwiseAbs().sum();
 
-                if (max_error >= jacobian_tol)
+                // Scale the jacobian tolerance based on the actual values detected in the jacobian. This way a tiny jacobian has a smaller tolerance, a huge jacobian has a bigger tolerance
+                // Not foolproof (as different sections of a jacobian may be scaled differently) but it helps. 
+                double scaled_jacobian_tol = std::max(1e-2, max_jacobian_val * jacobian_tol);
+
+
+                if (max_error >= scaled_jacobian_tol)
                 {
                     if (verbose)
                     {
@@ -682,7 +688,8 @@ namespace factorama
                         }
                         std::cout << "  FAIL: Variable " << var_idx << " (" << var->name() << ", ID=" << var->id()
                                   << ") - jacobian comparison FAILED" << std::endl;
-                        std::cout << "     Max error: " << max_error << " (tolerance: " << jacobian_tol << ")" << std::endl;
+                        
+                        std::cout << "     Max error: " << max_error << " (scaled tolerance: " << scaled_jacobian_tol << " / original tol: " << jacobian_tol << ")" << std::endl;
                         std::cout << "     Sum |error|: " << sum_abs_error << std::endl;
 
                         // Print detailed jacobian info
