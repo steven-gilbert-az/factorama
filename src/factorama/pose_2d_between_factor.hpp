@@ -36,15 +36,19 @@ namespace factorama
          * @param pose_a First 2D pose variable
          * @param pose_b Second 2D pose variable
          * @param measured_between_variable Measured relative pose [dx, dy, dtheta] (must be 3D)
+         *        - If local_frame=true: position measured in pose_a's frame
+         *        - If local_frame=false: position measured in world frame (pos_b - pos_a)
          * @param position_sigma Standard deviation of position measurement
          * @param angle_sigma Standard deviation of angular measurement (radians)
+         * @param local_frame If true, position measurement is in pose_a's frame; if false, in world frame (default: false)
          */
         Pose2DBetweenFactor(int id,
                            Pose2DVariable* pose_a,
                            Pose2DVariable* pose_b,
                            Variable* measured_between_variable,
                            double position_sigma,
-                           double angle_sigma);
+                           double angle_sigma,
+                           bool local_frame = false);
 
         int residual_size() const override { return 3; }
 
@@ -77,6 +81,7 @@ namespace factorama
         Variable* measured_between_variable_;
         double position_weight_;  // 1.0 / position_sigma
         double angle_weight_;     // 1.0 / angle_sigma
+        bool local_frame_;
 
         /**
          * @brief Wrap angle difference to [-π, π]

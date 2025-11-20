@@ -2360,3 +2360,572 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
         }
     }
 }
+
+TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian matches numerical", "[jacobian][between][3d][local_frame]")
+{
+    SECTION("Simple configuration: pose A at origin, pose B offset")
+    {
+        // Pose A at origin with identity rotation
+        auto pose_a = std::make_shared<PoseVariable>(0, Eigen::Vector3d(0, 0, 0), Eigen::Matrix3d::Identity());
+
+        // Pose B offset from pose A
+        auto pose_b = std::make_shared<PoseVariable>(1, Eigen::Vector3d(1, 2, 3), Eigen::Matrix3d::Identity());
+
+        // Measured relative offset in pose_a's local frame (which is currently world frame)
+        Eigen::Vector3d measured_vec(1, 2, 3);
+        auto measured = std::make_shared<GenericVariable>(2, measured_vec);
+
+        double sigma = 1.0;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+
+        // Residual should be zero when measurement matches
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), precision_tol));
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
+            {
+                INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+                INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+                INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            }
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Pose A rotated: local frame matters")
+    {
+        // Pose A at origin but rotated 90 degrees about Z
+        Eigen::Matrix3d R_a = Eigen::AngleAxisd(PI / 2, Eigen::Vector3d::UnitZ()).toRotationMatrix();
+        auto pose_a = std::make_shared<PoseVariable>(0, Eigen::Vector3d(0, 0, 0), R_a);
+
+        // Pose B at (1,0,0) in world frame
+        auto pose_b = std::make_shared<PoseVariable>(1, Eigen::Vector3d(1, 0, 0), Eigen::Matrix3d::Identity());
+
+        // In pose_a's frame (rotated 90deg about Z), the offset is computed as:
+        // diff_A = R_a * diff_W = R_a * [1, 0, 0]
+        Eigen::Vector3d measured_vec = R_a * Eigen::Vector3d(1, 0, 0);
+        auto measured = std::make_shared<GenericVariable>(2, measured_vec);
+
+        double sigma = 1.0;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+
+        // Residual should be zero when measurement matches
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), 1e-8));
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Negative rotation: arbitrary rotation with negative components")
+    {
+        // Pose A with rotation that has negative components
+        Eigen::Vector3d rotvec_a(-0.3, 0.2, -0.4);
+        Eigen::Matrix3d R_a = ExpMapSO3(rotvec_a);
+        Eigen::Vector3d pos_a(1.5, -0.5, 2.0);
+        auto pose_a = std::make_shared<PoseVariable>(0, pos_a, R_a);
+
+        // Pose B with different rotation and position
+        Eigen::Vector3d rotvec_b(0.1, -0.25, 0.15);
+        Eigen::Matrix3d R_b = ExpMapSO3(rotvec_b);
+        Eigen::Vector3d pos_b(3.0, 1.5, 4.5);
+        auto pose_b = std::make_shared<PoseVariable>(1, pos_b, R_b);
+
+        // Compute expected measurement in pose_a's local frame
+        Eigen::Vector3d diff_W = pos_b - pos_a;
+        Eigen::Vector3d diff_A = R_a * diff_W;
+        auto measured = std::make_shared<GenericVariable>(2, diff_A);
+
+        double sigma = 0.3;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
+
+        // Residual should be close to zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.norm() < 1e-8);
+
+        // Verify Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
+            {
+                std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
+                std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
+                std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
+                std::cout << "Difference:\n" << (J_analytic[i] - J_numeric[i]) << std::endl;
+                std::cout << "========================\n" << std::endl;
+            }
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("General configuration: both poses rotated and translated")
+    {
+        // Pose A with arbitrary rotation and position
+        Eigen::Vector3d rotvec_a(0.1, 0.2, 0.3);
+        Eigen::Matrix3d R_a = ExpMapSO3(rotvec_a);
+        Eigen::Vector3d pos_a(1, 2, 3);
+        auto pose_a = std::make_shared<PoseVariable>(0, pos_a, R_a);
+
+        // Pose B with different rotation and position
+        Eigen::Vector3d rotvec_b(-0.15, 0.25, -0.1);
+        Eigen::Matrix3d R_b = ExpMapSO3(rotvec_b);
+        Eigen::Vector3d pos_b(4, 5, 6);
+        auto pose_b = std::make_shared<PoseVariable>(1, pos_b, R_b);
+
+        // Compute true relative offset in pose_a's frame
+        Eigen::Vector3d diff_W = pos_b - pos_a;
+        Eigen::Vector3d diff_A = R_a * diff_W;  // Transform to pose_a's frame: diff_A = dcm_AW * diff_W
+        auto measured = std::make_shared<GenericVariable>(2, diff_A);
+
+        double sigma = 0.5;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+
+        // Residual should be close to zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.norm() < 1e-8);
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Constant pose_a: verify Jacobian handling")
+    {
+        // Pose A is constant (e.g., fixed origin)
+        Eigen::Vector3d rotvec_a(0.2, -0.1, 0.3);
+        Eigen::Matrix3d R_a = ExpMapSO3(rotvec_a);
+        auto pose_a = std::make_shared<PoseVariable>(0, Eigen::Vector3d(0, 0, 0), R_a);
+        pose_a->set_constant(true);
+
+        // Pose B is variable
+        auto pose_b = std::make_shared<PoseVariable>(1, Eigen::Vector3d(2, 1, 3), Eigen::Matrix3d::Identity());
+
+        // Compute measurement in pose_a's frame
+        Eigen::Vector3d diff_W = pose_b->pos_W() - pose_a->pos_W();
+        Eigen::Vector3d diff_A = R_a * diff_W;
+        auto measured = std::make_shared<GenericVariable>(2, diff_A);
+
+        double sigma = 1.0;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
+
+        // Verify Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == 3);
+        REQUIRE(J_analytic[0].size() == 0);  // pose_a is constant, should be empty
+        REQUIRE(J_analytic[1].rows() == 3);  // pose_b should have Jacobian
+        REQUIRE(J_analytic[1].cols() == 6);
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            if (J_analytic[i].size() > 0)
+            {
+                CAPTURE(i);
+                CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
+                {
+                    std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
+                    std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
+                    std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
+                    std::cout << "Difference:\n" << (J_analytic[i] - J_numeric[i]) << std::endl;
+                    std::cout << "========================\n" << std::endl;
+                }
+                REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+            }
+        }
+    }
+
+    SECTION("Verify local_frame=false still works (backward compatibility)")
+    {
+        // Pose A and B in world frame
+        auto pose_a = std::make_shared<PoseVariable>(0, Eigen::Vector3d(0, 0, 0), Eigen::Matrix3d::Identity());
+        auto pose_b = std::make_shared<PoseVariable>(1, Eigen::Vector3d(1, 2, 3), Eigen::Matrix3d::Identity());
+
+        // Measured in world frame
+        Eigen::Vector3d measured_vec(1, 2, 3);
+        auto measured = std::make_shared<GenericVariable>(2, measured_vec);
+
+        double sigma = 1.0;
+        auto factor = std::make_shared<PosePositionBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured.get(), sigma, false);  // local_frame=false
+
+        // Residual should be zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), precision_tol));
+
+        // Verify Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+}
+
+TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matches numerical", "[jacobian][between][2d][local_frame]")
+{
+    SECTION("Simple configuration: pose A at origin, pose B offset")
+    {
+        // Pose A at origin with zero rotation
+        Eigen::Vector3d pose_a_state(0.0, 0.0, 0.0);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Pose B offset from pose A
+        Eigen::Vector3d pose_b_state(1.0, 2.0, 0.0);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured relative offset in pose_a's local frame [dx, dy, dtheta]
+        Eigen::Vector3d measured_between(1.0, 2.0, 0.0);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, true);  // local_frame=true
+
+        // Residual should be zero when measurement matches
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), precision_tol));
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Pose A rotated: local frame matters")
+    {
+        // Pose A at origin but rotated 90 degrees
+        Eigen::Vector3d pose_a_state(0.0, 0.0, PI / 2);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Pose B at (1, 0) in world frame
+        Eigen::Vector3d pose_b_state(1.0, 0.0, PI / 2);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // In pose_a's frame (rotated 90deg), offset (1,0) in world becomes (0, -1) in local
+        // R(90deg)^T * [1, 0] = [0, -1]
+        Eigen::Matrix2d R_a = pose_a->dcm_2d();
+        Eigen::Vector2d diff_W = pose_b->pos_2d() - pose_a->pos_2d();
+        Eigen::Vector2d diff_A = R_a * diff_W;
+        Eigen::Vector3d measured_between(diff_A(0), diff_A(1), 0.0);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, true);  // local_frame=true
+
+        // Residual should be close to zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.norm() < 1e-8);
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Negative rotation: pose A rotated -π/3")
+    {
+        // Pose A at origin but rotated -60 degrees
+        Eigen::Vector3d pose_a_state(0.0, 0.0, -PI / 3);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Pose B offset in world frame
+        Eigen::Vector3d pose_b_state(2.0, 1.0, -PI / 6);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Compute expected measurement in pose_a's local frame
+        Eigen::Matrix2d R_a = pose_a->dcm_2d();
+        Eigen::Vector2d diff_W = pose_b->pos_2d() - pose_a->pos_2d();
+        Eigen::Vector2d diff_A = R_a * diff_W;
+        double theta_diff = pose_b->theta() - pose_a->theta();
+        Eigen::Vector3d measured_between(diff_A(0), diff_A(1), theta_diff);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.5;
+        double angle_sigma = 0.1;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, true);  // local_frame=true
+
+        // Residual should be close to zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.norm() < 1e-8);
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
+            {
+                std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
+                std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
+                std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
+                std::cout << "Difference:\n" << (J_analytic[i] - J_numeric[i]) << std::endl;
+                std::cout << "========================\n" << std::endl;
+            }
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("General configuration: both poses rotated and translated")
+    {
+        // Pose A with arbitrary rotation and position
+        Eigen::Vector3d pose_a_state(1.5, 2.3, 0.5);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        // Pose B with different rotation and position
+        Eigen::Vector3d pose_b_state(3.2, 1.7, -0.3);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Compute true relative offset in pose_a's frame
+        Eigen::Matrix2d R_a = pose_a->dcm_2d();
+        Eigen::Vector2d diff_W = pose_b->pos_2d() - pose_a->pos_2d();
+        Eigen::Vector2d diff_A = R_a * diff_W;
+        double theta_diff = pose_b->theta() - pose_a->theta();
+        Eigen::Vector3d measured_between(diff_A(0), diff_A(1), theta_diff);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.2;
+        double angle_sigma = 0.05;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, true);  // local_frame=true
+
+        // Residual should be close to zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(residual.norm() < 1e-8);
+
+        // Verify Jacobians against numerical differentiation
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+
+    SECTION("Constant pose_a: verify Jacobian handling")
+    {
+        // Pose A is constant with rotation
+        Eigen::Vector3d pose_a_state(0.5, 0.3, PI / 4);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+        pose_a->set_constant(true);
+
+        // Pose B is variable
+        Eigen::Vector3d pose_b_state(2.5, 1.8, PI / 6);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Compute measurement in pose_a's frame
+        Eigen::Matrix2d R_a = pose_a->dcm_2d();
+        Eigen::Vector2d diff_W = pose_b->pos_2d() - pose_a->pos_2d();
+        Eigen::Vector2d diff_A = R_a * diff_W;
+        double theta_diff = pose_b->theta() - pose_a->theta();
+        Eigen::Vector3d measured_between(diff_A(0), diff_A(1), theta_diff);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 0.5;
+        double angle_sigma = 0.1;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, true);
+
+        // Verify Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == 3);
+        REQUIRE(J_analytic[0].size() == 0);  // pose_a is constant, should be empty
+        REQUIRE(J_analytic[1].rows() == 3);  // pose_b should have Jacobian
+        REQUIRE(J_analytic[1].cols() == 3);
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            if (J_analytic[i].size() > 0)
+            {
+                CAPTURE(i);
+                CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
+                {
+                    std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
+                    std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
+                    std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
+                    std::cout << "Difference:\n" << (J_analytic[i] - J_numeric[i]) << std::endl;
+                    std::cout << "========================\n" << std::endl;
+                }
+                REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+            }
+        }
+    }
+
+    SECTION("Verify local_frame=false still works (backward compatibility)")
+    {
+        // Pose A and B in world frame
+        Eigen::Vector3d pose_a_state(0.0, 0.0, 0.0);
+        auto pose_a = std::make_shared<Pose2DVariable>(0, pose_a_state);
+
+        Eigen::Vector3d pose_b_state(1.0, 2.0, 0.5);
+        auto pose_b = std::make_shared<Pose2DVariable>(1, pose_b_state);
+
+        // Measured in world frame
+        Eigen::Vector3d measured_between(1.0, 2.0, 0.5);
+        auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
+
+        double position_sigma = 1.0;
+        double angle_sigma = 0.1;
+        auto factor = std::make_shared<Pose2DBetweenFactor>(
+            0, pose_a.get(), pose_b.get(), measured_var.get(),
+            position_sigma, angle_sigma, false);  // local_frame=false
+
+        // Residual should be zero
+        Eigen::VectorXd residual = factor->compute_residual();
+        REQUIRE(is_approx_equal(residual, Eigen::Vector3d::Zero(), precision_tol));
+
+        // Verify Jacobians
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor->compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(*factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
+            INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
+            INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
+}

@@ -200,9 +200,10 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("id"), py::arg("pose"), py::arg("rotvec_prior"), py::arg("sigma") = 1.0);
 
     py::class_<factorama::PosePositionBetweenFactor, std::shared_ptr<factorama::PosePositionBetweenFactor>, factorama::Factor>(m, "PosePositionBetweenFactor")
-        .def(py::init<int, factorama::PoseVariable*, factorama::PoseVariable*, factorama::Variable*, double>(),
+        .def(py::init<int, factorama::PoseVariable*, factorama::PoseVariable*, factorama::Variable*, double, bool>(),
              "Create a PosePositionBetweenFactor",
-             py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_diff"), py::arg("sigma") = 1.0);
+             py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_diff"),
+             py::arg("sigma") = 1.0, py::arg("local_frame") = false);
 
     py::class_<factorama::PoseOrientationBetweenFactor, std::shared_ptr<factorama::PoseOrientationBetweenFactor>, factorama::Factor>(m, "PoseOrientationBetweenFactor")
         .def(py::init<int, factorama::PoseVariable*, factorama::PoseVariable*, factorama::RotationVariable*, double>(),
@@ -258,10 +259,10 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("position_sigma"), py::arg("angle_sigma"));
 
     py::class_<factorama::Pose2DBetweenFactor, std::shared_ptr<factorama::Pose2DBetweenFactor>, factorama::Factor>(m, "Pose2DBetweenFactor")
-        .def(py::init<int, factorama::Pose2DVariable*, factorama::Pose2DVariable*, factorama::Variable*, double, double>(),
+        .def(py::init<int, factorama::Pose2DVariable*, factorama::Pose2DVariable*, factorama::Variable*, double, double, bool>(),
              "Create a Pose2DBetweenFactor",
              py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_between_variable"),
-             py::arg("position_sigma"), py::arg("angle_sigma"));
+             py::arg("position_sigma"), py::arg("angle_sigma"), py::arg("local_frame") = false);
 
     // Optimizer enums and settings
     py::enum_<factorama::OptimizerMethod>(m, "OptimizerMethod")

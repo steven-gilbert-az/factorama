@@ -580,6 +580,140 @@ def test_2d_slam_with_bearing_and_range_bearing():
         assert angle_diff < 0.02  # ~1 degree
 
 
+def test_2d_between_factor_with_local_frame():
+    """Test 2D between factor with local_frame=True parameter"""
+    # Create a simple scenario: 3 poses moving along a path
+    # Pose 0: origin, facing east
+    # Pose 1: 2m east, rotated 90° (facing north)
+    # Pose 2: 2m east + 1m north, facing north
+
+    gt_poses = [
+        np.array([0.0, 0.0, 0.0]),          # x, y, theta
+        np.array([2.0, 0.0, np.pi / 2]),    # 2m east, facing north
+        np.array([2.0, 1.0, np.pi / 2])     # 2m east, 1m north, facing north
+    ]
+
+    # Create factor graph
+    graph = factorama.FactorGraph()
+    var_id = 0
+    factor_id = 0
+
+    # Create pose variables with noisy initial guesses
+    poses = []
+    for i, gt_pose in enumerate(gt_poses):
+        noisy_pose = gt_pose.copy()
+        noisy_pose[0] += 0.3 * (i - 1)  # x noise
+        noisy_pose[1] += 0.2 * (i - 1)  # y noise
+        noisy_pose[2] += 0.1 * (i - 1)  # theta noise
+
+        pose = factorama.Pose2DVariable(var_id, noisy_pose)
+        var_id += 1
+        poses.append(pose)
+        graph.add_variable(pose)
+
+    # Add strong prior on first pose (anchor)
+    pose_prior = factorama.Pose2DPriorFactor(
+        factor_id, poses[0], gt_poses[0], 0.01, 0.01)
+    factor_id += 1
+    graph.add_factor(pose_prior)
+
+    # Add weaker priors on other poses
+    for i in range(1, len(poses)):
+        pose_prior = factorama.Pose2DPriorFactor(
+            factor_id, poses[i], gt_poses[i], 1.0, 0.5)
+        factor_id += 1
+        graph.add_factor(pose_prior)
+
+    # Helper to compute relative pose in local frame
+    def compute_relative_pose_local(pose_a_gt, pose_b_gt):
+        """Compute pose_b relative to pose_a in pose_a's local frame"""
+        # World frame difference
+        delta_world = pose_b_gt[:2] - pose_a_gt[:2]
+
+        # Rotate to pose_a's local frame using same convention as dcm_2d()
+        theta_a = pose_a_gt[2]
+        c = np.cos(theta_a)
+        s = np.sin(theta_a)
+        R = np.array([[c, -s], [s, c]])  # World-to-local rotation (same as dcm_2d())
+        delta_local = R @ delta_world
+
+        # Angle difference
+        dtheta = pose_b_gt[2] - pose_a_gt[2]
+
+        return np.array([delta_local[0], delta_local[1], dtheta])
+
+    # Add between factors with local_frame=True
+    between_position_sigma = 0.05
+    between_angle_sigma = 0.02
+
+    for i in range(len(poses) - 1):
+        # Compute relative pose in local frame
+        relative_pose_local = compute_relative_pose_local(gt_poses[i], gt_poses[i+1])
+
+        measured_between = factorama.GenericVariable(var_id, relative_pose_local)
+        var_id += 1
+        measured_between.set_constant(True)
+        graph.add_variable(measured_between)
+
+        # Create between factor with local_frame=True
+        between_factor = factorama.Pose2DBetweenFactor(
+            factor_id, poses[i], poses[i+1], measured_between,
+            between_position_sigma, between_angle_sigma, local_frame=True)
+        factor_id += 1
+        graph.add_factor(between_factor)
+
+    # Finalize and optimize
+    graph.finalize_structure()
+
+    # Check graph structure
+    assert graph.num_variables() == 5  # 3 poses + 2 between measurements
+    expected_residuals = (
+        1 * 3 +  # 1 strong prior on first pose (3 residuals)
+        2 * 3 +  # 2 weak priors on other poses (3 residuals each)
+        2 * 3    # 2 between factors (3 residuals each)
+    )
+    assert graph.num_residuals() == expected_residuals
+
+    # Setup optimizer
+    optimizer = factorama.SparseOptimizer()
+    settings = factorama.OptimizerSettings()
+    settings.method = factorama.OptimizerMethod.LevenbergMarquardt
+    settings.max_num_iterations = 30
+    settings.verbose = False
+
+    optimizer.setup(graph, settings)
+
+    # Get initial residual norm
+    initial_residual = graph.compute_full_residual_vector()
+    initial_norm = np.linalg.norm(initial_residual)
+
+    # Optimize
+    optimizer.optimize()
+
+    # Get final residual norm
+    final_residual = graph.compute_full_residual_vector()
+    final_norm = np.linalg.norm(final_residual)
+
+    # Check convergence
+    assert optimizer.current_stats.status == factorama.OptimizerStatus.SUCCESS
+    assert final_norm < initial_norm  # Should have improved
+    assert final_norm < 3.0  # Should converge to reasonable residual (weak priors allow some error)
+
+    # Check that poses are close to ground truth
+    for i, (pose, gt_pose) in enumerate(zip(poses, gt_poses)):
+        optimized_pose = pose.value()
+        # Position should be within ~1cm
+        assert np.allclose(optimized_pose[:2], gt_pose[:2], atol=0.02), \
+            f"Pose {i} position mismatch: {optimized_pose[:2]} vs {gt_pose[:2]}"
+        # Angle should be within ~2 degrees
+        angle_diff = np.abs(optimized_pose[2] - gt_pose[2])
+        # Handle angle wrapping
+        if angle_diff > np.pi:
+            angle_diff = 2 * np.pi - angle_diff
+        assert angle_diff < 0.035, \
+            f"Pose {i} angle mismatch: {optimized_pose[2]} vs {gt_pose[2]} (diff={angle_diff})"  # ~2 degrees
+
+
 if __name__ == "__main__":
     test_rotation_variable_creation()
     test_inverse_range_variable_creation()
@@ -596,4 +730,5 @@ if __name__ == "__main__":
     test_factor_graph_with_variables()
     test_factor_graph_with_factors()
     test_2d_slam_with_bearing_and_range_bearing()
+    test_2d_between_factor_with_local_frame()
     print("All tests passed!")

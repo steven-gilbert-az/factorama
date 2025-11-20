@@ -438,7 +438,7 @@ class PlaneVariable(Variable):
     def unit_vector(self) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[3, 1]"]:
         ...
 class Pose2DBetweenFactor(Factor):
-    def __init__(self, id: typing.SupportsInt, pose_a: Pose2DVariable, pose_b: Pose2DVariable, measured_between_variable: Variable, position_sigma: typing.SupportsFloat, angle_sigma: typing.SupportsFloat) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_a: Pose2DVariable, pose_b: Pose2DVariable, measured_between_variable: Variable, position_sigma: typing.SupportsFloat, angle_sigma: typing.SupportsFloat, local_frame: bool = False) -> None:
         """
         Create a Pose2DBetweenFactor
         """
@@ -473,7 +473,7 @@ class PoseOrientationPriorFactor(Factor):
         Create a PoseOrientationPriorFactor
         """
 class PosePositionBetweenFactor(Factor):
-    def __init__(self, id: typing.SupportsInt, pose_a: PoseVariable, pose_b: PoseVariable, measured_diff: Variable, sigma: typing.SupportsFloat = 1.0) -> None:
+    def __init__(self, id: typing.SupportsInt, pose_a: PoseVariable, pose_b: PoseVariable, measured_diff: Variable, sigma: typing.SupportsFloat = 1.0, local_frame: bool = False) -> None:
         """
         Create a PosePositionBetweenFactor
         """
