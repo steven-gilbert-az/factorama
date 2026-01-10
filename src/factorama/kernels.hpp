@@ -5,12 +5,12 @@
 namespace factorama
 {
     /**
-     * Base class for robust kernels that downweight outliers in factor graph optimization.
+     * Base class for kernels that adjust residual in factor graph optimization.
      */
-    class RobustKernel
+    class ResidualKernel
     {
     public:
-        virtual ~RobustKernel() = default;
+        virtual ~ResidualKernel() = default;
         
         /**
          * Apply robust weighting to residual vector.
@@ -29,7 +29,7 @@ namespace factorama
      * Huber robust kernel - linear for small residuals, quadratic for large ones.
      * Loss function: rho(r) = r^2/2 if ||r|| <= delta, delta*||r|| - delta^2/2 otherwise
      */
-    class HuberKernel : public RobustKernel
+    class HuberKernel : public ResidualKernel
     {
     private:
         double delta_;

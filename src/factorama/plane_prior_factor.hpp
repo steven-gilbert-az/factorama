@@ -19,7 +19,7 @@ namespace factorama
      *     factor_id++, plane_var, prior_normal, prior_distance, 0.1, 0.5);
      * @endcode
      */
-    class PlanePriorFactor : public Factor
+    class PlanePriorFactor final : public Factor
     {
     public:
         /**
@@ -38,10 +38,11 @@ namespace factorama
                         double normal_sigma = 1.0,
                         double distance_sigma = 1.0);
 
-        int residual_size() const override { return 4; }
+        int residual_size() const override { return size_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::plane_prior; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
@@ -52,6 +53,7 @@ namespace factorama
         double distance_prior_;
         double weight_normal_;
         double weight_distance_;
+        int size_ = 4;
     };
 
 } // namespace factorama

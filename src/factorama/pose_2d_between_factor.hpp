@@ -27,7 +27,7 @@ namespace factorama
      *     factor_id++, pose_a, pose_b, between_var.get(), position_sigma, angle_sigma);
      * @endcode
      */
-    class Pose2DBetweenFactor : public Factor
+    class Pose2DBetweenFactor final : public Factor
     {
     public:
         /**
@@ -50,9 +50,10 @@ namespace factorama
                            double angle_sigma,
                            bool local_frame = false);
 
-        int residual_size() const override { return 3; }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
@@ -82,6 +83,7 @@ namespace factorama
         double position_weight_;  // 1.0 / position_sigma
         double angle_weight_;     // 1.0 / angle_sigma
         bool local_frame_;
+        int size_ = 3;
 
         /**
          * @brief Wrap angle difference to [-π, π]

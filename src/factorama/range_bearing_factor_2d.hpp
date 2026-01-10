@@ -25,7 +25,7 @@ namespace factorama
      *     range_sigma, bearing_sigma);
      * @endcode
      */
-    class RangeBearingFactor2D : public Factor
+    class RangeBearingFactor2D final : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_POSE = 1e-9;
 
@@ -49,9 +49,10 @@ namespace factorama
             double range_sigma = 1.0,
             double bearing_sigma = 1.0);
 
-        int residual_size() const override { return 2; }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
@@ -84,6 +85,7 @@ namespace factorama
         double bearing_angle_obs_;
         double range_weight_;
         double bearing_weight_;
+        int size_ = 2;
 
         /**
          * @brief Wrap angle difference to [-π, π]

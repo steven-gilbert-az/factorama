@@ -14,7 +14,8 @@ namespace factorama
                                                                     velocity_variable_(velocity_variable),
                                                                     dt_(dt),
                                                                     weight_(1.0 / sigma),
-                                                                    initial_index_(initial_index)
+                                                                    initial_index_(initial_index),
+                                                                    size_(velocity_variable->size())
     {
         id_ = id;
         assert(var_1 != nullptr && "var_1 cannot be nullptr");
@@ -38,41 +39,63 @@ namespace factorama
         return weight_ * res;
     }
 
+    void LinearVelocityFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+    {
+        int residual_dim = residual_size();
+        Eigen::VectorXd diff = var_2_->value().segment(initial_index_, residual_dim) - var_1_->value().segment(initial_index_, residual_dim);
+        result = weight_ * (diff - velocity_variable_->value() * dt_);
+    }
+
     void LinearVelocityFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
     {
-        jacobians.clear();
+        // Ensure jacobians vector has correct size for 3 variables
+        if(jacobians.size() == 0) {
+            jacobians.resize(3);
+        }
+        else if(jacobians.size() != 3) {
+            jacobians.clear();
+            jacobians.resize(3);
+        }
 
         const int dim = velocity_variable_->size();
 
         if (var_1_->is_constant())
         {
-            jacobians.emplace_back(); // empty Jacobian
+            jacobians[0] = Eigen::MatrixXd();
         }
         else
         {
-            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(dim,var_1_->size());
-            J.block(0, initial_index_, dim, dim).diagonal().setConstant(-weight_);
-            jacobians.emplace_back(J);
+            if(jacobians[0].rows() != size_ || jacobians[0].cols() != var_1_->size()) {
+                jacobians[0].resize(size_, var_1_->size());
+            }
+            jacobians[0].setZero();
+            jacobians[0].block(0, initial_index_, dim, dim).diagonal().setConstant(-weight_);
         }
 
         if (var_2_->is_constant())
         {
-            jacobians.emplace_back();
+            jacobians[1] = Eigen::MatrixXd();
         }
         else
         {
-            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(dim, var_2_->size());
-            J.block(0, initial_index_, dim, dim).diagonal().setConstant(weight_);
-            jacobians.emplace_back(J);
+            if(jacobians[1].rows() != size_ || jacobians[1].cols() != var_2_->size()) {
+                jacobians[1].resize(size_, var_2_->size());
+            }
+            jacobians[1].setZero();
+            jacobians[1].block(0, initial_index_, dim, dim).diagonal().setConstant(weight_);
         }
 
         if (velocity_variable_->is_constant())
         {
-            jacobians.emplace_back();
+            jacobians[2] = Eigen::MatrixXd();
         }
         else
         {
-            jacobians.emplace_back(-weight_ * dt_ * Eigen::MatrixXd::Identity(dim, dim));
+            if(jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
+                jacobians[2].resize(size_, size_);
+            }
+            jacobians[2].setZero();
+            jacobians[2].diagonal().array() = -weight_ * dt_;
         }
     }
 

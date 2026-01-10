@@ -16,16 +16,28 @@ namespace factorama
 
         const auto t_start = std::chrono::steady_clock::now();
 
+        
+
         // Step 1: Compute residual and Jacobian
-        const Eigen::VectorXd r = graph_->compute_full_residual_vector();
+        residual_stopwatch_.start();
+        graph_->compute_full_residual_vector(residual1_);
+        residual_stopwatch_.stop();
+        jacobian_stopwatch_.start();
         const Eigen::SparseMatrix<double> &J = graph_->compute_sparse_jacobian_matrix();
+        jacobian_stopwatch_.stop();
 
         // Step 2: Form normal equations
-        Eigen::SparseMatrix<double> H = J.transpose() * J;
-        Eigen::VectorXd b = -J.transpose() * r;
+        hessian_stopwatch_.start();
+        H_= J.transpose() * J;
+        b_.noalias() = J.transpose() * residual1_;
+        b_ *= -1.0;
+        hessian_stopwatch_.stop();
+
 
         // Step 3: Solve H dx = b using sparse LDLT
-        sparse_solver_.compute(H);
+        //solve_stopwatch_.start();
+        solve_stopwatch_.start();
+        sparse_solver_.compute(H_);
         if (sparse_solver_.info() != Eigen::Success)
         {
             current_stats_.valid = false;
@@ -38,9 +50,11 @@ namespace factorama
         }
 
         // Check for singular/ill-conditioned matrix via diagonal elements
-        Eigen::VectorXd D = sparse_solver_.vectorD().cwiseAbs();
-        double min_diag = D.minCoeff();
-        double max_diag = D.maxCoeff();
+        
+        D_ = sparse_solver_.vectorD().cwiseAbs();
+        solve_stopwatch_.stop();
+        double min_diag = D_.minCoeff();
+        double max_diag = D_.maxCoeff();
 
         if (min_diag < 1e-14)
         {
@@ -52,7 +66,7 @@ namespace factorama
             }
             return;
         }
-
+        
         // Check condition number estimate: max/min diagonal ratio
         double cond_estimate = max_diag / min_diag;
         if (cond_estimate > 1e12)
@@ -67,7 +81,7 @@ namespace factorama
             return;
         }
 
-        Eigen::VectorXd dx = sparse_solver_.solve(b);
+        Eigen::VectorXd dx = sparse_solver_.solve(b_);
         if (sparse_solver_.info() != Eigen::Success)
         {
             current_stats_.valid = false;
@@ -82,6 +96,7 @@ namespace factorama
         dx *= settings_.learning_rate;
 
         // Step 4: Apply increment (todo - push this into the factor graph)
+        update_vars_stopwatch_.start();
         const auto &variables = graph_->get_all_variables();
         for (const auto &var : variables)
         {
@@ -101,12 +116,13 @@ namespace factorama
             const Eigen::VectorXd local_dx = dx.segment(placement.index, placement.dim);
             var->apply_increment(local_dx);
         }
+        update_vars_stopwatch_.stop();
 
         // Step 5: Compute updated residual and update statistics
-        const Eigen::VectorXd r_updated = graph_->compute_full_residual_vector();
+        graph_->compute_full_residual_vector(residual2_);
         current_stats_.delta_norm = dx.norm();
-        current_stats_.chi2 = r_updated.squaredNorm();
-        current_stats_.residual_norm = r_updated.norm();
+        current_stats_.chi2 = residual2_.squaredNorm();
+        current_stats_.residual_norm = residual2_.norm();
         current_stats_.current_iteration++;
 
         // Step 6: Optional verbose logging
@@ -119,7 +135,7 @@ namespace factorama
             };
 
             std::cout << "\n[SparseGN] Iteration " << current_stats_.current_iteration << " Summary:\n";
-            std::cout << "  Initial residual norm: " << r.norm() << "\n";
+            std::cout << "  Initial residual norm: " << residual2_.norm() << "\n";
             std::cout << "  Final residual norm:   " << current_stats_.residual_norm << "\n";
             std::cout << "  Step norm (||dx||):    " << current_stats_.delta_norm << "\n";
             std::cout << "  chi²:                  " << current_stats_.chi2 << "\n";
@@ -157,6 +173,12 @@ namespace factorama
         current_stats_.valid = true;
         current_stats_.status = OptimizerStatus::RUNNING;
         current_stats_.current_iteration = 0;
+
+        residual_stopwatch_.reset();
+        residual_stopwatch_.reset();
+        hessian_stopwatch_.reset();
+        solve_stopwatch_.reset();
+        update_vars_stopwatch_.reset();
 
         // Store initial residual for convergence checking
         const Eigen::VectorXd initial_residual = graph_->compute_full_residual_vector();
@@ -294,6 +316,23 @@ namespace factorama
 
         if (settings_.verbose)
         {
+            std::vector<std::string> timer_names = {
+                "residual",
+                "jacobian",
+                "hessian",
+                "solve",
+                "update_vars"
+            };
+
+            std::vector<double> timer_vals = {
+                residual_stopwatch_.elapsed(),
+                jacobian_stopwatch_.elapsed(),
+                hessian_stopwatch_.elapsed(),
+                solve_stopwatch_.elapsed(),
+                update_vars_stopwatch_.elapsed()
+            };
+
+
             std::cout << "\n=== SparseOptimizer Summary ===\n";
             std::cout << "Total iterations: " << current_stats_.current_iteration << "\n";
             std::cout << "Final residual norm: " << current_stats_.residual_norm << "\n";
@@ -303,6 +342,10 @@ namespace factorama
             std::cout << "Relative improvement: " << (initial_stats_.residual_norm > 0 ? (initial_stats_.residual_norm - current_stats_.residual_norm) / initial_stats_.residual_norm * 100.0 : 0.0)
                       << " %\n";
             std::cout << "Total time: " << elapsed_sec.count() << " seconds\n";
+            std::cout << "Detailed times:" << std::endl;
+            for(size_t i = 0; i < timer_names.size(); i++) {
+                std::cout << "  " << timer_names[i] << ": " << timer_vals[i] * 1e6 << "us" << std::endl;
+            }
             std::cout << "Optimization " << (current_stats_.valid ? "SUCCESS" : "FAILED") << "\n";
             std::cout << "Status: " << static_cast<int>(current_stats_.status) << "\n";
             std::cout << "===============================\n";
@@ -321,10 +364,15 @@ namespace factorama
         const auto t_start = std::chrono::steady_clock::now();
 
         // Step 1: Compute residual and Jacobian
-        const Eigen::VectorXd r = graph_->compute_full_residual_vector();
-        const Eigen::SparseMatrix<double> &J = graph_->compute_sparse_jacobian_matrix();
+        residual_stopwatch_.start();
+        graph_->compute_full_residual_vector(residual1_);
+        residual_stopwatch_.stop();
 
-        double current_cost = 0.5 * r.squaredNorm();
+        jacobian_stopwatch_.start();
+        const Eigen::SparseMatrix<double> &J = graph_->compute_sparse_jacobian_matrix();
+        jacobian_stopwatch_.stop();
+
+        double current_cost = 0.5 * residual1_.squaredNorm();
 
         // Initialize damping parameter if this is the first iteration
         if (current_stats_.current_iteration == 0)
@@ -342,6 +390,7 @@ namespace factorama
         while (!step_accepted && lm_attempts < max_lm_attempts)
         {
             // Step 2: Form damped normal equations: (J^T J + λI) dx = -J^T r
+            hessian_stopwatch_.start();
             Eigen::SparseMatrix<double> H = J.transpose() * J;
 
             // Add damping: H = J^T J + λI
@@ -350,9 +399,11 @@ namespace factorama
                 H.coeffRef(i, i) += current_stats_.damping_parameter;
             }
 
-            Eigen::VectorXd b = -J.transpose() * r;
+            Eigen::VectorXd b = -J.transpose() * residual1_;
+            hessian_stopwatch_.stop();
 
             // Step 3: Solve damped system
+            solve_stopwatch_.start();
             sparse_solver_.compute(H);
             if (sparse_solver_.info() != Eigen::Success)
             {
@@ -397,10 +448,12 @@ namespace factorama
                 }
                 continue;
             }
+            solve_stopwatch_.stop();
 
             dx *= settings_.learning_rate;
 
             // Step 4: Apply increment to variables (temporarily)
+            update_vars_stopwatch_.start();
             std::vector<Eigen::VectorXd> original_values;
             const auto &variables = graph_->get_all_variables();
 
@@ -429,10 +482,13 @@ namespace factorama
                 const Eigen::VectorXd local_dx = dx.segment(placement.index, placement.dim);
                 var->apply_increment(local_dx);
             }
+            update_vars_stopwatch_.stop();
 
             // Step 5: Evaluate new cost
-            const Eigen::VectorXd r_new = graph_->compute_full_residual_vector();
-            new_cost = 0.5 * r_new.squaredNorm();
+            residual_stopwatch_.start();
+            graph_->compute_full_residual_vector(residual2_);
+            residual_stopwatch_.stop();
+            new_cost = 0.5 * residual2_.squaredNorm();
 
             // Step 6: Check if step should be accepted
             if (new_cost < current_cost)
@@ -450,6 +506,7 @@ namespace factorama
             }
             else
             {
+                update_vars_stopwatch_.start();
                 // Reject step: restore original values and increase damping
                 for (size_t i = 0; i < variables.size(); ++i)
                 {
@@ -476,6 +533,7 @@ namespace factorama
                     }
                     break;
                 }
+                update_vars_stopwatch_.stop();
             }
         }
 
@@ -507,7 +565,10 @@ namespace factorama
         }
 
         // Step 7: Update statistics (use final accepted state)
-        const Eigen::VectorXd r_final = graph_->compute_full_residual_vector();
+        Eigen::VectorXd& r_final = residual2_;
+        if(!step_accepted) {
+            r_final = residual1_;
+        }
         current_stats_.delta_norm = dx.norm();
         current_stats_.chi2 = r_final.squaredNorm();
         current_stats_.residual_norm = r_final.norm();
@@ -523,7 +584,7 @@ namespace factorama
             };
 
             std::cout << "\n[LM] Iteration " << current_stats_.current_iteration << " Summary:\n";
-            std::cout << "  Initial residual norm: " << r.norm() << "\n";
+            std::cout << "  Initial residual norm: " << residual1_.norm() << "\n";
             std::cout << "  Final residual norm:   " << current_stats_.residual_norm << "\n";
             std::cout << "  Step norm (||dx||):    " << current_stats_.delta_norm << "\n";
             std::cout << "  chi²:                  " << current_stats_.chi2 << "\n";

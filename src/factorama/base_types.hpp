@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include "kernels.hpp"
 
 namespace factorama
 {
@@ -208,6 +209,10 @@ namespace factorama
     public:
         virtual ~Factor() = default;
 
+        void SetKernel(ResidualKernel* kernel) {
+            kernel_ = kernel;
+        }
+
         /**
          * @brief Get the dimension of this factor's residual vector
          * @return Number of residual elements this factor contributes
@@ -219,6 +224,7 @@ namespace factorama
          * @return Residual vector
          */
         virtual Eigen::VectorXd compute_residual() const = 0;
+        virtual void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const = 0;
 
         /**
          * @brief Compute jacobians with respect to connected variables
@@ -244,6 +250,7 @@ namespace factorama
 
         protected:
         int id_;
-        
+
+        ResidualKernel* kernel_ = nullptr; // Nullptr - no kernel
     };
 }

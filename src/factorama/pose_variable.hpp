@@ -61,7 +61,7 @@ namespace factorama
          * @brief Get DCM (rotation matrix) from rodrigues vector
          * @return 3x3 rotation matrix from world to camera frame
          */
-        Eigen::Matrix3d dcm_CW() const;
+        const Eigen::Matrix3d & dcm_CW() const;
 
         /**
          * @brief Set pose from 6-element vector
@@ -84,6 +84,10 @@ namespace factorama
         std::shared_ptr<Variable> clone() const override;
 
     private:
-        Eigen::VectorXd pose_CW_; // [tx, ty, tz, rx, ry, rz] representing pose_CW
+
+        void recompute_dcm_CW();
+        //Eigen::Matrix<double,6,1> pose_CW_; // [tx, ty, tz, rx, ry, rz] representing pose_CW
+        Eigen::VectorXd pose_CW_;
+        Eigen::Matrix3d dcm_CW_; // Temporary storage for the dcm.
     };
 }

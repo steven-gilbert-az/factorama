@@ -21,7 +21,7 @@ namespace factorama
      *     factor_id++, pose_var, landmark_var, bearing_angle, sigma);
      * @endcode
      */
-    class BearingObservationFactor2D : public Factor
+    class BearingObservationFactor2D final : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_POSE = 1e-9;
 
@@ -41,9 +41,10 @@ namespace factorama
             double bearing_angle_obs,
             double angle_sigma = 1.0);
 
-        int residual_size() const override { return 1; }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
@@ -72,6 +73,7 @@ namespace factorama
         Variable* landmark_var_;
         double bearing_angle_obs_;
         double weight_;
+        int size_ = 1;
 
         /**
          * @brief Wrap angle difference to [-π, π]

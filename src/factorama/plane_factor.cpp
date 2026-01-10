@@ -79,9 +79,44 @@ namespace factorama
         }
     }
 
+    void PlaneFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+    {
+        result.resize(1);
+        if (!do_distance_scaling_)
+        {
+            // Old residual: simple signed distance from point to plane
+            Eigen::Vector3d point_pos = point_var_->value();
+            double distance = plane_var_->distance_from_point(point_pos);
+            result(0) = weight_ * distance;
+        }
+        else
+        {
+            // New residual with distance scaling
+            Eigen::Vector3d p = point_var_->value();
+            Eigen::Vector3d n = plane_var_->unit_vector();
+            double d = plane_var_->distance_from_origin();
+
+            // Range term
+            Eigen::Vector3d diff = p - dist_scaling_p0_;
+            double r = diff.norm();
+            double scale = 1.0 + r / dist_scaling_r0_;
+
+            // Signed distance
+            double dist = n.dot(p) - d;
+            result(0) = weight_ * (dist / scale);
+        }
+    }
+
     void PlaneFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
     {
-        jacobians.clear();
+        // Ensure jacobians vector has correct size for 2 variables
+        if(jacobians.size() == 0) {
+            jacobians.resize(2);
+        }
+        else if(jacobians.size() != 2) {
+            jacobians.clear();
+            jacobians.resize(2);
+        }
 
         if (!do_distance_scaling_)
         {
@@ -96,13 +131,14 @@ namespace factorama
             // dr/dp = weight * n^T
             if (point_var_->is_constant())
             {
-                jacobians.emplace_back();  // Empty Jacobian
+                jacobians[0] = Eigen::MatrixXd();
             }
             else
             {
-                Eigen::MatrixXd J_point(1, 3);
-                J_point = weight_ * normal.transpose();
-                jacobians.emplace_back(J_point);
+                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+                    jacobians[0].resize(size_, 3);
+                }
+                jacobians[0] = weight_ * normal.transpose();
             }
 
             // Jacobian w.r.t. plane (1x4)
@@ -113,19 +149,20 @@ namespace factorama
             // dr/dd = 1
             if (plane_var_->is_constant())
             {
-                jacobians.emplace_back();  // Empty Jacobian
+                jacobians[1] = Eigen::MatrixXd();
             }
             else
             {
-                Eigen::MatrixXd J_plane(1, 4);
+                if(jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
+                    jacobians[1].resize(size_, 4);
+                }
 
                 // Project point onto tangent space of unit sphere at normal
                 double p_dot_n = point_pos.dot(normal);
                 Eigen::Vector3d p_tangent = point_pos - p_dot_n * normal;
 
-                J_plane.block<1, 3>(0, 0) = weight_ * p_tangent.transpose();
-                J_plane(0, 3) = weight_;
-                jacobians.emplace_back(J_plane);
+                jacobians[1].block<1, 3>(0, 0) = weight_ * p_tangent.transpose();
+                jacobians[1](0, 3) = weight_;
             }
         }
         else
@@ -158,13 +195,14 @@ namespace factorama
             // --- Jacobian w.r.t point (1x3) ---
             if (point_var_->is_constant())
             {
-                jacobians.emplace_back(); // Empty
+                jacobians[0] = Eigen::MatrixXd();
             }
             else
             {
-                Eigen::MatrixXd J_point(1, 3);
-                J_point = weight_ * dr_dp.transpose();
-                jacobians.emplace_back(J_point);
+                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+                    jacobians[0].resize(size_, 3);
+                }
+                jacobians[0] = weight_ * dr_dp.transpose();
             }
 
             // --- Jacobian w.r.t plane (1x4) ---
@@ -185,20 +223,20 @@ namespace factorama
 
             if (plane_var_->is_constant())
             {
-                jacobians.emplace_back();
+                jacobians[1] = Eigen::MatrixXd();
             }
             else
             {
-                Eigen::MatrixXd J_plane(1, 4);
+                if(jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
+                    jacobians[1].resize(size_, 4);
+                }
 
                 // Tangent component for unit-vector parameterization
                 double p_dot_n = p.dot(n);
                 Eigen::Vector3d p_tangent = p - p_dot_n * n;
 
-                J_plane.block<1, 3>(0, 0) = weight_ * (p_tangent.transpose() / scale);
-                J_plane(0, 3) = weight_ * (-1.0 / scale);
-
-                jacobians.emplace_back(J_plane);
+                jacobians[1].block<1, 3>(0, 0) = weight_ * (p_tangent.transpose() / scale);
+                jacobians[1](0, 3) = weight_ * (-1.0 / scale);
             }
         }
     }

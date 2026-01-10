@@ -16,6 +16,17 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Print helpful build type information
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Build Type: Debug - Full debug symbols, no optimization (slower but best for debugging)")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Build Type: Release - Full optimization, no debug symbols (fastest performance)")
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    message(STATUS "Build Type: RelWithDebInfo - Optimized with debug symbols (good performance with debugging capability)")
+else()
+    message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+endif()
+
 # Size optimization for Release builds only
 if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # add_compile_options(-ffunction-sections)
@@ -110,6 +121,10 @@ if(BUILD_EXAMPLES)
     
     add_executable(example2 examples/02_landmark_triangulation.cpp)
     target_link_libraries(example2 PRIVATE factorama)
+
+    add_executable(random_bench examples/random_benchmarks.cpp)
+    target_link_libraries(random_bench PRIVATE factorama)
+
 endif()
 
 # === Tests ===
@@ -133,6 +148,7 @@ if(BUILD_TESTS)
     add_factorama_test(factor_tests src/factorama_test/factor_tests.cpp)
     add_factorama_test(integration_test src/factorama_test/integration_test.cpp)
     add_factorama_test(optimizer_test src/factorama_test/optimizer_test.cpp)
+    add_factorama_test(stopwatch_test src/factorama_test/stopwatch_test.cpp)
     
     # Solver benchmark executable (standalone, not a Catch2 test)
     add_executable(solver_benchmark src/factorama_test/solver_benchmark.cpp)
@@ -150,12 +166,14 @@ if(BUILD_TESTS)
         catch_discover_tests(factor_tests)
         catch_discover_tests(integration_test)
         catch_discover_tests(optimizer_test)
+        catch_discover_tests(stopwatch_test)
     else()
         add_test(NAME unit_test COMMAND unit_test)
         add_test(NAME variable_tests COMMAND variable_tests)
         add_test(NAME factor_tests COMMAND factor_tests)
         add_test(NAME integration_test COMMAND integration_test)
         add_test(NAME optimizer_test COMMAND optimizer_test)
+        add_test(NAME stopwatch_test COMMAND stopwatch_test)
     endif()
 endif()
 

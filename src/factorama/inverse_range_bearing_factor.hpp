@@ -23,7 +23,7 @@ namespace factorama
      *     factor_id++, camera_pose, inv_range_landmark, bearing_vector, bearing_sigma);
      * @endcode
      */
-    class InverseRangeBearingFactor : public Factor
+    class InverseRangeBearingFactor final : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_CAMERA = 1e-9;
         static constexpr double MIN_INVERSE_RANGE = 1e-9;
@@ -46,7 +46,8 @@ namespace factorama
             : pose_var_(pose_var),
               inverse_range_var_(inverse_range_variable),
               bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma)
+              weight_(1.0 / angle_sigma),
+              size_(3)
         {
             id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -79,12 +80,30 @@ namespace factorama
             return res;
         }
 
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
+        {
+            // 1. Get world to camera dcm
+            const Eigen::Matrix3d &dcm_CW = pose_var_->dcm_CW();
+            const Eigen::Vector3d &pos_C_W = pose_var_->pos_W();
+
+            // 2. Get 3D point from inverse range
+            Eigen::Vector3d landmark_pos_W = inverse_range_var_->pos_W();
+
+            // 3. Transform to camera frame
+            Eigen::Vector3d pos_C = dcm_CW * (landmark_pos_W - pos_C_W);
+
+            // 4. Normalize to unit vector
+            Eigen::Vector3d bearing_C = pos_C.normalized();
+
+            // 5. Compute weighted residual
+            result = weight_ * (bearing_C - bearing_C_obs_);
+        }
+
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
 
         int residual_size() const override
         {
-            int residual = 3;
-            return residual;
+            return size_;
         }
 
         double weight() const
@@ -107,6 +126,7 @@ namespace factorama
         InverseRangeVariable* inverse_range_var_;
         Eigen::Vector3d bearing_C_obs_; // In camera frame, normalized
         double weight_;
+        int size_;
     };
 
 } // namespace factorama

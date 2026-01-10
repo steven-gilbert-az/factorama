@@ -24,8 +24,8 @@ namespace factorama
     struct FactorPlacement
     {
         Factor* factor;
-        int residual_index; // Start row in residual vector
-        int residual_dim;
+        int residual_index = 0; // Start row in residual vector
+        int residual_dim = 0;
 
         std::vector<int> variable_column_indices;
         std::vector<int> variable_dims;
@@ -73,6 +73,7 @@ namespace factorama
          * @return Reference to computed residual vector
          */
         Eigen::VectorXd &compute_full_residual_vector();
+        void compute_full_residual_vector(Eigen::VectorXd& result);
 
         /**
          * @brief Compute dense Jacobian matrix
@@ -244,7 +245,9 @@ namespace factorama
         Eigen::VectorXd cached_residual_;
         bool residual_valid_ = false;
 
+        
         Eigen::SparseMatrix<double> sparse_jacobian_;
+        std::vector<std::vector<Eigen::MatrixXd>> sparse_jacobian_components_;
         bool sparse_jacobian_initialized_ = false;
         bool sparse_jacobian_valid_ = false;
 

@@ -20,7 +20,7 @@ namespace factorama
      *     factor_id++, camera_pose, landmark, bearing_vector, sigma);
      * @endcode
      */
-    class BearingProjectionFactor2D : public Factor
+    class BearingProjectionFactor2D final : public Factor
     {
     public:
         /**
@@ -42,7 +42,8 @@ namespace factorama
               landmark_(landmark),
               bearing_C_observed_(bearing_C_observed.normalized()),
               weight_(1.0 / sigma),
-              reverse_depth_tolerance_(along_tolerance_epsilon)
+              reverse_depth_tolerance_(along_tolerance_epsilon),
+              size_(2)
         {
             id_ = id;
             assert(pose != nullptr && "pose cannot be nullptr");
@@ -50,8 +51,8 @@ namespace factorama
             assert(sigma > 0.0 && "Sigma must be greater than zero");
             compute_tangent_basis();
         }
-        
-        int residual_size() const override { return 2; }
+
+        int residual_size() const override { return size_; }
         
         double weight() const { return weight_; }
         
@@ -71,6 +72,7 @@ namespace factorama
         }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
     private:
@@ -80,6 +82,7 @@ namespace factorama
         Eigen::Matrix<double, 3, 2> T_;        // precomputed orthonormal basis (from k)
         double weight_;
         double reverse_depth_tolerance_;                           // small guard for alpha
+        int size_;
 
         void compute_tangent_basis();          // helper to compute T from k
     };

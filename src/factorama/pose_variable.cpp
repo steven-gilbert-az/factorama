@@ -9,6 +9,7 @@ namespace factorama
         : pose_CW_(pose_CW_init)
     {
         id_ = id;
+        recompute_dcm_CW();
     }
 
     PoseVariable::PoseVariable(int id, const Eigen::Vector3d pos_W, const Eigen::Matrix3d dcm_CW)
@@ -19,11 +20,13 @@ namespace factorama
 
         Eigen::AngleAxisd aa(dcm_CW);
         pose_CW_.segment<3>(3) = aa.axis() * aa.angle();
+        recompute_dcm_CW();
     }
 
     void PoseVariable::set_value_from_vector(const Eigen::VectorXd &x)
     {
         pose_CW_ = x;
+        recompute_dcm_CW();
     }
 
     void PoseVariable::apply_increment(const Eigen::VectorXd &dx)
@@ -50,25 +53,33 @@ namespace factorama
         Eigen::Vector3d rot_vec_new = LogMapSO3(R_new);
 
         pose_CW_.segment<3>(3) = rot_vec_new;
+        recompute_dcm_CW();
     }
 
-    Eigen::Matrix3d PoseVariable::dcm_CW() const
+    const Eigen::Matrix3d & PoseVariable::dcm_CW() const
+    {
+        return dcm_CW_;
+    }
+
+    void PoseVariable::recompute_dcm_CW()
     {
         Eigen::Vector3d rot_CW_tmp = rot_CW(); // [rx, ry, rz]
         double angle = rot_CW_tmp.norm();
 
         if (angle < 1e-8)
         {
-            return Eigen::Matrix3d::Identity();
+            dcm_CW_ = Eigen::Matrix3d::Identity();
+            return;
         }
 
         Eigen::Vector3d axis = rot_CW_tmp / angle;
-        return Eigen::AngleAxisd(angle, axis).toRotationMatrix();
+        dcm_CW_ = Eigen::AngleAxisd(angle, axis).toRotationMatrix();
     }
 
     void PoseVariable::set_pose_vector(Eigen::Matrix<double, 6, 1> pose)
     {
         pose_CW_ = pose;
+        recompute_dcm_CW();
     }
 
     void PoseVariable::set_pos_W(const Eigen::Vector3d &pos_W)
@@ -80,6 +91,7 @@ namespace factorama
     {
         Eigen::AngleAxisd aa(dcm_CW);
         pose_CW_.segment<3>(3) = aa.axis() * aa.angle();
+        recompute_dcm_CW(); // This may be ever so slightly different than the input dcm_CW;
     }
 
     void PoseVariable::print() const

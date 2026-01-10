@@ -18,7 +18,7 @@ namespace factorama
      *     factor_id++, point_var, plane_var, sigma);
      * @endcode
      */
-    class PlaneFactor : public Factor
+    class PlaneFactor final : public Factor
     {
     public:
         /**
@@ -41,11 +41,12 @@ namespace factorama
                     double dist_scaling_r0,
                     Eigen::Vector3d dist_scaling_p0);
 
-        int residual_size() const override { return 1; }
+        int residual_size() const override { return size_; }
         double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::plane_factor; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
@@ -57,6 +58,7 @@ namespace factorama
         bool do_distance_scaling_;
         double dist_scaling_r0_;
         Eigen::Vector3d dist_scaling_p0_;
+        int size_ = 1;
     };
 
 } // namespace factorama

@@ -156,7 +156,7 @@ TEST_CASE("GenericPriorFactor: dimensions and residual with LandmarkVariable")
 
 TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[jacobian][bearing]")
 {
-    SECTION("Linear mode (existing test)")
+    SECTION("Simple setup")
     {
         // Setup
         Eigen::Vector3d pos_W(0, 0, 0);
@@ -192,7 +192,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
         }
     }
 
-    SECTION("SO(3) manifold mode: Non-identity rotation with sigma=0.05")
+    SECTION("Non-identity rotation with sigma=0.05")
     {
         // Setup with significant rotation
         Eigen::Vector3d pos_W(1.5, -0.8, 0.3);

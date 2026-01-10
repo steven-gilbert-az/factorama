@@ -60,9 +60,47 @@ namespace factorama
         return res;
     }
 
+    void RangeBearingFactor2D::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+    {
+        // Get pose state
+        Eigen::Vector2d pos_pose = pose_var_->pos_2d();
+
+        // Get landmark position
+        Eigen::Vector2d pos_landmark = landmark_var_->value().head<2>();
+
+        // Compute delta in world frame
+        Eigen::Vector2d delta_world = pos_landmark - pos_pose;
+
+        // Rotate delta into pose frame
+        Eigen::Matrix2d R_T = pose_var_->dcm_2d().transpose();
+        Eigen::Vector2d delta_local = R_T * delta_world;
+
+        // Compute predicted range
+        double range_pred = delta_local.norm();
+
+        // Compute predicted bearing angle in pose frame
+        double bearing_pred = std::atan2(delta_local(1), delta_local(0));
+
+        // Compute residuals
+        double range_error = range_pred - range_obs_;
+        double bearing_error = bearing_pred - bearing_angle_obs_;
+        bearing_error = wrap_angle(bearing_error);
+
+        result.resize(2);
+        result(0) = range_weight_ * range_error;
+        result(1) = bearing_weight_ * bearing_error;
+    }
+
     void RangeBearingFactor2D::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
-        jacobians.clear();
+        // Ensure jacobians vector has correct size for 2 variables
+        if(jacobians.size() == 0) {
+            jacobians.resize(2);
+        }
+        else if(jacobians.size() != 2) {
+            jacobians.clear();
+            jacobians.resize(2);
+        }
 
         // Get pose state
         Eigen::Vector2d pos_pose = pose_var_->pos_2d();
@@ -92,61 +130,53 @@ namespace factorama
         // --- Jacobian w.r.t. pose [x, y, theta] (2x3) ---
         if (pose_var_->is_constant())
         {
-            jacobians.emplace_back();  // Empty Jacobian
+            jacobians[0] = Eigen::MatrixXd();
         }
         else
         {
-            Eigen::MatrixXd J_pose(2, 3);
+            if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+                jacobians[0].resize(size_, 3);
+            }
 
             // First row: derivatives of range w.r.t. pose
             // ∂range/∂px = -(dx_local * cos - dy_local * sin) / r
             // ∂range/∂py = -(dx_local * sin + dy_local * cos) / r
             // ∂range/∂theta = 0
-            J_pose(0, 0) = -(dx_local * c - dy_local * s) / r;
-            J_pose(0, 1) = -(dx_local * s + dy_local * c) / r;
-            J_pose(0, 2) = 0.0;
+            jacobians[0](0, 0) = -range_weight_ * (dx_local * c - dy_local * s) / r;
+            jacobians[0](0, 1) = -range_weight_ * (dx_local * s + dy_local * c) / r;
+            jacobians[0](0, 2) = 0.0;
 
             // Second row: derivatives of bearing w.r.t. pose
             // ∂bearing/∂px = (dy_local * cos + dx_local * sin) / r^2
             // ∂bearing/∂py = (dy_local * sin - dx_local * cos) / r^2
             // ∂bearing/∂theta = -1
-            J_pose(1, 0) = (dy_local * c + dx_local * s) / r_sq;
-            J_pose(1, 1) = (dy_local * s - dx_local * c) / r_sq;
-            J_pose(1, 2) = -1.0;
-
-            // Apply weights
-            J_pose.row(0) *= range_weight_;
-            J_pose.row(1) *= bearing_weight_;
-
-            jacobians.emplace_back(J_pose);
+            jacobians[0](1, 0) = bearing_weight_ * (dy_local * c + dx_local * s) / r_sq;
+            jacobians[0](1, 1) = bearing_weight_ * (dy_local * s - dx_local * c) / r_sq;
+            jacobians[0](1, 2) = -bearing_weight_;
         }
 
         // --- Jacobian w.r.t. landmark [x, y] (2x2) ---
         if (landmark_var_->is_constant())
         {
-            jacobians.emplace_back();  // Empty Jacobian
+            jacobians[1] = Eigen::MatrixXd();
         }
         else
         {
-            Eigen::MatrixXd J_landmark(2, 2);
+            if(jacobians[1].rows() != size_ || jacobians[1].cols() != 2) {
+                jacobians[1].resize(size_, 2);
+            }
 
             // First row: derivatives of range w.r.t. landmark
             // ∂range/∂lx = (dx_local * cos - dy_local * sin) / r
             // ∂range/∂ly = (dx_local * sin + dy_local * cos) / r
-            J_landmark(0, 0) = (dx_local * c - dy_local * s) / r;
-            J_landmark(0, 1) = (dx_local * s + dy_local * c) / r;
+            jacobians[1](0, 0) = range_weight_ * (dx_local * c - dy_local * s) / r;
+            jacobians[1](0, 1) = range_weight_ * (dx_local * s + dy_local * c) / r;
 
             // Second row: derivatives of bearing w.r.t. landmark
             // ∂bearing/∂lx = -(dy_local * cos + dx_local * sin) / r^2
             // ∂bearing/∂ly = -(dy_local * sin - dx_local * cos) / r^2
-            J_landmark(1, 0) = -(dy_local * c + dx_local * s) / r_sq;
-            J_landmark(1, 1) = -(dy_local * s - dx_local * c) / r_sq;
-
-            // Apply weights
-            J_landmark.row(0) *= range_weight_;
-            J_landmark.row(1) *= bearing_weight_;
-
-            jacobians.emplace_back(J_landmark);
+            jacobians[1](1, 0) = -bearing_weight_ * (dy_local * c + dx_local * s) / r_sq;
+            jacobians[1](1, 1) = -bearing_weight_ * (dy_local * s - dx_local * c) / r_sq;
         }
     }
 

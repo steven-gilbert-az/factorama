@@ -2,6 +2,7 @@
 #include <cstddef>
 
 #include "factorama/factor_graph.hpp"
+#include "factorama/stopwatch.hpp"
 
 namespace factorama
 {
@@ -161,8 +162,17 @@ namespace factorama
     bool cached_hessian_valid_for_covariance_est_ = false;
     Eigen::SparseMatrix<double> cached_hessian_;
 
+    // Cached Residuals
+    Eigen::VectorXd residual1_;
+    Eigen::VectorXd residual2_;
+    Eigen::SparseMatrix<double> H_;
+    Eigen::VectorXd b_;
+    Eigen::VectorXd D_;
+
+
     // Optional reuse of solver object (may reduce overhead)
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_solver_;
+    //Eigen::SimplicialLLT<Eigen::SparseMatrix<double>> sparse_solver2_;
 
     // ---- Optimization Step Functions ----
     void single_step_gauss_newton();
@@ -171,6 +181,17 @@ namespace factorama
     // Internal utilities (e.g., convergence check, logging, damping updates)
     bool check_convergence();
     void print_iteration_summary();
+
+
+    // Stopwatches for gathering runtime profiling data
+    Stopwatch residual_stopwatch_;
+    Stopwatch jacobian_stopwatch_;
+    Stopwatch hessian_stopwatch_;
+    Stopwatch solve_stopwatch_;
+    Stopwatch update_vars_stopwatch_;
+
+
+
   };
 
 }

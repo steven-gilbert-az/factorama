@@ -19,7 +19,7 @@ namespace factorama
      *     factor_id++, var_1, var_2, velocity_variable, dt, sigma);
      * @endcode
      */
-    class LinearVelocityFactor : public Factor
+    class LinearVelocityFactor final : public Factor
     {
     public:
         /**
@@ -39,11 +39,12 @@ namespace factorama
                              double sigma = 1.0,
                              int initial_index = 0);
 
-        int residual_size() const override { return velocity_variable_->size(); }
+        int residual_size() const override { return size_; }
         double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::generic_between; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
         std::vector<Variable *> variables() override;
 
@@ -54,6 +55,7 @@ namespace factorama
         double dt_;  // delta time from var1 to var2
         double weight_;
         int initial_index_;
+        int size_;
     };
 
 } // namespace factorama

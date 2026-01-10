@@ -19,7 +19,7 @@ namespace factorama
      *     factor_id++, pose_a, pose_b, measured_delta_variable, sigma);
      * @endcode
      */
-    class PosePositionBetweenFactor : public Factor
+    class PosePositionBetweenFactor final : public Factor
     {
     public:
         /**
@@ -40,7 +40,7 @@ namespace factorama
                                   double sigma = 1.0,
                                   bool local_frame = false)
             : pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff),
-              weight_(1.0 / sigma), local_frame_(local_frame)
+              weight_(1.0 / sigma), local_frame_(local_frame), size_(3)
         {
             id_ = id;
             assert(pose_a != nullptr && "pose_a cannot be nullptr");
@@ -52,7 +52,7 @@ namespace factorama
 
         int residual_size() const override
         {
-            return 3;
+            return size_;
         }
 
         Eigen::VectorXd compute_residual() const override
@@ -76,9 +76,37 @@ namespace factorama
             return weight_ * res;
         }
 
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
+        {
+            Eigen::Vector3d diff_W = pose_b_->pos_W() - pose_a_->pos_W();
+            Eigen::Vector3d res;
+
+            if (local_frame_)
+            {
+                // Measurement in pose_a's local frame: transform world difference to pose_a's frame
+                Eigen::Matrix3d dcm_AW = pose_a_->dcm_CW();
+                Eigen::Vector3d diff_A = dcm_AW * diff_W;
+                res = diff_A - measured_diff_->value();
+            }
+            else
+            {
+                // Measurement in world frame (original behavior)
+                res = diff_W - measured_diff_->value();
+            }
+
+            result = weight_ * res;
+        }
+
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
         {
-            jacobians.clear();
+            // Ensure jacobians vector has correct size for 3 variables
+            if(jacobians.size() == 0) {
+                jacobians.resize(3);
+            }
+            else if(jacobians.size() != 3) {
+                jacobians.clear();
+                jacobians.resize(3);
+            }
 
             if (local_frame_)
             {
@@ -89,13 +117,16 @@ namespace factorama
                 // Jacobian w.r.t pose_a
                 if (pose_a_->is_constant())
                 {
-                    jacobians.emplace_back();
+                    jacobians[0] = Eigen::MatrixXd();
                 }
                 else
                 {
-                    Eigen::MatrixXd J_a = Eigen::MatrixXd::Zero(3, 6);
+                    if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+                        jacobians[0].resize(size_, 6);
+                    }
+                    jacobians[0].setZero();
                     // Position part: d(dcm_AW * diff_W)/d(pos_a_W) = -dcm_AW
-                    J_a.block<3, 3>(0, 0) = -weight_ * dcm_AW;
+                    jacobians[0].block<3, 3>(0, 0) = -weight_ * dcm_AW;
                     // Rotation part: d(dcm_AW * diff_W)/d(rot_a) = -[dcm_AW * diff_W]_×
                     // (negative sign due to left perturbation: R_new = exp([δθ]_×) * R)
                     Eigen::Vector3d diff_A = dcm_AW * diff_W;
@@ -103,22 +134,23 @@ namespace factorama
                     skew_diff_A << 0, -diff_A(2), diff_A(1),
                                    diff_A(2), 0, -diff_A(0),
                                    -diff_A(1), diff_A(0), 0;
-                    J_a.block<3, 3>(0, 3) = -weight_ * skew_diff_A;
-                    jacobians.emplace_back(J_a);
+                    jacobians[0].block<3, 3>(0, 3) = -weight_ * skew_diff_A;
                 }
 
                 // Jacobian w.r.t pose_b
                 if (pose_b_->is_constant())
                 {
-                    jacobians.emplace_back();
+                    jacobians[1] = Eigen::MatrixXd();
                 }
                 else
                 {
-                    Eigen::MatrixXd J_b = Eigen::MatrixXd::Zero(3, 6);
+                    if(jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
+                        jacobians[1].resize(size_, 6);
+                    }
+                    jacobians[1].setZero();
                     // Position part: d(dcm_AW * diff_W)/d(pos_b_W) = dcm_AW
-                    J_b.block<3, 3>(0, 0) = weight_ * dcm_AW;
+                    jacobians[1].block<3, 3>(0, 0) = weight_ * dcm_AW;
                     // Rotation part: no dependency on pose_b's rotation
-                    jacobians.emplace_back(J_b);
                 }
             }
             else
@@ -127,36 +159,44 @@ namespace factorama
                 // Jacobian w.r.t pose_a (negative identity in position block)
                 if (pose_a_->is_constant())
                 {
-                    jacobians.emplace_back();
+                    jacobians[0] = Eigen::MatrixXd();
                 }
                 else
                 {
-                    Eigen::MatrixXd J_a = Eigen::MatrixXd::Zero(3, 6);
-                    J_a.block<3, 3>(0, 0) = -weight_ * Eigen::Matrix3d::Identity();
-                    jacobians.emplace_back(J_a);
+                    if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+                        jacobians[0].resize(size_, 6);
+                    }
+                    jacobians[0].setZero();
+                    jacobians[0].block<3, 3>(0, 0).diagonal().array() = -weight_;
                 }
 
                 // Jacobian w.r.t pose_b (positive identity in position block)
                 if (pose_b_->is_constant())
                 {
-                    jacobians.emplace_back();
+                    jacobians[1] = Eigen::MatrixXd();
                 }
                 else
                 {
-                    Eigen::MatrixXd J_b = Eigen::MatrixXd::Zero(3, 6);
-                    J_b.block<3, 3>(0, 0) = weight_ * Eigen::Matrix3d::Identity();
-                    jacobians.emplace_back(J_b);
+                    if(jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
+                        jacobians[1].resize(size_, 6);
+                    }
+                    jacobians[1].setZero();
+                    jacobians[1].block<3, 3>(0, 0).diagonal().array() = weight_;
                 }
             }
 
             // Jacobian w.r.t measured_diff (same for both modes)
             if (measured_diff_->is_constant())
             {
-                jacobians.emplace_back();
+                jacobians[2] = Eigen::MatrixXd();
             }
             else
             {
-                jacobians.emplace_back(-weight_ * Eigen::Matrix3d::Identity());
+                if(jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
+                    jacobians[2].resize(size_, size_);
+                }
+                jacobians[2].setZero();
+                jacobians[2].diagonal().array() = -weight_;
             }
         }
 
@@ -186,6 +226,7 @@ namespace factorama
         Variable* measured_diff_;
         double weight_;
         bool local_frame_;
+        int size_;
     };
 
     /**
@@ -200,7 +241,7 @@ namespace factorama
      *     factor_id++, pose1, pose2, calibration_rotation, angle_sigma);
      * @endcode
      */
-    class PoseOrientationBetweenFactor : public Factor
+    class PoseOrientationBetweenFactor final : public Factor
     {
     public:
         /**
@@ -220,7 +261,8 @@ namespace factorama
             : pose1_(pose1),
               pose2_(pose2),
               calibration_rotation_12_(calibration_rotation_12),
-              weight_(1.0 / angle_sigma)
+              weight_(1.0 / angle_sigma),
+              size_(3)
         {
             id_ = id;
             assert(pose1 != nullptr && "pose1 cannot be nullptr");
@@ -230,12 +272,26 @@ namespace factorama
         }
 
         // Residual dimension is 3 for so(3)
-        int residual_size() const override { return 3; }
+        int residual_size() const override { return size_; }
 
         // Residual = LogMapSO3(dcm_S2W * dcm_WS1 * dcm_S1_S2)
         Eigen::VectorXd compute_residual() const override
         {
             return compute_residual(pose1_, pose2_, calibration_rotation_12_);
+        }
+
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
+        {
+            // Let P1 be the coordinate frame of the sensor that corresponds to Pose1
+            // Let P2 be the coordinate frame of the sensor that corresponds to pose2
+            Eigen::Matrix3d dcm_P1W = pose1_->dcm_CW();
+            Eigen::Matrix3d dcm_P2W = pose2_->dcm_CW();
+            Eigen::Matrix3d dcm_P1_P2 = calibration_rotation_12_->rotation();
+            //                       dcm_S2W * dcm_WS1 * dcm_S1_S2 ~= dcm_S2_S2 ~= Identity
+            Eigen::Matrix3d error = dcm_P2W * dcm_P1W.transpose() * dcm_P1_P2;
+
+            Eigen::Vector3d res = LogMapSO3(error);
+            result = weight_ * res;
         }
 
         Eigen::VectorXd compute_residual(
@@ -274,5 +330,6 @@ namespace factorama
         PoseVariable* pose2_;
         RotationVariable* calibration_rotation_12_;
         double weight_;
+        int size_;
     };
 } // namespace factorama

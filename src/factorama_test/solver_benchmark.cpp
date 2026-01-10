@@ -88,7 +88,7 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
     std::vector<BenchmarkResult> results;
     
     // Test each optimization method
-    for (int method_idx = 0; method_idx < 2; ++method_idx) {
+    for (int method_idx = 0; method_idx < 1; ++method_idx) { // change to 2 to test both gauss and lm
         std::cout << "\n" << std::string(50, '-') << "\n";
         std::cout << "Testing Method: " << method_names[method_idx] << "\n";
         std::cout << std::string(50, '-') << "\n";
@@ -136,11 +136,11 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
         // Configure optimizer settings
         OptimizerSettings settings;
         settings.method = method_types[method_idx];
-        settings.max_num_iterations = 50;
+        settings.max_num_iterations = 5;
         settings.step_tolerance = 0.0;  // Set to zero to force more iterations
         settings.residual_tolerance = 0.0;  // Set to zero to force more iterations
-        settings.learning_rate = 0.1;  // Low learning rate to get more iterations
-        settings.verbose = false;      // Keep quiet during benchmark
+        settings.learning_rate = 0.0001;  // Low learning rate to get more iterations
+        settings.verbose = true;      // Keep quiet during benchmark
         
         // Run optimization with timing
         SparseOptimizer optimizer;
@@ -229,7 +229,7 @@ int main()
 {
     try {
         RunSolverBenchmark(false);
-        RunSolverBenchmark(true);
+        //RunSolverBenchmark(true);
         return 0;
     }
     catch (const std::exception& e) {

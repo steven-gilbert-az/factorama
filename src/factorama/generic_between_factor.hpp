@@ -17,7 +17,7 @@ namespace factorama
      *     factor_id++, var_a, var_b, measured_diff_variable, sigma);
      * @endcode
      */
-    class GenericBetweenFactor : public Factor
+    class GenericBetweenFactor final : public Factor
     {
     public:
         /**
@@ -34,11 +34,12 @@ namespace factorama
                              Variable* measured_diff,
                              double sigma = 1.0);
 
-        int residual_size() const override { return measured_diff_->size(); }
+        int residual_size() const override { return size_; }
         double weight() const { return weight_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::generic_between; }
 
         Eigen::VectorXd compute_residual() const override;
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
@@ -48,6 +49,7 @@ namespace factorama
         Variable* var_b_;
         Variable* measured_diff_;
         double weight_;
+        int size_;
     };
 
 } // namespace factorama

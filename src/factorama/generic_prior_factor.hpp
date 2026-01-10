@@ -17,7 +17,7 @@ namespace factorama
      *     factor_id++, landmark, Eigen::Vector3d(0.0, 0.0, 5.0), 1.0);
      * @endcode
      */
-    class GenericPriorFactor : public Factor
+    class GenericPriorFactor final : public Factor
     {
     public:
         /**
@@ -37,11 +37,12 @@ namespace factorama
             assert(variable != nullptr && "variable cannot be nullptr");
             assert(prior_.size() == variable_->size() && "Prior size must match variable size");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
+            size_ = prior_.size();
         }
 
         int residual_size() const override
         {
-            return prior_.size();
+            return size_;
         }
 
         Eigen::VectorXd compute_residual() const override
@@ -50,16 +51,32 @@ namespace factorama
             return weight_ * res;
         }
 
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override {
+            result = weight_ * (variable_->value() - prior_);
+        }
+
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
         {
+            if(jacobians.size() == 0) {
+                jacobians.emplace_back(); // create a jacobian element
+            }
+            else if(jacobians.size() > 1) {
+                jacobians.clear();
+                jacobians.emplace_back();
+            }
+            
             if (variable_->is_constant())
             {
                 jacobians.emplace_back(); // Empty Jacobian if variable is constant
+                jacobians[0] = Eigen::MatrixXd();
             }
             else
             {
-                Eigen::MatrixXd J = weight_ * Eigen::MatrixXd::Identity(prior_.size(), prior_.size());
-                jacobians.emplace_back(J);
+                if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+                    jacobians[0].resize(size_, size_);
+                }
+                jacobians[0].setZero();
+                jacobians[0].diagonal().array() = weight_;
             }
         }
 
@@ -87,6 +104,7 @@ namespace factorama
         Variable* variable_;
         Eigen::VectorXd prior_;
         double weight_;
+        int size_;
     };
 
 }

@@ -22,6 +22,8 @@ GenericBetweenFactor::GenericBetweenFactor(int id,
            "BetweenFactor: measured_diff size mismatch");
 
     assert(sigma > 0.0 && "BetweenFactor: sigma must be greater than zero");
+
+    size_ = measured_diff_->size();
 }
 
 Eigen::VectorXd GenericBetweenFactor::compute_residual() const
@@ -31,37 +33,60 @@ Eigen::VectorXd GenericBetweenFactor::compute_residual() const
     return weight_ * res;
 }
 
+void GenericBetweenFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+{
+    Eigen::VectorXd diff = var_b_->value() - var_a_->value();
+    result = weight_ * (diff - measured_diff_->value());
+}
+
 void GenericBetweenFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
 {
-    jacobians.clear();
-
-    const int dim = measured_diff_->size();
+    // Ensure jacobians vector has correct size for 3 variables
+    if(jacobians.size() == 0) {
+        jacobians.resize(3);
+    }
+    else if(jacobians.size() != 3) {
+        jacobians.clear();
+        jacobians.resize(3);
+    }
 
     if (var_a_->is_constant())
     {
-        jacobians.emplace_back(); // empty Jacobian
+        jacobians[0] = Eigen::MatrixXd();
     }
     else
     {
-        jacobians.emplace_back(-weight_ * Eigen::MatrixXd::Identity(dim, dim));
+        if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+            jacobians[0].resize(size_, size_);
+        }
+        jacobians[0].setZero();
+        jacobians[0].diagonal().array() = -weight_;
     }
 
     if (var_b_->is_constant())
     {
-        jacobians.emplace_back();
+        jacobians[1] = Eigen::MatrixXd();
     }
     else
     {
-        jacobians.emplace_back(weight_ * Eigen::MatrixXd::Identity(dim, dim));
+        if(jacobians[1].rows() != size_ || jacobians[1].cols() != size_) {
+            jacobians[1].resize(size_, size_);
+        }
+        jacobians[1].setZero();
+        jacobians[1].diagonal().array() = weight_;
     }
 
     if (measured_diff_->is_constant())
     {
-        jacobians.emplace_back();
+        jacobians[2] = Eigen::MatrixXd();
     }
     else
     {
-        jacobians.emplace_back(-weight_ * Eigen::MatrixXd::Identity(dim, dim));
+        if(jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
+            jacobians[2].resize(size_, size_);
+        }
+        jacobians[2].setZero();
+        jacobians[2].diagonal().array() = -weight_;
     }
 }
 

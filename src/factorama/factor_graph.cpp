@@ -140,19 +140,33 @@ namespace factorama
             cached_residual_ = Eigen::VectorXd::Zero(num_residuals_);
         }
 
+        compute_full_residual_vector(cached_residual_);
+
+        residual_valid_ = true;
+
+        return cached_residual_;
+    }
+
+    void FactorGraph::compute_full_residual_vector(Eigen::VectorXd &result)
+    {
+        if (!structure_finalized_)
+        {
+            throw std::runtime_error("Called before finalize_structure().");
+        }
+
+        if (result.size() != num_residuals_)
+        {
+            result.resize(num_residuals_);
+        }
+
         for (const auto &it : factor_placement_)
         {
             auto factor_placement = it.second;
             const auto &factor = factor_placement.factor;
             const int row_offset = factor_placement.residual_index;
 
-            Eigen::VectorXd r = factor->compute_residual();
-            cached_residual_.segment(row_offset, r.size()) = r;
+            factor->compute_residual(result.segment(row_offset, factor_placement.residual_dim));
         }
-
-        residual_valid_ = true;
-
-        return cached_residual_;
     }
 
     Eigen::MatrixXd &FactorGraph::compute_full_jacobian_matrix()
@@ -301,6 +315,7 @@ namespace factorama
                 placement.variable_column_indices.push_back(var_placement.index);
                 placement.variable_dims.push_back(var_placement.dim);
             }
+            
 
             factor_placement_[i] = placement;
             row_offset += placement.residual_dim;
@@ -309,7 +324,8 @@ namespace factorama
         num_residuals_ = row_offset;
         num_values_ = col_offset;
 
-        if(num_residuals_ < num_values_) {
+        if (num_residuals_ < num_values_)
+        {
             // The problem is guaranteed to be singular, so throw an error
             throw std::runtime_error("num residuals - " + std::to_string(num_residuals_) + ", should be >= num_values - " + std::to_string(num_values_));
         }
@@ -388,6 +404,8 @@ namespace factorama
 
         sparse_jacobian_initialized_ = true;
 
+        sparse_jacobian_components_ = std::vector<std::vector<Eigen::MatrixXd>>(factors_.size());
+
         structure_finalized_ = true;
     }
 
@@ -413,7 +431,8 @@ namespace factorama
             const auto &factor = factor_placement.factor;
             // const int row_offset = factor_placement.residual_index;
 
-            std::vector<Eigen::MatrixXd> jacobians;
+            //std::vector<Eigen::MatrixXd> jacobians;
+            std::vector<Eigen::MatrixXd>& jacobians = sparse_jacobian_components_[factor_ind];
             factor->compute_jacobians(jacobians);
             const auto &variables = factor->variables();
 
@@ -431,7 +450,7 @@ namespace factorama
                 }
                 int col_offset = var_placement.index;
 
-                // Iterate through each element of the Ji block and add non-zeros
+                // Iterate through each element of the Ji block and add non-zero s
                 for (int r = 0; r < Ji.rows(); ++r)
                 {
                     for (int c = 0; c < Ji.cols(); ++c)
@@ -442,12 +461,14 @@ namespace factorama
                         int sparse_row = current_row_index[dense_col];
                         // sparse_jacobian_.coeffRef(row_offset + r, col_offset + c) = value;
                         // sparse_jacobian_.insert(row_offset + r, col_offset + c) = value;
-                        if(dense_col < 0 || dense_col >= int(sparse_jacobian_data_.size())) {
-                            throw std::runtime_error("column index " + std::to_string(dense_col) +  " out of bounds for sparse jacobian data");
+                        if (dense_col < 0 || dense_col >= int(sparse_jacobian_data_.size()))
+                        {
+                            throw std::runtime_error("column index " + std::to_string(dense_col) + " out of bounds for sparse jacobian data");
                         }
 
-                        if(sparse_row < 0 || sparse_row >= int(sparse_jacobian_data_[dense_col].size())) {
-                            throw std::runtime_error("sparse row index " + std::to_string(sparse_row) +  " out of bounds for sparse jacobian data");
+                        if (sparse_row < 0 || sparse_row >= int(sparse_jacobian_data_[dense_col].size()))
+                        {
+                            throw std::runtime_error("sparse row index " + std::to_string(sparse_row) + " out of bounds for sparse jacobian data");
                         }
 
                         sparse_jacobian_data_[dense_col][sparse_row] = value;
@@ -674,9 +695,8 @@ namespace factorama
                 double sum_abs_error = diff.cwiseAbs().sum();
 
                 // Scale the jacobian tolerance based on the actual values detected in the jacobian. This way a tiny jacobian has a smaller tolerance, a huge jacobian has a bigger tolerance
-                // Not foolproof (as different sections of a jacobian may be scaled differently) but it helps. 
+                // Not foolproof (as different sections of a jacobian may be scaled differently) but it helps.
                 double scaled_jacobian_tol = std::max(1e-2, max_jacobian_val * jacobian_tol);
-
 
                 if (max_error >= scaled_jacobian_tol)
                 {
@@ -688,7 +708,7 @@ namespace factorama
                         }
                         std::cout << "  FAIL: Variable " << var_idx << " (" << var->name() << ", ID=" << var->id()
                                   << ") - jacobian comparison FAILED" << std::endl;
-                        
+
                         std::cout << "     Max error: " << max_error << " (scaled tolerance: " << scaled_jacobian_tol << " / original tol: " << jacobian_tol << ")" << std::endl;
                         std::cout << "     Sum |error|: " << sum_abs_error << std::endl;
 

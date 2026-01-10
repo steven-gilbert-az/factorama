@@ -22,17 +22,33 @@ Eigen::VectorXd PosePositionPriorFactor::compute_residual() const
     return weight_ * res;
 }
 
+void PosePositionPriorFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+{
+    result = weight_ * (pose_->pos_W() - pos_prior_);
+}
+
 void PosePositionPriorFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
 {
+    // Ensure jacobians vector has correct size for 1 variable
+    if(jacobians.size() == 0) {
+        jacobians.resize(1);
+    }
+    else if(jacobians.size() != 1) {
+        jacobians.clear();
+        jacobians.resize(1);
+    }
+
     if (pose_->is_constant())
     {
-        jacobians.emplace_back();
+        jacobians[0] = Eigen::MatrixXd();
     }
     else
     {
-        Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 6);
-        J.block<3, 3>(0, 0) = weight_ * Eigen::Matrix3d::Identity();
-        jacobians.emplace_back(J);
+        if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+            jacobians[0].resize(size_, 6);
+        }
+        jacobians[0].setZero();
+        jacobians[0].block<3, 3>(0, 0).diagonal().array() = weight_;
     }
 }
 
@@ -72,16 +88,40 @@ Eigen::VectorXd PoseOrientationPriorFactor::compute_residual() const
     return weight_ * res;
 }
 
+void PoseOrientationPriorFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+{
+    // Use full SO(3) manifold approach
+    // For a prior factor: r = log(dcm_current * dcm_prior^T)
+    Eigen::Matrix3d dcm_CW_current = pose_->dcm_CW();
+    Eigen::Matrix3d dcm_CW_prior = ExpMapSO3(rot_CW_prior_);
+    Eigen::Matrix3d dcm_error = dcm_CW_current * dcm_CW_prior.transpose();
+    Eigen::Vector3d res = LogMapSO3(dcm_error);
+
+    result = weight_ * res;
+}
+
 void PoseOrientationPriorFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
 {
+    // Ensure jacobians vector has correct size for 1 variable
+    if(jacobians.size() == 0) {
+        jacobians.resize(1);
+    }
+    else if(jacobians.size() != 1) {
+        jacobians.clear();
+        jacobians.resize(1);
+    }
+
     if (pose_->is_constant())
     {
         // constant variable - empty jacobian
-        jacobians.emplace_back(Eigen::MatrixXd());
+        jacobians[0] = Eigen::MatrixXd();
     }
     else
     {
-        Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 6);
+        if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+            jacobians[0].resize(size_, 6);
+        }
+        jacobians[0].setZero();
 
         // Use manifold Jacobian for SO(3)
         // For r = log(dcm_current * dcm_prior^T)
@@ -93,9 +133,7 @@ void PoseOrientationPriorFactor::compute_jacobians(std::vector<Eigen::MatrixXd> 
 
         // Compute inverse right Jacobian Jr_inv of the error rotation
         Eigen::Matrix3d Jr_inv = compute_inverse_right_jacobian_so3(rotvec_error);
-        J.block<3, 3>(0, 3) = weight_ * Jr_inv;
-
-        jacobians.emplace_back(J);
+        jacobians[0].block<3, 3>(0, 3) = weight_ * Jr_inv;
     }
 }
 

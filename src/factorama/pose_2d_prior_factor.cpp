@@ -35,26 +35,47 @@ namespace factorama
         return res;
     }
 
+    void Pose2DPriorFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
+    {
+        result.resize(3);
+
+        // Position residual (weighted)
+        Eigen::Vector2d pos_error = pose_var_->pos_2d() - pose_prior_.head<2>();
+        result.head<2>() = position_weight_ * pos_error;
+
+        // Angle residual (weighted and wrapped to handle ±π discontinuity)
+        double angle_error = pose_var_->theta() - pose_prior_(2);
+        angle_error = wrap_angle(angle_error);  // Critical: wrap to [-π, π]
+        result(2) = angle_weight_ * angle_error;
+    }
+
     void Pose2DPriorFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
-        jacobians.clear();
+        // Ensure jacobians vector has correct size for 1 variable
+        if(jacobians.size() == 0) {
+            jacobians.resize(1);
+        }
+        else if(jacobians.size() != 1) {
+            jacobians.clear();
+            jacobians.resize(1);
+        }
 
         if (pose_var_->is_constant())
         {
-            jacobians.emplace_back();  // Empty Jacobian
+            jacobians[0] = Eigen::MatrixXd();
         }
         else
         {
-            // Jacobian is 3x3 diagonal with different weights
-            Eigen::MatrixXd J = Eigen::MatrixXd::Zero(3, 3);
+            if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+                jacobians[0].resize(size_, size_);
+            }
+            jacobians[0].setZero();
 
             // Position part (2x2 identity block, weighted)
-            J.block<2, 2>(0, 0) = position_weight_ * Eigen::Matrix2d::Identity();
+            jacobians[0].block<2, 2>(0, 0).diagonal().array() = position_weight_;
 
             // Angle part (1x1 identity, weighted)
-            J(2, 2) = angle_weight_;
-
-            jacobians.emplace_back(J);
+            jacobians[0](2, 2) = angle_weight_;
         }
     }
 

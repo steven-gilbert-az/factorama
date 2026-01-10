@@ -21,7 +21,7 @@ namespace factorama
      *     factor_id++, camera_pose, landmark, bearing_vector, bearing_sigma);
      * @endcode
      */
-    class BearingObservationFactor : public Factor
+    class BearingObservationFactor final : public Factor
     {
         static constexpr double MIN_DISTANCE_FROM_CAMERA = 1e-9;
 
@@ -43,7 +43,8 @@ namespace factorama
             : pose_var_(pose_var),
               landmark_var_(landmark_var),
               bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma)
+              weight_(1.0 / angle_sigma),
+              size_(3)
         {
             id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -64,9 +65,21 @@ namespace factorama
             return weight_ * (bearing_C_pred - bearing_C_obs_);
         }
 
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
+        {
+            Eigen::Vector3d pos_W = landmark_var_->pos_W();
+            Eigen::Vector3d pos_W_cam = pose_var_->pos_W();
+            Eigen::Matrix3d dcm_CW = pose_var_->dcm_CW();
+
+            Eigen::Vector3d delta_W = pos_W - pos_W_cam;
+            Eigen::Vector3d bearing_C_pred = (dcm_CW * delta_W).normalized();
+
+            result = weight_ * (bearing_C_pred - bearing_C_obs_);
+        }
+
         int residual_size() const override
         {
-            return 3;
+            return size_;
         }
 
         void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const override;
@@ -96,5 +109,6 @@ namespace factorama
         LandmarkVariable* landmark_var_;
         Eigen::Vector3d bearing_C_obs_;
         double weight_;
+        int size_;
     };
 }
