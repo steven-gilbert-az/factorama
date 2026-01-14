@@ -7,6 +7,7 @@
 #include "factorama/generic_variable.hpp"
 #include "factorama/inverse_range_variable.hpp"
 #include "factorama/plane_variable.hpp"
+#include "factorama/rotation_variable.hpp"
 #include "factorama/bearing_observation_factor.hpp"
 #include "factorama/bearing_observation_factor_2d.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
@@ -17,6 +18,7 @@
 #include "factorama/pose_2d_between_factor.hpp"
 #include "factorama/range_bearing_factor_2d.hpp"
 #include "factorama/generic_prior_factor.hpp"
+#include "factorama/coordinate_transform_factor.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/sparse_optimizer.hpp"
 #include "factorama_test/test_utils.hpp"
@@ -797,6 +799,139 @@ TEST_CASE("Consolidated Integration Tests")
         });
     }
 
+    // Scenario 18: Coordinate transform estimation with noisy keypoint correspondences
+    {
+        OptimizerSettings settings18;
+        settings18.method = OptimizerMethod::LevenbergMarquardt;
+        settings18.verbose = true;
+        settings18.max_num_iterations = 100;
+        scenarios.push_back({
+            "Coordinate transform estimation from noisy keypoint correspondences",
+            []() {
+                FactorGraph graph;
+                int var_id = 0;
+                int factor_id = 0;
+
+                // Ground truth transform parameters (Frame B to Frame A)
+                // Non-trivial rotation: 30 degrees around Z, 20 degrees around Y, 10 degrees around X
+                double roll = 10.0 * PI / 180.0;
+                double pitch = 20.0 * PI / 180.0;
+                double yaw = 30.0 * PI / 180.0;
+
+                // Build rotation matrix using ZYX Euler angles
+                Eigen::Matrix3d Rz, Ry, Rx;
+                Rz << std::cos(yaw), -std::sin(yaw), 0,
+                      std::sin(yaw),  std::cos(yaw), 0,
+                      0,              0,             1;
+                Ry << std::cos(pitch),  0, std::sin(pitch),
+                      0,                1, 0,
+                      -std::sin(pitch), 0, std::cos(pitch);
+                Rx << 1, 0,              0,
+                      0, std::cos(roll), -std::sin(roll),
+                      0, std::sin(roll),  std::cos(roll);
+                Eigen::Matrix3d gt_dcm_AB = Rz * Ry * Rx;
+
+                // Ground truth translation (origin of frame B expressed in frame A)
+                Eigen::Vector3d gt_B_origin_A(1.5, -0.8, 2.3);
+
+                // Ground truth scale
+                double gt_scale = 2.5;
+
+                // Create ground truth keypoints in frame B (8 points forming a cube)
+                std::vector<Eigen::Vector3d> gt_keypoints_B = {
+                    {0.0, 0.0, 0.0},
+                    {1.0, 0.0, 0.0},
+                    {0.0, 1.0, 0.0},
+                    {1.0, 1.0, 0.0},
+                    {0.0, 0.0, 1.0},
+                    {1.0, 0.0, 1.0},
+                    {0.0, 1.0, 1.0},
+                    {1.0, 1.0, 1.0}
+                };
+
+                // Transform keypoints from frame B to frame A using ground truth transform
+                // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
+                std::vector<Eigen::Vector3d> gt_keypoints_A;
+                for (const auto& pt_B : gt_keypoints_B) {
+                    Eigen::Vector3d pt_A = gt_scale * gt_dcm_AB * pt_B - gt_B_origin_A;
+                    gt_keypoints_A.push_back(pt_A);
+                }
+
+                // Add Gaussian noise to keypoints (both frame A and frame B)
+                std::random_device rd;
+                std::mt19937 gen(42);  // Fixed seed for reproducibility
+                std::normal_distribution<double> noise(0.0, 0.05);  // 5cm standard deviation
+
+                std::vector<Eigen::Vector3d> noisy_keypoints_A;
+                std::vector<Eigen::Vector3d> noisy_keypoints_B;
+
+                for (size_t i = 0; i < gt_keypoints_A.size(); ++i) {
+                    Eigen::Vector3d noisy_A = gt_keypoints_A[i];
+                    Eigen::Vector3d noisy_B = gt_keypoints_B[i];
+
+                    for (int j = 0; j < 3; ++j) {
+                        noisy_A(j) += noise(gen);
+                        noisy_B(j) += noise(gen);
+                    }
+
+                    noisy_keypoints_A.push_back(noisy_A);
+                    noisy_keypoints_B.push_back(noisy_B);
+                }
+
+                // Create landmark variables for keypoints (held constant - these are measurements)
+                std::vector<std::shared_ptr<LandmarkVariable>> landmarks_A;
+                std::vector<std::shared_ptr<LandmarkVariable>> landmarks_B;
+
+                for (size_t i = 0; i < noisy_keypoints_A.size(); ++i) {
+                    auto lm_A = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_A[i]);
+                    lm_A->set_constant(true);
+                    landmarks_A.push_back(lm_A);
+                    graph.add_variable(lm_A);
+
+                    auto lm_B = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_B[i]);
+                    lm_B->set_constant(true);
+                    landmarks_B.push_back(lm_B);
+                    graph.add_variable(lm_B);
+                }
+
+                // Create transform parameter variables with initial guesses (slightly wrong)
+                // Rotation: start with identity rotation
+                Eigen::Matrix3d initial_dcm = Eigen::Matrix3d::Identity();
+                auto rot_AB = std::make_shared<RotationVariable>(var_id++, initial_dcm);
+                graph.add_variable(rot_AB);
+
+                // Translation: start with zero translation
+                Eigen::Vector3d initial_B_origin_A(0.0, 0.0, 0.0);
+                auto B_origin_A = std::make_shared<GenericVariable>(var_id++, initial_B_origin_A);
+                graph.add_variable(B_origin_A);
+
+                // Scale: start with unit scale
+                Eigen::VectorXd initial_scale(1);
+                initial_scale << 1.0;
+                auto scale_AB = std::make_shared<GenericVariable>(var_id++, initial_scale);
+                graph.add_variable(scale_AB);
+
+                // Add CoordinateTransformFactor for each keypoint correspondence
+                double sigma = 0.1;  // Match the noise level we added
+                for (size_t i = 0; i < landmarks_A.size(); ++i) {
+                    auto transform_factor = std::make_shared<CoordinateTransformFactor>(
+                        factor_id++,
+                        rot_AB.get(),
+                        B_origin_A.get(),
+                        scale_AB.get(),
+                        landmarks_A[i].get(),
+                        landmarks_B[i].get(),
+                        sigma);
+                    graph.add_factor(transform_factor);
+                }
+
+                return graph;
+            },
+            settings18,
+            false, 1e-6, true
+        });
+    }
+
     // Run all scenarios
     int passed = 0;
     int total = scenarios.size();
@@ -837,4 +972,195 @@ TEST_CASE("Consolidated Integration Tests")
     std::cout << "\n=== FINAL SUMMARY ===" << std::endl;
     std::cout << "Scenarios passed: " << passed << "/" << total << std::endl;
     std::cout << "All integration tests completed successfully!" << std::endl;
+}
+
+TEST_CASE("CoordinateTransformFactor: Integration test with ground truth comparison")
+{
+    std::cout << "\n=== CoordinateTransformFactor Integration Test ===" << std::endl;
+
+    FactorGraph graph;
+    int var_id = 0;
+    int factor_id = 0;
+
+    // Ground truth transform parameters (Frame B to Frame A)
+    // Non-trivial rotation: 45 degrees around Z, 30 degrees around Y, 15 degrees around X
+    double gt_roll = 15.0 * PI / 180.0;
+    double gt_pitch = 30.0 * PI / 180.0;
+    double gt_yaw = 45.0 * PI / 180.0;
+
+    // Build rotation matrix using ZYX Euler angles
+    Eigen::Matrix3d Rz, Ry, Rx;
+    Rz << std::cos(gt_yaw), -std::sin(gt_yaw), 0,
+          std::sin(gt_yaw),  std::cos(gt_yaw), 0,
+          0,                 0,                1;
+    Ry << std::cos(gt_pitch),  0, std::sin(gt_pitch),
+          0,                   1, 0,
+          -std::sin(gt_pitch), 0, std::cos(gt_pitch);
+    Rx << 1, 0,                 0,
+          0, std::cos(gt_roll), -std::sin(gt_roll),
+          0, std::sin(gt_roll),  std::cos(gt_roll);
+    Eigen::Matrix3d gt_dcm_AB = Rz * Ry * Rx;
+
+    // Ground truth translation (origin of frame B expressed in frame A)
+    Eigen::Vector3d gt_B_origin_A(2.5, -1.2, 3.7);
+
+    // Ground truth scale
+    double gt_scale = 3.0;
+
+    std::cout << "Ground truth transform:" << std::endl;
+    std::cout << "  Rotation (roll, pitch, yaw): " << gt_roll * 180.0 / PI << ", "
+              << gt_pitch * 180.0 / PI << ", " << gt_yaw * 180.0 / PI << " degrees" << std::endl;
+    std::cout << "  Translation B_origin_A: " << gt_B_origin_A.transpose() << std::endl;
+    std::cout << "  Scale: " << gt_scale << std::endl;
+
+    // Create ground truth keypoints in frame B (10 points forming a distributed cloud)
+    std::vector<Eigen::Vector3d> gt_keypoints_B = {
+        {0.0, 0.0, 0.0},
+        {1.0, 0.0, 0.0},
+        {0.0, 1.0, 0.0},
+        {0.0, 0.0, 1.0},
+        {1.0, 1.0, 0.0},
+        {1.0, 0.0, 1.0},
+        {0.0, 1.0, 1.0},
+        {1.0, 1.0, 1.0},
+        {0.5, 0.5, 0.5},
+        {0.3, 0.7, 0.2}
+    };
+
+    // Transform keypoints from frame B to frame A using ground truth transform
+    // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
+    std::vector<Eigen::Vector3d> gt_keypoints_A;
+    for (const auto& pt_B : gt_keypoints_B) {
+        Eigen::Vector3d pt_A = gt_scale * gt_dcm_AB * pt_B - gt_B_origin_A;
+        gt_keypoints_A.push_back(pt_A);
+    }
+
+    // Add Gaussian noise to keypoints (both frame A and frame B)
+    std::random_device rd;
+    std::mt19937 gen(123);  // Fixed seed for reproducibility
+    std::normal_distribution<double> noise(0.0, 0.03);  // 3cm standard deviation
+
+    std::vector<Eigen::Vector3d> noisy_keypoints_A;
+    std::vector<Eigen::Vector3d> noisy_keypoints_B;
+
+    for (size_t i = 0; i < gt_keypoints_A.size(); ++i) {
+        Eigen::Vector3d noisy_A = gt_keypoints_A[i];
+        Eigen::Vector3d noisy_B = gt_keypoints_B[i];
+
+        for (int j = 0; j < 3; ++j) {
+            noisy_A(j) += noise(gen);
+            noisy_B(j) += noise(gen);
+        }
+
+        noisy_keypoints_A.push_back(noisy_A);
+        noisy_keypoints_B.push_back(noisy_B);
+    }
+
+    // Create landmark variables for keypoints (held constant - these are measurements)
+    std::vector<std::shared_ptr<LandmarkVariable>> landmarks_A;
+    std::vector<std::shared_ptr<LandmarkVariable>> landmarks_B;
+
+    for (size_t i = 0; i < noisy_keypoints_A.size(); ++i) {
+        auto lm_A = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_A[i]);
+        lm_A->set_constant(true);
+        landmarks_A.push_back(lm_A);
+        graph.add_variable(lm_A);
+
+        auto lm_B = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_B[i]);
+        lm_B->set_constant(true);
+        landmarks_B.push_back(lm_B);
+        graph.add_variable(lm_B);
+    }
+
+    // Create transform parameter variables with initial guesses (identity/zero/unit)
+    // Rotation: start with identity rotation
+    Eigen::Matrix3d initial_dcm = Eigen::Matrix3d::Identity();
+    auto rot_AB = std::make_shared<RotationVariable>(var_id++, initial_dcm);
+    graph.add_variable(rot_AB);
+
+    // Translation: start with zero translation
+    Eigen::Vector3d initial_B_origin_A(0.0, 0.0, 0.0);
+    auto B_origin_A = std::make_shared<GenericVariable>(var_id++, initial_B_origin_A);
+    graph.add_variable(B_origin_A);
+
+    // Scale: start with unit scale
+    Eigen::VectorXd initial_scale(1);
+    initial_scale << 1.0;
+    auto scale_AB = std::make_shared<GenericVariable>(var_id++, initial_scale);
+    graph.add_variable(scale_AB);
+
+    std::cout << "\nInitial guesses:" << std::endl;
+    std::cout << "  Rotation DCM:\n" << rot_AB->rotation() << std::endl;
+    std::cout << "  Translation: " << B_origin_A->value().transpose() << std::endl;
+    std::cout << "  Scale: " << scale_AB->value()[0] << std::endl;
+
+    // Add CoordinateTransformFactor for each keypoint correspondence
+    double sigma = 0.05;  // Slightly larger than noise to account for uncertainty
+    for (size_t i = 0; i < landmarks_A.size(); ++i) {
+        auto transform_factor = std::make_shared<CoordinateTransformFactor>(
+            factor_id++,
+            rot_AB.get(),
+            B_origin_A.get(),
+            scale_AB.get(),
+            landmarks_A[i].get(),
+            landmarks_B[i].get(),
+            sigma);
+        graph.add_factor(transform_factor);
+    }
+
+    // Finalize and optimize
+    graph.finalize_structure();
+
+    std::cout << "\nInitial residual norm: " << graph.compute_full_residual_vector().norm() << std::endl;
+
+    // Create optimizer
+    OptimizerSettings settings;
+    settings.method = OptimizerMethod::LevenbergMarquardt;
+    settings.verbose = true;
+    settings.max_num_iterations = 100;
+    settings.step_tolerance = 1e-8;
+    settings.residual_tolerance = 1e-8;
+
+    SparseOptimizer optimizer;
+    optimizer.setup(std::make_shared<FactorGraph>(graph), settings);
+    optimizer.optimize();
+
+    // Check optimization succeeded
+    REQUIRE(optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+    REQUIRE(optimizer.current_stats_.valid == true);
+
+    std::cout << "\nFinal residual norm: " << optimizer.current_stats_.residual_norm << std::endl;
+
+    // Extract optimized transform parameters
+    Eigen::Matrix3d est_dcm_AB = rot_AB->rotation();
+    Eigen::Vector3d est_B_origin_A = B_origin_A->value();
+    double est_scale = scale_AB->value()[0];
+
+    std::cout << "\nOptimized transform:" << std::endl;
+    std::cout << "  Rotation DCM:\n" << est_dcm_AB << std::endl;
+    std::cout << "  Translation B_origin_A: " << est_B_origin_A.transpose() << std::endl;
+    std::cout << "  Scale: " << est_scale << std::endl;
+
+    // Compute errors
+    // Rotation error: use Frobenius norm of difference
+    double rotation_error = (est_dcm_AB - gt_dcm_AB).norm();
+
+    // Translation error: Euclidean distance
+    double translation_error = (est_B_origin_A - gt_B_origin_A).norm();
+
+    // Scale error: absolute difference
+    double scale_error = std::abs(est_scale - gt_scale);
+
+    std::cout << "\nEstimation errors:" << std::endl;
+    std::cout << "  Rotation error (Frobenius norm): " << rotation_error << std::endl;
+    std::cout << "  Translation error (L2 norm): " << translation_error << std::endl;
+    std::cout << "  Scale error (absolute): " << scale_error << std::endl;
+
+    // Validate results - errors should be small given the noise level
+    // With 3cm noise on keypoints, we expect sub-cm translation error and sub-degree rotation error
+    REQUIRE(rotation_error < 0.1);  // DCM Frobenius norm < 0.1 corresponds to ~3 degrees
+    REQUIRE(translation_error < 0.2);  // Translation error < 20cm
+    REQUIRE(scale_error < 0.1);  // Scale error < 0.1 (3% of gt_scale=3.0)
+
+    std::cout << "\n=== Test PASSED ===" << std::endl;
 }

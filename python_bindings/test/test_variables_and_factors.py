@@ -580,6 +580,100 @@ def test_2d_slam_with_bearing_and_range_bearing():
         assert angle_diff < 0.02  # ~1 degree
 
 
+def test_coordinate_transform_factor():
+    """Test CoordinateTransformFactor creation and optimization"""
+    # Simple scenario: transform landmark from frame B to frame A
+    # Transformation: vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
+
+    graph = factorama.FactorGraph()
+    var_id = 0
+    factor_id = 0
+
+    # Ground truth transformation parameters
+    gt_scale = 2.0
+    gt_origin = np.array([1.0, 2.0, 3.0])  # B's origin in A
+    gt_dcm = np.eye(3)  # Identity rotation for simplicity
+
+    # A landmark in frame B
+    lm_B_value = np.array([1.0, 0.0, 0.0])
+    # Same landmark in frame A: vec_A = scale * dcm * vec_B - origin
+    lm_A_value = gt_scale * gt_dcm @ lm_B_value - gt_origin
+
+    # Create variables
+    rot_AB = factorama.RotationVariable(var_id, gt_dcm)
+    var_id += 1
+
+    B_origin_A = factorama.GenericVariable(var_id, gt_origin)
+    var_id += 1
+
+    scale_AB = factorama.GenericVariable(var_id, np.array([gt_scale]))
+    var_id += 1
+
+    lm_A = factorama.LandmarkVariable(var_id, lm_A_value)
+    var_id += 1
+
+    lm_B = factorama.LandmarkVariable(var_id, lm_B_value)
+    var_id += 1
+
+    # Make landmarks constant to over-constrain
+    lm_A.set_constant(True)
+    lm_B.set_constant(True)
+
+    # Add variables to graph
+    graph.add_variable(rot_AB)
+    graph.add_variable(B_origin_A)
+    graph.add_variable(scale_AB)
+    graph.add_variable(lm_A)
+    graph.add_variable(lm_B)
+
+    # Create coordinate transform factor
+    sigma = 0.1
+    factor = factorama.CoordinateTransformFactor(
+        factor_id, rot_AB, B_origin_A, scale_AB, lm_A, lm_B, sigma)
+    factor_id += 1
+    graph.add_factor(factor)
+
+    # Add priors on transformation variables (slightly off ground truth)
+    rot_prior = factorama.RotationPriorFactor(
+        factor_id, rot_AB, gt_dcm, 0.1)
+    factor_id += 1
+    graph.add_factor(rot_prior)
+
+    origin_prior = factorama.GenericPriorFactor(
+        factor_id, B_origin_A, gt_origin, 0.5)
+    factor_id += 1
+    graph.add_factor(origin_prior)
+
+    scale_prior = factorama.GenericPriorFactor(
+        factor_id, scale_AB, np.array([gt_scale]), 0.5)
+    factor_id += 1
+    graph.add_factor(scale_prior)
+
+    # Check factor properties
+    assert factor.residual_size() == 3
+    assert factor.type() == factorama.FactorType.custom
+    assert len(factor.variables()) == 5
+
+    # Finalize and optimize
+    graph.finalize_structure()
+
+    optimizer = factorama.SparseOptimizer()
+    settings = factorama.OptimizerSettings()
+    settings.method = factorama.OptimizerMethod.LevenbergMarquardt
+    settings.max_num_iterations = 20
+    settings.verbose = False
+
+    optimizer.setup(graph, settings)
+    optimizer.optimize()
+
+    # Check convergence
+    assert optimizer.current_stats.status == factorama.OptimizerStatus.SUCCESS
+
+    # Residual should be near zero since we used ground truth values
+    residual = factor.compute_residual()
+    assert np.linalg.norm(residual) < 0.1
+
+
 def test_2d_between_factor_with_local_frame():
     """Test 2D between factor with local_frame=True parameter"""
     # Create a simple scenario: 3 poses moving along a path
@@ -729,6 +823,7 @@ if __name__ == "__main__":
     test_bearing_projection_factor_2d()
     test_factor_graph_with_variables()
     test_factor_graph_with_factors()
+    test_coordinate_transform_factor()
     test_2d_slam_with_bearing_and_range_bearing()
     test_2d_between_factor_with_local_frame()
     print("All tests passed!")

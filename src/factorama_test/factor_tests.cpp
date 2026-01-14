@@ -20,6 +20,7 @@
 #include "factorama/bearing_observation_factor.hpp"
 #include "factorama/bearing_observation_factor_2d.hpp"
 #include "factorama/bearing_projection_factor_2d.hpp"
+#include "factorama/coordinate_transform_factor.hpp"
 #include "factorama/generic_between_factor.hpp"
 #include "factorama/generic_prior_factor.hpp"
 #include "factorama/inverse_range_bearing_factor.hpp"
@@ -2927,5 +2928,115 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
             INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
+    }
+}
+
+TEST_CASE("CoordinateTransformFactor: dimensions and residual with identity transform")
+{
+    // Setup: Identity transform case
+    // If rot_AB is identity, scale is 1.0, and B_origin_A is zero,
+    // then lm_A should equal lm_B for zero residual
+
+    Eigen::Matrix3d dcm_AB = Eigen::Matrix3d::Identity();
+    auto rot_AB = std::make_shared<RotationVariable>(0, dcm_AB);
+
+    Eigen::Vector3d origin(0.0, 0.0, 0.0);
+    auto B_origin_A = std::make_shared<GenericVariable>(1, origin);
+
+    Eigen::VectorXd scale(1);
+    scale << 1.0;
+    auto scale_AB = std::make_shared<GenericVariable>(2, scale);
+
+    Eigen::Vector3d landmark_pos(1.0, 2.0, 3.0);
+    auto lm_A = std::make_shared<LandmarkVariable>(3, landmark_pos);
+    auto lm_B = std::make_shared<LandmarkVariable>(4, landmark_pos);
+
+    double sigma = 1.0;
+    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(),
+                                     scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
+
+    SECTION("Residual dimension is correct")
+    {
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(residual.size() == 3);
+    }
+
+    SECTION("Jacobian dimensions are correct")
+    {
+        std::vector<Eigen::MatrixXd> jacobians;
+        factor.compute_jacobians(jacobians);
+        REQUIRE(jacobians.size() == 5);
+        REQUIRE(jacobians[0].rows() == 3); // w.r.t rot_AB (3 DOF)
+        REQUIRE(jacobians[0].cols() == 3);
+        REQUIRE(jacobians[1].rows() == 3); // w.r.t B_origin_A (3 DOF)
+        REQUIRE(jacobians[1].cols() == 3);
+        REQUIRE(jacobians[2].rows() == 3); // w.r.t scale_AB (1 DOF)
+        REQUIRE(jacobians[2].cols() == 1);
+        REQUIRE(jacobians[3].rows() == 3); // w.r.t lm_A (3 DOF)
+        REQUIRE(jacobians[3].cols() == 3);
+        REQUIRE(jacobians[4].rows() == 3); // w.r.t lm_B (3 DOF)
+        REQUIRE(jacobians[4].cols() == 3);
+    }
+
+    SECTION("Residual is zero for identity transform")
+    {
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(residual.norm() < 1e-9);
+    }
+}
+
+TEST_CASE("CoordinateTransformFactor: non-trivial transform")
+{
+    // Setup: Transform with rotation, translation, and scaling
+    // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
+
+    // Create a 90-degree rotation around Z axis
+    Eigen::Matrix3d dcm_AB;
+    dcm_AB << 0, -1, 0,
+              1,  0, 0,
+              0,  0, 1;
+    auto rot_AB = std::make_shared<RotationVariable>(0, dcm_AB);
+
+    Eigen::Vector3d origin(1.0, 2.0, 0.5);
+    auto B_origin_A = std::make_shared<GenericVariable>(1, origin);
+
+    Eigen::VectorXd scale(1);
+    scale << 2.0;  // 2x scale
+    auto scale_AB = std::make_shared<GenericVariable>(2, scale);
+
+    // Landmark in frame B
+    Eigen::Vector3d lm_B_pos(1.0, 0.0, 0.5);
+    auto lm_B = std::make_shared<LandmarkVariable>(4, lm_B_pos);
+
+    // Compute expected landmark in frame A
+    // vec_A = 2.0 * dcm_AB * [1, 0, 0.5] - [1, 2, 0.5]
+    // vec_A = 2.0 * [0, 1, 0.5] - [1, 2, 0.5] = [0, 2, 1] - [1, 2, 0.5] = [-1, 0, 0.5]
+    Eigen::Vector3d lm_A_expected = 2.0 * dcm_AB * lm_B_pos - origin;
+    auto lm_A = std::make_shared<LandmarkVariable>(3, lm_A_expected);
+
+    double sigma = 0.5;
+    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(),
+                                     scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
+
+    SECTION("Residual is zero when transform is satisfied")
+    {
+        Eigen::VectorXd residual = factor.compute_residual();
+        REQUIRE(residual.norm() < 1e-9);
+    }
+
+    SECTION("Residual is non-zero when landmark positions mismatch")
+    {
+        // Perturb lm_A slightly
+        Eigen::Vector3d lm_A_wrong = lm_A_expected + Eigen::Vector3d(0.1, 0.2, 0.05);
+        lm_A->set_pos_W(lm_A_wrong);
+
+        Eigen::VectorXd residual = factor.compute_residual();
+
+        // Residual should be weighted difference
+        Eigen::Vector3d expected_residual = (1.0 / sigma) * Eigen::Vector3d(0.1, 0.2, 0.05);
+        REQUIRE(residual.isApprox(expected_residual, 1e-9));
+
+        // Restore original value
+        lm_A->set_pos_W(lm_A_expected);
     }
 }

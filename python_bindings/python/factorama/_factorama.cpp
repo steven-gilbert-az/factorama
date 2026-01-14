@@ -40,6 +40,7 @@
 #include <factorama/bearing_projection_factor_2d.hpp>
 #include <factorama/plane_factor.hpp>
 #include <factorama/plane_prior_factor.hpp>
+#include <factorama/coordinate_transform_factor.hpp>
 #include <factorama/random_utils.hpp>
 
 namespace py = pybind11;
@@ -73,7 +74,8 @@ PYBIND11_MODULE(_factorama, m) {
         .value("bearing_observation_2d", factorama::FactorType::bearing_observation_2d)
         .value("range_bearing_2d", factorama::FactorType::range_bearing_2d)
         .value("pose_2d_prior", factorama::FactorType::pose_2d_prior)
-        .value("pose_2d_between", factorama::FactorType::pose_2d_between);
+        .value("pose_2d_between", factorama::FactorType::pose_2d_between)
+        .value("custom", factorama::FactorType::custom);
 
     // Bind base classes
     py::class_<factorama::Variable, std::shared_ptr<factorama::Variable>>(m, "Variable", DOC(factorama, Variable))
@@ -91,7 +93,7 @@ PYBIND11_MODULE(_factorama, m) {
     py::class_<factorama::Factor, std::shared_ptr<factorama::Factor>>(m, "Factor")
         .def("id", &factorama::Factor::id)
         .def("residual_size", &factorama::Factor::residual_size)
-        .def("compute_residual", &factorama::Factor::compute_residual)
+        .def("compute_residual", py::overload_cast<>(&factorama::Factor::compute_residual, py::const_))
         .def("variables", &factorama::Factor::variables)
         .def("name", &factorama::Factor::name)
         .def("type", &factorama::Factor::type);
@@ -264,6 +266,16 @@ PYBIND11_MODULE(_factorama, m) {
              py::arg("id"), py::arg("pose_a"), py::arg("pose_b"), py::arg("measured_between_variable"),
              py::arg("position_sigma"), py::arg("angle_sigma"), py::arg("local_frame") = false);
 
+    py::class_<factorama::CoordinateTransformFactor, std::shared_ptr<factorama::CoordinateTransformFactor>, factorama::Factor>(m, "CoordinateTransformFactor")
+        .def(py::init<int, factorama::RotationVariable*, factorama::GenericVariable*,
+                      factorama::GenericVariable*, factorama::LandmarkVariable*,
+                      factorama::LandmarkVariable*, double>(),
+             "Create a CoordinateTransformFactor",
+             py::arg("id"), py::arg("rot_AB"), py::arg("B_origin_A"),
+             py::arg("scale_AB"), py::arg("lm_A"), py::arg("lm_B"),
+             py::arg("sigma") = 1.0)
+        .def("weight", &factorama::CoordinateTransformFactor::weight);
+
     // Optimizer enums and settings
     py::enum_<factorama::OptimizerMethod>(m, "OptimizerMethod")
         .value("GaussNewton", factorama::OptimizerMethod::GaussNewton)
@@ -308,7 +320,8 @@ PYBIND11_MODULE(_factorama, m) {
         .def("add_variable", &factorama::FactorGraph::add_variable)
         .def("add_factor", &factorama::FactorGraph::add_factor)
         .def("finalize_structure", &factorama::FactorGraph::finalize_structure)
-        .def("compute_full_residual_vector", &factorama::FactorGraph::compute_full_residual_vector,
+        .def("compute_full_residual_vector",
+             py::overload_cast<>(&factorama::FactorGraph::compute_full_residual_vector),
              py::return_value_policy::reference)
         .def("compute_full_jacobian_matrix", &factorama::FactorGraph::compute_full_jacobian_matrix,
              py::return_value_policy::reference)
