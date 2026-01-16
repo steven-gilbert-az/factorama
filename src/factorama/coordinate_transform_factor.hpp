@@ -107,17 +107,20 @@ namespace factorama
         {
             // Use numerical jacobians for now
             // Note: ComputeNumericalJacobians restores all variable values after computation
-            ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
+            //ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
 
-        
-            // Check/assert the computed jacobians are the correct dimensionality
-            if(rot_AB_->is_constant()) {
-                assert(jacobians[0].rows() == 0);
-                assert(jacobians[0].cols() == 0)
-            } 
-            else {
-                
-            }
+
+            //compute_analytical_jacobians(jacobians);
+            compute_numerical_jacobians(jacobians);
+        }
+
+        void compute_numerical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
+            ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
+        }
+
+        void compute_analytical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
+            // TODO: implement
+            (void)jacobians;
         }
 
         std::vector<Variable*> variables() override
