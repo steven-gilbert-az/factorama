@@ -87,8 +87,8 @@ namespace factorama
             }
             else
             {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
-                    jacobians[0].resize(size_, 6);
+                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+                    jacobians[0].resize(size_, 3);
                 }
                 jacobians[0].setZero();
 
@@ -101,7 +101,7 @@ namespace factorama
 
                 // Compute inverse right Jacobian Jr_inv of the error rotation
                 Eigen::Matrix3d Jr_inv = compute_inverse_right_jacobian_so3(rotvec_error);
-                jacobians[0].block<3, 3>(0, 3) = weight_ * Jr_inv;
+                jacobians[0].block<3, 3>(0, 0) = weight_ * Jr_inv;
             }
         }
 
@@ -118,7 +118,7 @@ namespace factorama
 
         std::string name() const override
         {
-            return "PoseOrientationPriorFactor" + std::to_string(id()) + "(" + rotation_->name() + ")";
+            return "RotationPriorFactor" + std::to_string(id()) + "(" + rotation_->name() + ")";
         }
 
         FactorType::FactorTypeEnum type() const override

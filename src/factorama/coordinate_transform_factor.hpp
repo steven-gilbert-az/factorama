@@ -108,6 +108,16 @@ namespace factorama
             // Use numerical jacobians for now
             // Note: ComputeNumericalJacobians restores all variable values after computation
             ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
+
+        
+            // Check/assert the computed jacobians are the correct dimensionality
+            if(rot_AB_->is_constant()) {
+                assert(jacobians[0].rows() == 0);
+                assert(jacobians[0].cols() == 0)
+            } 
+            else {
+                
+            }
         }
 
         std::vector<Variable*> variables() override
