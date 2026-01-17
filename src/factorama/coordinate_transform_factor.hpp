@@ -71,20 +71,9 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override
         {
-            // Transform lm_B into frame A
-            const Eigen::Matrix3d& dcm_AB = rot_AB_->rotation();
-            double scale = scale_AB_->value()[0];
-            const Eigen::Vector3d& lm_B = lm_B_->value();
-            const Eigen::Vector3d& B_origin_A = B_origin_A_->value();
-            const Eigen::Vector3d& lm_A = lm_A_->value();
-
-            // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
-            Eigen::Vector3d lm_A_predicted = scale * dcm_AB * lm_B - B_origin_A;
-
-            // Residual is the difference between actual and predicted
-            Eigen::Vector3d residual = lm_A - lm_A_predicted;
-
-            return weight_ * residual;
+            Eigen::VectorXd result;
+            compute_residual(result);
+            return result;
         }
 
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
