@@ -231,7 +231,10 @@ namespace factorama
 
                 if (Ji.cols() != var_placement.dim)
                 {
-                    throw std::runtime_error("FactorGraph: Jacobian column mismatch. factor " + factor->name() + ", var " + var->name());
+
+                    throw std::runtime_error("FactorGraph: Jacobian column mismatch. Expected: " + std::to_string(var_placement.dim) + 
+                                 ", actual: " + std::to_string(Ji.cols()) + 
+                                 "factor " + factor->name() + ", var " + var->name());
                 }
 
                 cached_jacobian_.block(row_offset, col_offset, Ji.rows(), Ji.cols()) = Ji;

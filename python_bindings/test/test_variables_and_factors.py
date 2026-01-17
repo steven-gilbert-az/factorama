@@ -603,10 +603,10 @@ def test_coordinate_transform_factor():
     rot_AB = factorama.RotationVariable(var_id, gt_dcm)
     var_id += 1
 
-    B_origin_A = factorama.GenericVariable(var_id, gt_origin)
+    B_origin_A = factorama.GenericVariable(var_id, gt_origin + 0.2)
     var_id += 1
 
-    scale_AB = factorama.GenericVariable(var_id, np.array([gt_scale]))
+    scale_AB = factorama.GenericVariable(var_id, np.array([gt_scale + 0.2]))
     var_id += 1
 
     lm_A = factorama.LandmarkVariable(var_id, lm_A_value)
@@ -640,12 +640,12 @@ def test_coordinate_transform_factor():
     graph.add_factor(rot_prior)
 
     origin_prior = factorama.GenericPriorFactor(
-        factor_id, B_origin_A, gt_origin, 0.5)
+        factor_id, B_origin_A, gt_origin + 0.05, 0.5)
     factor_id += 1
     graph.add_factor(origin_prior)
 
     scale_prior = factorama.GenericPriorFactor(
-        factor_id, scale_AB, np.array([gt_scale]), 0.5)
+        factor_id, scale_AB, np.array([gt_scale + 0.05]), 0.5)
     factor_id += 1
     graph.add_factor(scale_prior)
 
@@ -657,11 +657,20 @@ def test_coordinate_transform_factor():
     # Finalize and optimize
     graph.finalize_structure()
 
+    # # Get the jacobian structure
+    # jacobian = graph.compute_sparse_jacobian_matrix()
+    # print("Jacobian shape: ")
+    # print(jacobian.shape)
+
+    graph.print_structure()
+    graph.print_variables()
+    graph.print_jacobian_and_residual(True)
+
     optimizer = factorama.SparseOptimizer()
     settings = factorama.OptimizerSettings()
     settings.method = factorama.OptimizerMethod.LevenbergMarquardt
     settings.max_num_iterations = 20
-    settings.verbose = False
+    settings.verbose = True
 
     optimizer.setup(graph, settings)
     optimizer.optimize()
@@ -758,6 +767,9 @@ def test_2d_between_factor_with_local_frame():
 
     # Finalize and optimize
     graph.finalize_structure()
+
+
+
 
     # Check graph structure
     assert graph.num_variables() == 5  # 3 poses + 2 between measurements
