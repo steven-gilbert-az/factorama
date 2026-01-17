@@ -3,15 +3,12 @@
 
 namespace factorama
 {
-    Pose2DPriorFactor::Pose2DPriorFactor(int id,
-                                         Pose2DVariable* pose_var,
-                                         const Eigen::Vector3d& pose_prior,
-                                         double position_sigma,
-                                         double angle_sigma)
-        : pose_var_(pose_var),
-          pose_prior_(pose_prior),
-          position_weight_(1.0 / position_sigma),
-          angle_weight_(1.0 / angle_sigma)
+    Pose2DPriorFactor::Pose2DPriorFactor(int id, Pose2DVariable *pose_var, const Eigen::Vector3d& pose_prior,
+                                         double position_sigma, double angle_sigma)
+        : pose_var_(pose_var)
+        , pose_prior_(pose_prior)
+        , position_weight_(1.0 / position_sigma)
+        , angle_weight_(1.0 / angle_sigma)
     {
         id_ = id;
         assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -29,7 +26,7 @@ namespace factorama
 
         // Angle residual (weighted and wrapped to handle ±π discontinuity)
         double angle_error = pose_var_->theta() - pose_prior_(2);
-        angle_error = wrap_angle(angle_error);  // Critical: wrap to [-π, π]
+        angle_error = wrap_angle(angle_error); // Critical: wrap to [-π, π]
         res(2) = angle_weight_ * angle_error;
 
         return res;
@@ -45,28 +42,24 @@ namespace factorama
 
         // Angle residual (weighted and wrapped to handle ±π discontinuity)
         double angle_error = pose_var_->theta() - pose_prior_(2);
-        angle_error = wrap_angle(angle_error);  // Critical: wrap to [-π, π]
+        angle_error = wrap_angle(angle_error); // Critical: wrap to [-π, π]
         result(2) = angle_weight_ * angle_error;
     }
 
     void Pose2DPriorFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
         // Ensure jacobians vector has correct size for 1 variable
-        if(jacobians.size() == 0) {
+        if (jacobians.size() == 0) {
             jacobians.resize(1);
-        }
-        else if(jacobians.size() != 1) {
+        } else if (jacobians.size() != 1) {
             jacobians.clear();
             jacobians.resize(1);
         }
 
-        if (pose_var_->is_constant())
-        {
+        if (pose_var_->is_constant()) {
             jacobians[0] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+        } else {
+            if (jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
                 jacobians[0].resize(size_, size_);
             }
             jacobians[0].setZero();

@@ -34,12 +34,8 @@ namespace factorama
          * @param bearing_angle_obs Observed bearing angle in pose frame (radians)
          * @param angle_sigma Standard deviation of angular measurement (radians)
          */
-        BearingObservationFactor2D(
-            int id,
-            Pose2DVariable* pose_var,
-            Variable* landmark_var,
-            double bearing_angle_obs,
-            double angle_sigma = 1.0);
+        BearingObservationFactor2D(int id, Pose2DVariable *pose_var, Variable *landmark_var, double bearing_angle_obs,
+                                   double angle_sigma = 1.0);
 
         int residual_size() const override { return size_; }
 
@@ -48,29 +44,22 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        std::vector<Variable*> variables() override
-        {
-            return {pose_var_, landmark_var_};
-        }
+        std::vector<Variable *> variables() override { return {pose_var_, landmark_var_}; }
 
         double weight() const { return weight_; }
 
         double bearing_angle_obs() const { return bearing_angle_obs_; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::bearing_observation_2d;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::bearing_observation_2d; }
 
         std::string name() const override
         {
-            return "BearingObservationFactor2D(" + pose_var_->name() + ", " +
-                   landmark_var_->name() + ")";
+            return "BearingObservationFactor2D(" + pose_var_->name() + ", " + landmark_var_->name() + ")";
         }
 
     private:
-        Pose2DVariable* pose_var_;
-        Variable* landmark_var_;
+        Pose2DVariable *pose_var_;
+        Variable *landmark_var_;
         double bearing_angle_obs_;
         double weight_;
         int size_ = 1;

@@ -11,18 +11,16 @@ namespace factorama
     {
     public:
         virtual ~ResidualKernel() = default;
-        
+
         /**
          * Apply robust weighting to residual vector.
          */
         virtual Eigen::VectorXd apply_to_residual(const Eigen::VectorXd& residual) = 0;
-        
+
         /**
          * Apply robust weighting to jacobians with proper chain rule.
          */
-        virtual void apply_to_jacobians(
-            const Eigen::VectorXd& residual,
-            std::vector<Eigen::MatrixXd>& jacobians) = 0;
+        virtual void apply_to_jacobians(const Eigen::VectorXd& residual, std::vector<Eigen::MatrixXd>& jacobians) = 0;
     };
 
     /**
@@ -35,8 +33,11 @@ namespace factorama
         double delta_;
 
     public:
-        explicit HuberKernel(double delta) : delta_(delta) {}
-        
+        explicit HuberKernel(double delta)
+            : delta_(delta)
+        {
+        }
+
         Eigen::VectorXd apply_to_residual(const Eigen::VectorXd& residual) override
         {
             double r_norm = residual.norm();
@@ -45,20 +46,18 @@ namespace factorama
             }
             return residual * std::sqrt(delta_ / r_norm);
         }
-        
-        void apply_to_jacobians(
-            const Eigen::VectorXd& residual,
-            std::vector<Eigen::MatrixXd>& jacobians) override
+
+        void apply_to_jacobians(const Eigen::VectorXd& residual, std::vector<Eigen::MatrixXd>& jacobians) override
         {
             double r_norm = residual.norm();
             if (r_norm <= delta_ || r_norm < 1e-12) {
                 return;
             }
-            
+
             // Chain rule: w * J_r + r * (w_deriv) * (r^T * J_r) / ||r||
             double w = std::sqrt(delta_ / r_norm);
             double w_deriv = -0.5 * delta_ / (r_norm * r_norm * r_norm);
-            
+
             for (auto& jac : jacobians) {
                 jac = w * jac + w_deriv * residual * (residual.transpose() * jac);
             }
@@ -69,7 +68,7 @@ namespace factorama
 
     /*
      * Example factor integration:
-     * 
+     *
      * virtual Eigen::VectorXd compute_weighted_residual() const {
      *     auto residual = compute_residual();
      *     if (kernel_) {
@@ -77,7 +76,7 @@ namespace factorama
      *     }
      *     return residual * std::sqrt(weight());
      * }
-     * 
+     *
      * virtual void compute_weighted_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
      *     auto residual = compute_residual();
      *     compute_jacobians(jacobians);
@@ -90,4 +89,4 @@ namespace factorama
      *     }
      * }
      */
-}
+} // namespace factorama

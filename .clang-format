@@ -1,0 +1,66 @@
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+NamespaceIndentation: All
+IndentCaseLabels: false
+AccessModifierOffset: -4
+
+# Braces - Attached style (Allman for functions, attached for control statements)
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: false
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  BeforeElse: false
+  BeforeCatch: false
+
+# Line length
+ColumnLimit: 120
+
+# Pointer/Reference alignment
+PointerAlignment: Right
+ReferenceAlignment: Left
+
+# Spaces
+SpaceBeforeParens: ControlStatementsExceptControlMacros
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+SpaceInEmptyBlock: false
+SpacesInParentheses: false
+SpacesInAngles: false
+SpaceBeforeRangeBasedForLoopColon: true
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: true
+AlignTrailingComments: true
+
+# Include sorting
+SortIncludes: false
+IncludeBlocks: Preserve
+
+# Other
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: true
+BinPackParameters: true
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 4
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+FixNamespaceComments: true
+MaxEmptyLinesToKeep: 2
+ReflowComments: true

@@ -15,8 +15,7 @@ namespace factorama
 
     void Pose2DVariable::set_value_from_vector(const Eigen::VectorXd& x)
     {
-        if (x.size() != 3)
-        {
+        if (x.size() != 3) {
             throw std::runtime_error("Pose2DVariable::set_value_from_vector(): size must be 3");
         }
         pose_2d_ = x;
@@ -26,17 +25,16 @@ namespace factorama
 
     void Pose2DVariable::apply_increment(const Eigen::VectorXd& dx)
     {
-        if (dx.size() != 3)
-        {
+        if (dx.size() != 3) {
             throw std::runtime_error("Pose2DVariable::apply_increment(): size must be 3");
         }
 
         // Translation: simple addition (Euclidean)
-        pose_2d_(0) += dx(0);  // x
-        pose_2d_(1) += dx(1);  // y
+        pose_2d_(0) += dx(0); // x
+        pose_2d_(1) += dx(1); // y
 
         // Rotation: additive with wrapping
-        pose_2d_(2) += dx(2);  // θ
+        pose_2d_(2) += dx(2); // θ
         pose_2d_(2) = wrap_angle(pose_2d_(2));
     }
 
@@ -50,8 +48,7 @@ namespace factorama
         double c = std::cos(pose_2d_(2));
         double s = std::sin(pose_2d_(2));
         Eigen::Matrix2d R;
-        R << c, -s,
-             s,  c;
+        R << c, -s, s, c;
         return R;
     }
 

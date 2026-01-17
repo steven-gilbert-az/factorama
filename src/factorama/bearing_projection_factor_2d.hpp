@@ -32,18 +32,15 @@ namespace factorama
          * @param sigma Standard deviation of angular measurement (radians)
          * @param along_tolerance_epsilon Tolerance for numerical stability
          */
-        BearingProjectionFactor2D(int id,
-                                  PoseVariable* pose,
-                                  LandmarkVariable* landmark,
-                                  const Eigen::Vector3d& bearing_C_observed,
-                                  double sigma = 1.0,
+        BearingProjectionFactor2D(int id, PoseVariable *pose, LandmarkVariable *landmark,
+                                  const Eigen::Vector3d& bearing_C_observed, double sigma = 1.0,
                                   double along_tolerance_epsilon = 1e-6)
-            : pose_(pose),
-              landmark_(landmark),
-              bearing_C_observed_(bearing_C_observed.normalized()),
-              weight_(1.0 / sigma),
-              reverse_depth_tolerance_(along_tolerance_epsilon),
-              size_(2)
+            : pose_(pose)
+            , landmark_(landmark)
+            , bearing_C_observed_(bearing_C_observed.normalized())
+            , weight_(1.0 / sigma)
+            , reverse_depth_tolerance_(along_tolerance_epsilon)
+            , size_(2)
         {
             id_ = id;
             assert(pose != nullptr && "pose cannot be nullptr");
@@ -53,37 +50,34 @@ namespace factorama
         }
 
         int residual_size() const override { return size_; }
-        
+
         double weight() const { return weight_; }
-        
-        std::string name() const override 
-        { 
-            return "BearingProjection2D_" + std::to_string(id()) +"(" + pose_->name() + "," + landmark_->name() + ")";
+
+        std::string name() const override
+        {
+            return "BearingProjection2D_" + std::to_string(id()) + "(" + pose_->name() + "," + landmark_->name() + ")";
         }
-        
-        FactorType::FactorTypeEnum type() const override 
-        { 
+
+        FactorType::FactorTypeEnum type() const override
+        {
             return FactorType::bearing_observation; // Using existing enum for now
         }
 
-        std::vector<Variable *> variables() override
-        {
-            return {pose_, landmark_};
-        }
+        std::vector<Variable *> variables() override { return {pose_, landmark_}; }
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
     private:
-        PoseVariable* pose_;
-        LandmarkVariable* landmark_;
-        Eigen::Vector3d bearing_C_observed_;                    // measurement bearing (unit)
-        Eigen::Matrix<double, 3, 2> T_;        // precomputed orthonormal basis (from k)
+        PoseVariable *pose_;
+        LandmarkVariable *landmark_;
+        Eigen::Vector3d bearing_C_observed_; // measurement bearing (unit)
+        Eigen::Matrix<double, 3, 2> T_;      // precomputed orthonormal basis (from k)
         double weight_;
-        double reverse_depth_tolerance_;                           // small guard for alpha
+        double reverse_depth_tolerance_; // small guard for alpha
         int size_;
 
-        void compute_tangent_basis();          // helper to compute T from k
+        void compute_tangent_basis(); // helper to compute T from k
     };
-}
+} // namespace factorama

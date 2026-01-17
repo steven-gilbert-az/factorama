@@ -20,11 +20,12 @@ namespace factorama
         int rank = -1;
     };
 
-    GaussNewtonStats run_sparse_gauss_newton_iteration(FactorGraph &graph, bool verbose = false, double learning_rate = 1.0)
+    GaussNewtonStats run_sparse_gauss_newton_iteration(FactorGraph& graph, bool verbose = false,
+                                                       double learning_rate = 1.0)
     {
         graph.compute_full_jacobian_and_residual();
-        const Eigen::MatrixXd &J_dense = graph.jacobian();
-        const Eigen::VectorXd &r = graph.residual();
+        const Eigen::MatrixXd& J_dense = graph.jacobian();
+        const Eigen::VectorXd& r = graph.residual();
 
         const double initial_residual_norm = r.norm();
         const double chi2 = r.squaredNorm();
@@ -41,8 +42,7 @@ namespace factorama
         solver.compute(H);
         Eigen::VectorXd dx = solver.solve(b) * learning_rate;
 
-        if (solver.info() != Eigen::Success)
-        {
+        if (solver.info() != Eigen::Success) {
             std::cerr << "[SparseGaussNewton] Warning: Solver failed or matrix may be singular.\n";
         }
 
@@ -51,16 +51,14 @@ namespace factorama
         const double dx_norm = dx.norm();
 
         // === Apply increments ===
-        const auto &variables = graph.get_all_variables();
-        for (const auto &var : variables)
-        {
+        const auto& variables = graph.get_all_variables();
+        for (const auto& var : variables) {
             if (var->is_constant())
                 continue;
 
             bool valid = false;
             auto placement = graph.variable_placement(var->id(), valid);
-            if (!valid)
-            {
+            if (!valid) {
                 std::cerr << "[SparseGaussNewton] Skipping variable id=" << var->id() << " (no placement)\n";
                 continue;
             }
@@ -73,28 +71,26 @@ namespace factorama
         auto r_opt = graph.compute_full_residual_vector();
         const double final_residual_norm = r_opt.norm();
 
-        if (verbose)
-        {
-            std::cout << "[SparseGaussNewton] chi²: " << chi2
-                      << " | ||dx||: " << dx_norm
+        if (verbose) {
+            std::cout << "[SparseGaussNewton] chi²: " << chi2 << " | ||dx||: " << dx_norm
                       << " | Initial residual norm: " << initial_residual_norm
                       << " | Final residual norm: " << final_residual_norm
                       << " | Δnorm: " << (initial_residual_norm - final_residual_norm) << "\n";
         }
 
         return GaussNewtonStats{
-            chi2,     // initial_chi2
-            dx_norm,  // dx_norm
-            -1        // rank - Eigen::SimplicialLDLT doesn't expose rank
+            chi2,    // initial_chi2
+            dx_norm, // dx_norm
+            -1       // rank - Eigen::SimplicialLDLT doesn't expose rank
         };
     }
 
-    GaussNewtonStats run_gauss_newton_iteration(FactorGraph &graph, bool verbose = false, double learning_rate = 1.0)
+    GaussNewtonStats run_gauss_newton_iteration(FactorGraph& graph, bool verbose = false, double learning_rate = 1.0)
     {
         // Step 1: Compute residual and Jacobian
         graph.compute_full_jacobian_and_residual();
-        const Eigen::MatrixXd &J = graph.jacobian();
-        const Eigen::VectorXd &r = graph.residual();
+        const Eigen::MatrixXd& J = graph.jacobian();
+        const Eigen::VectorXd& r = graph.residual();
 
         double initial_residual_norm = r.norm();
 
@@ -107,8 +103,7 @@ namespace factorama
         Eigen::FullPivLU<Eigen::MatrixXd> solver(H);
         dx = solver.solve(b) * learning_rate;
 
-        if (!solver.isInvertible())
-        {
+        if (!solver.isInvertible()) {
             std::cerr << "[GaussNewton] Warning: Hessian is rank deficient!\n";
         }
 
@@ -117,16 +112,14 @@ namespace factorama
         double dx_norm = dx.norm();
 
         // Step 4: Apply increment to each variable
-        const auto &variables = graph.get_all_variables();
-        for (const auto &var : variables)
-        {
+        const auto& variables = graph.get_all_variables();
+        for (const auto& var : variables) {
             if (var->is_constant())
                 continue;
 
             bool valid = false;
             VariablePlacement placement = graph.variable_placement(var->id(), valid);
-            if (!valid)
-            {
+            if (!valid) {
                 std::cerr << "[GaussNewton] Skipping variable id=" << var->id() << " (no placement found)\n";
                 continue;
             }
@@ -136,11 +129,8 @@ namespace factorama
         }
         auto r_opt = graph.compute_full_residual_vector();
         double final_residual_norm = r_opt.norm();
-        if (verbose)
-        {
-            std::cout << "[GaussNewton] chi²: " << chi2
-                      << " | ||dx||: " << dx_norm
-                      << " | rank: " << rank << "\n";
+        if (verbose) {
+            std::cout << "[GaussNewton] chi²: " << chi2 << " | ||dx||: " << dx_norm << " | rank: " << rank << "\n";
 
             std::cout << "[GaussNewton] Initial residual norm: " << initial_residual_norm
                       << " | Final residual norm: " << final_residual_norm << "\n";
@@ -148,27 +138,28 @@ namespace factorama
         }
 
         return GaussNewtonStats{
-            chi2,     // initial_chi2
-            dx_norm,  // dx_norm
-            rank      // rank
+            chi2,    // initial_chi2
+            dx_norm, // dx_norm
+            rank     // rank
         };
     }
 
-    GaussNewtonStats run_sparser_gauss_newton_iteration(FactorGraph &graph, bool verbose = false, double learning_rate = 1.0, bool check_rank_deficiency = false)
+    GaussNewtonStats run_sparser_gauss_newton_iteration(FactorGraph& graph, bool verbose = false,
+                                                        double learning_rate = 1.0, bool check_rank_deficiency = false)
     {
         // Step 1: Compute residual and sparse Jacobian
         auto t0 = GetMonotonicSeconds();
-        const Eigen::VectorXd &r = graph.compute_full_residual_vector();
-        const Eigen::SparseMatrix<double> &J = graph.compute_sparse_jacobian_matrix();
+        const Eigen::VectorXd& r = graph.compute_full_residual_vector();
+        const Eigen::SparseMatrix<double>& J = graph.compute_sparse_jacobian_matrix();
         auto t1 = GetMonotonicSeconds();
 
-        if (J.rows() < J.cols())
-        {
-            throw std::runtime_error("Sparse Gauss-Newton: Jacobian is not tall (rows < cols), which may lead to ill-posed normal equations.");
+        if (J.rows() < J.cols()) {
+            throw std::runtime_error("Sparse Gauss-Newton: Jacobian is not tall (rows < cols), which may lead to "
+                                     "ill-posed normal equations.");
         }
 
         double initial_residual_norm = r.norm();
- 
+
         // Step 2: Form normal equations
         auto t2 = GetMonotonicSeconds();
         const Eigen::SparseMatrix<double> H = J.transpose() * J; // Hessian approximation
@@ -176,8 +167,7 @@ namespace factorama
         const Eigen::VectorXd b = -J.transpose() * r; // RHS
         auto t4 = GetMonotonicSeconds();
 
-        if (verbose)
-        {
+        if (verbose) {
 
             bool verboser = false;
 
@@ -186,16 +176,12 @@ namespace factorama
 
             std::cout << "[J] dimensions: " << J.rows() << " x " << J.cols() << "\n";
             std::cout << "[J] Nonzeros: " << J.nonZeros() << "\n";
-            std::cout << "[J] Density: "
-                      << 100.0 * J.nonZeros() /
-                             (double(J.rows()) * J.cols())
-                      << " %\n";
+            std::cout << "[J] Density: " << 100.0 * J.nonZeros() / (double(J.rows()) * J.cols()) << " %\n";
 
 
-            if(verboser) {
+            if (verboser) {
                 Eigen::MatrixXd J_dense = Eigen::MatrixXd(J);
-                std::cout << "[J] Dense contents:\n"
-                        << J_dense << "\n";
+                std::cout << "[J] Dense contents:\n" << J_dense << "\n";
 
                 // Build the Hessian manually in verbose mode to get it printed
                 // Eigen::SparseMatrix<double> H(sparse_jacobian_.cols(), sparse_jacobian_.cols());
@@ -203,18 +189,13 @@ namespace factorama
 
                 std::cout << "\n[H] dimensions: " << H.rows() << " x " << H.cols() << "\n";
                 std::cout << "[H] Nonzeros: " << H.nonZeros() << "\n";
-                std::cout << "[H] Density: "
-                        << 100.0 * H.nonZeros() /
-                                (double(H.rows()) * H.cols())
-                        << " %\n";
+                std::cout << "[H] Density: " << 100.0 * H.nonZeros() / (double(H.rows()) * H.cols()) << " %\n";
 
                 Eigen::MatrixXd H_dense = Eigen::MatrixXd(H);
-                std::cout << "[H] Dense contents:\n"
-                        << H_dense << "\n";
+                std::cout << "[H] Dense contents:\n" << H_dense << "\n";
 
                 std::cout << "=============================================\n\n";
             }
-            
         }
 
         // Step 3: Solve H dx = b using sparse Cholesky
@@ -223,13 +204,12 @@ namespace factorama
         solver.compute(H);
         auto t5 = GetMonotonicSeconds();
 
-        if (check_rank_deficiency)
-        {
-            throw std::runtime_error("check_rank_deficiency=true not yet implemented for sparse solver. You could use eigenvalue thresholding or fallback rank estimation.");
+        if (check_rank_deficiency) {
+            throw std::runtime_error("check_rank_deficiency=true not yet implemented for sparse solver. You could use "
+                                     "eigenvalue thresholding or fallback rank estimation.");
         }
 
-        if (solver.info() != Eigen::Success)
-        {
+        if (solver.info() != Eigen::Success) {
             throw std::runtime_error("Sparse Gauss-Newton: SimplicialLLT failed to factorize the Hessian.");
         }
 
@@ -240,16 +220,14 @@ namespace factorama
         double chi2 = r.squaredNorm();
 
         // Step 4: Apply dx to variables
-        const auto &variables = graph.get_all_variables();
-        for (const auto &var : variables)
-        {
+        const auto& variables = graph.get_all_variables();
+        for (const auto& var : variables) {
             if (var->is_constant())
                 continue;
 
             bool valid = false;
             VariablePlacement placement = graph.variable_placement(var->id(), valid);
-            if (!valid)
-            {
+            if (!valid) {
                 std::cerr << "[SparseGN] Skipping variable id=" << var->id() << " (no placement found)\n";
                 continue;
             }
@@ -263,10 +241,8 @@ namespace factorama
 
         auto t7 = GetMonotonicSeconds();
 
-        if (verbose)
-        {
-            auto us = [](double seconds)
-            { return static_cast<long long>(seconds * 1e6); };
+        if (verbose) {
+            auto us = [](double seconds) { return static_cast<long long>(seconds * 1e6); };
             std::cout << "[SparseGN] Time breakdown (microseconds):\n";
             std::cout << "  Residual/Jacobian:   " << std::setw(8) << us(t1 - t0) << " us\n"
                       << "  Hessian:            " << std::setw(8) << us(t3 - t2) << " us\n"
@@ -277,19 +253,17 @@ namespace factorama
                       << "  Total:              " << std::setw(8) << us(t7 - t0) << " us\n";
         }
 
-        if (verbose)
-        {
-            std::cout << "[SparseGN] chi²: " << chi2
-                      << " | ||dx||: " << dx_norm << "\n";
+        if (verbose) {
+            std::cout << "[SparseGN] chi²: " << chi2 << " | ||dx||: " << dx_norm << "\n";
             std::cout << "[SparseGN] Initial residual norm: " << initial_residual_norm
                       << " | Final residual norm: " << final_residual_norm << "\n";
             std::cout << "Delta norm: " << (initial_residual_norm - final_residual_norm) << "\n";
         }
 
         return GaussNewtonStats{
-            chi2,     // initial_chi2
-            dx_norm,  // dx_norm
-            -1        // rank - unknown in sparse mode
+            chi2,    // initial_chi2
+            dx_norm, // dx_norm
+            -1       // rank - unknown in sparse mode
         };
     }
 
@@ -314,32 +288,24 @@ int main(int argc, char *argv[])
     if (argc > 2)
         num_landmarks = std::atoi(argv[2]);
 
-    std::cout << " Using " << num_iterations << " iterations and "
-              << num_landmarks << " landmarks \n";
+    std::cout << " Using " << num_iterations << " iterations and " << num_landmarks << " landmarks \n";
 
     std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
     std::vector<Eigen::Vector3d> gt_landmark_positions;
 
     {
-        std::cout << std::endl
-                  << std::endl
-                  << "##############      DENSE     ##############" << std::endl;
+        std::cout << std::endl << std::endl << "##############      DENSE     ##############" << std::endl;
         // CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
         CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
 
-        auto extra_landmarks = CreateLandmarksInVolume(
-            Eigen::Vector3d(10.0, -5.0, -5.0),
-            Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
+        auto extra_landmarks =
+            CreateLandmarksInVolume(Eigen::Vector3d(10.0, -5.0, -5.0), Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
 
-        gt_landmark_positions.insert(gt_landmark_positions.end(),
-                                     extra_landmarks.begin(), extra_landmarks.end());
+        gt_landmark_positions.insert(gt_landmark_positions.end(), extra_landmarks.begin(), extra_landmarks.end());
         FactorGraph graph;
-        if (!inv_range_vars)
-        {
+        if (!inv_range_vars) {
             graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, sparsity);
-        }
-        else
-        {
+        } else {
             graph = CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
         }
 
@@ -353,8 +319,7 @@ int main(int argc, char *argv[])
 
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        for (int i = 0; i < num_iterations; ++i)
-        {
+        for (int i = 0; i < num_iterations; ++i) {
             bool verbose = i == 0;
             run_gauss_newton_iteration(graph, verbose, learning_rate);
         }
@@ -362,30 +327,24 @@ int main(int argc, char *argv[])
         auto end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed_sec = end_time - start_time;
 
-        std::cout << "⏱️ Total time for " << num_iterations << " iterations: "
-                  << elapsed_sec.count() << " seconds\n";
+        std::cout << "⏱️ Total time for " << num_iterations << " iterations: " << elapsed_sec.count()
+                  << " seconds\n";
     }
 
     {
-        std::cout << std::endl
-                  << std::endl
-                  << "############## SPARSE METHOD 1 ##############" << std::endl;
+        std::cout << std::endl << std::endl << "############## SPARSE METHOD 1 ##############" << std::endl;
         // CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
         CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-        auto extra_landmarks = CreateLandmarksInVolume(
-            Eigen::Vector3d(10.0, -5.0, -5.0),
-            Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
+        auto extra_landmarks =
+            CreateLandmarksInVolume(Eigen::Vector3d(10.0, -5.0, -5.0), Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
 
-        gt_landmark_positions.insert(gt_landmark_positions.end(),
-                                     extra_landmarks.begin(), extra_landmarks.end());
+        gt_landmark_positions.insert(gt_landmark_positions.end(), extra_landmarks.begin(), extra_landmarks.end());
 
         FactorGraph graph;
-        if (!inv_range_vars)
-        {
-            graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, 1.0 - sparsity);
-        }
-        else
-        {
+        if (!inv_range_vars) {
+            graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04,
+                                             1.0 - sparsity);
+        } else {
             graph = CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
         }
         graph.finalize_structure();
@@ -398,8 +357,7 @@ int main(int argc, char *argv[])
 
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        for (int i = 0; i < num_iterations; ++i)
-        {
+        for (int i = 0; i < num_iterations; ++i) {
             bool verbose = i == 0;
             run_sparse_gauss_newton_iteration(graph, verbose, learning_rate);
         }
@@ -407,29 +365,23 @@ int main(int argc, char *argv[])
         auto end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed_sec = end_time - start_time;
 
-        std::cout << "⏱️ Total time for " << num_iterations << " iterations: "
-                  << elapsed_sec.count() << " seconds\n";
+        std::cout << "⏱️ Total time for " << num_iterations << " iterations: " << elapsed_sec.count()
+                  << " seconds\n";
     }
 
     {
-        std::cout << std::endl
-                  << std::endl
-                  << "############## SPARSE METHOD 2 ##############" << std::endl;
+        std::cout << std::endl << std::endl << "############## SPARSE METHOD 2 ##############" << std::endl;
         CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-        auto extra_landmarks = CreateLandmarksInVolume(
-            Eigen::Vector3d(10.0, -5.0, -5.0),
-            Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
+        auto extra_landmarks =
+            CreateLandmarksInVolume(Eigen::Vector3d(10.0, -5.0, -5.0), Eigen::Vector3d(10.0, 5.0, 5.0), num_landmarks);
 
-        gt_landmark_positions.insert(gt_landmark_positions.end(),
-                                     extra_landmarks.begin(), extra_landmarks.end()); 
+        gt_landmark_positions.insert(gt_landmark_positions.end(), extra_landmarks.begin(), extra_landmarks.end());
 
         FactorGraph graph;
-        if (!inv_range_vars)
-        {
-            graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, 1.0 - sparsity);
-        }
-        else
-        {
+        if (!inv_range_vars) {
+            graph = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.04,
+                                             1.0 - sparsity);
+        } else {
             graph = CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
         }
         graph.finalize_structure();
@@ -438,11 +390,10 @@ int main(int argc, char *argv[])
 
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        for (int i = 0; i < num_iterations; ++i)
-        {
+        for (int i = 0; i < num_iterations; ++i) {
             bool verbose = i < 2;
 
-            if(verbose) {
+            if (verbose) {
                 std::cout << "####   Iteration " << i << "  #####" << std::endl;
 
                 compare_dense_and_sparse_jacobians(graph, 1e-8);
@@ -453,8 +404,8 @@ int main(int argc, char *argv[])
         auto end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed_sec = end_time - start_time;
 
-        std::cout << "⏱️ Total time for " << num_iterations << " iterations: "
-                  << elapsed_sec.count() << " seconds\n";
+        std::cout << "⏱️ Total time for " << num_iterations << " iterations: " << elapsed_sec.count()
+                  << " seconds\n";
     }
 
     return 0;

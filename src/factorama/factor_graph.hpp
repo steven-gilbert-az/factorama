@@ -13,7 +13,7 @@ namespace factorama
      */
     struct VariablePlacement
     {
-        Variable* variable;
+        Variable *variable;
         int index; // Start column in Jacobian
         int dim;   // Variable dimension
     };
@@ -23,7 +23,7 @@ namespace factorama
      */
     struct FactorPlacement
     {
-        Factor* factor;
+        Factor *factor;
         int residual_index = 0; // Start row in residual vector
         int residual_dim = 0;
 
@@ -54,13 +54,13 @@ namespace factorama
          * @brief Add a variable to the factor graph
          * @param variable Shared pointer to any Variable subclass (PoseVariable, LandmarkVariable, etc.)
          */
-        void add_variable(const std::shared_ptr<Variable> &variable);
+        void add_variable(const std::shared_ptr<Variable>& variable);
 
         /**
          * @brief Add a factor (constraint/measurement) to the factor graph
          * @param factor Shared pointer to any Factor subclass (BearingObservationFactor, PriorFactor, etc.)
          */
-        void add_factor(const std::shared_ptr<Factor> &factor);
+        void add_factor(const std::shared_ptr<Factor>& factor);
 
         /**
          * @brief Finalize the graph structure for optimization
@@ -72,14 +72,14 @@ namespace factorama
          * @brief Compute residual vector for all factors
          * @return Reference to computed residual vector
          */
-        Eigen::VectorXd &compute_full_residual_vector();
+        Eigen::VectorXd& compute_full_residual_vector();
         void compute_full_residual_vector(Eigen::VectorXd& result);
 
         /**
          * @brief Compute dense Jacobian matrix
          * @return Reference to computed Jacobian matrix
          */
-        Eigen::MatrixXd &compute_full_jacobian_matrix();
+        Eigen::MatrixXd& compute_full_jacobian_matrix();
 
         /**
          * @brief Compute sparse Jacobian matrix (more efficient for large problems)
@@ -97,19 +97,19 @@ namespace factorama
          * @param id Variable ID
          * @return Pointer to variable or nullptr if not found
          */
-        Variable* get_variable(int id) const;
+        Variable *get_variable(int id) const;
 
         /**
          * @brief Get all variables in the graph
          * @return Vector of shared pointers to all variables
          */
-        const std::vector<std::shared_ptr<Variable>> &get_all_variables() const;
+        const std::vector<std::shared_ptr<Variable>>& get_all_variables() const;
 
         /**
          * @brief Get all factors in the graph
          * @return Vector of shared pointers to all factors
          */
-        const std::vector<std::shared_ptr<Factor>> &get_all_factors() const;
+        const std::vector<std::shared_ptr<Factor>>& get_all_factors() const;
 
         /**
          * @brief Get current variable values as a single vector
@@ -121,37 +121,34 @@ namespace factorama
          * @brief Set all variable values from a concatenated vector
          * @param x Vector containing new values for all variables
          */
-        void set_variable_values_from_vector(const Eigen::VectorXd &x);
+        void set_variable_values_from_vector(const Eigen::VectorXd& x);
 
         /**
          * @brief Apply optimization increment to all variables
          * @param dx Increment vector (typically from optimizer)
          */
-        void apply_increment(const Eigen::VectorXd &dx);
+        void apply_increment(const Eigen::VectorXd& dx);
 
         // Safe public access to cached results
-        const Eigen::MatrixXd &jacobian() const
+        const Eigen::MatrixXd& jacobian() const
         {
-            if (!jacobian_valid_)
-            {
+            if (!jacobian_valid_) {
                 throw std::runtime_error("Jacobian not valid — call compute_full_jacobian_and_residual() first.");
             }
             return cached_jacobian_;
         }
 
-        const Eigen::SparseMatrix<double> &sparse_jacobian() const
+        const Eigen::SparseMatrix<double>& sparse_jacobian() const
         {
-            if (!sparse_jacobian_valid_)
-            {
+            if (!sparse_jacobian_valid_) {
                 throw std::runtime_error("Sparse Jacobian not valid — call compute_sparse_jacobian_matrix() first.");
             }
-            return sparse_jacobian_; 
+            return sparse_jacobian_;
         }
 
-        const Eigen::VectorXd &residual() const
+        const Eigen::VectorXd& residual() const
         {
-            if (!residual_valid_)
-            {
+            if (!residual_valid_) {
                 throw std::runtime_error("Residual not valid — call compute_full_jacobian_and_residual() first.");
             }
             return cached_residual_;
@@ -165,10 +162,8 @@ namespace factorama
         std::vector<std::shared_ptr<T>> get_variables_of_type() const
         {
             std::vector<std::shared_ptr<T>> result;
-            for (const auto &var : variables_vector_)
-            {
-                if (auto casted = std::dynamic_pointer_cast<T>(var))
-                {
+            for (const auto& var : variables_vector_) {
+                if (auto casted = std::dynamic_pointer_cast<T>(var)) {
                     result.push_back(casted);
                 }
             }
@@ -187,17 +182,19 @@ namespace factorama
 
         void set_verbose(bool verbose) { verbose_ = verbose; }
 
-        VariablePlacement variable_placement(int id, bool& valid_out) const {
+        VariablePlacement variable_placement(int id, bool& valid_out) const
+        {
             auto it = variable_placement_.find(id);
             if (it == variable_placement_.end()) {
                 valid_out = false;
-                return VariablePlacement();  // or maybe throw if that’s your style
+                return VariablePlacement(); // or maybe throw if that’s your style
             }
             valid_out = true;
             return it->second;
         }
 
-        FactorPlacement factor_placement(int id, bool& valid_out) const {
+        FactorPlacement factor_placement(int id, bool& valid_out) const
+        {
             auto it = factor_placement_.find(id);
             if (it == factor_placement_.end()) {
                 valid_out = false;
@@ -207,27 +204,22 @@ namespace factorama
             return it->second;
         }
 
-        const std::unordered_map<int, VariablePlacement> &variable_placement_map() const {
-            return variable_placement_;
-        }
-        const std::unordered_map<int, FactorPlacement> &factor_placement_map() const {
-            return factor_placement_;
-        }
+        const std::unordered_map<int, VariablePlacement>& variable_placement_map() const { return variable_placement_; }
+        const std::unordered_map<int, FactorPlacement>& factor_placement_map() const { return factor_placement_; }
 
-        // detailed_factor_test: 
+        // detailed_factor_test:
         // Test all factors to ensure that they seem healthy.
         // will return pass/fail, and will print out detailed
         // diagnostic info
         bool detailed_factor_test(double jacobian_tol, bool verbose = false);
 
     private:
-
         // Main storage - vector (like an array) and map
         //    variables_vector_, factors_ - shared_ptr, will manage memory
         //    variables_map_, factors_map_  - will store bare ptr, doesn't need to manage memory
-        std::unordered_map<int, Variable*> variables_map_;
+        std::unordered_map<int, Variable *> variables_map_;
         std::vector<std::shared_ptr<Variable>> variables_vector_;
-        std::unordered_map<int, Factor*> factors_map_;
+        std::unordered_map<int, Factor *> factors_map_;
         std::vector<std::shared_ptr<Factor>> factors_;
 
         // Structure bookkeeping
@@ -245,7 +237,7 @@ namespace factorama
         Eigen::VectorXd cached_residual_;
         bool residual_valid_ = false;
 
-        
+
         Eigen::SparseMatrix<double> sparse_jacobian_;
         std::vector<std::vector<Eigen::MatrixXd>> sparse_jacobian_components_;
         bool sparse_jacobian_initialized_ = false;

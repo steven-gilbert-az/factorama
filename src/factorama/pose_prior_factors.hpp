@@ -29,10 +29,7 @@ namespace factorama
          * @param pos_prior Prior position in world frame
          * @param sigma Standard deviation of position measurement
          */
-        PosePositionPriorFactor(int id,
-                                PoseVariable* pose,
-                                const Eigen::Vector3d &pos_prior,
-                                double sigma = 1.0);
+        PosePositionPriorFactor(int id, PoseVariable *pose, const Eigen::Vector3d& pos_prior, double sigma = 1.0);
 
         int residual_size() const override { return size_; }
         double weight() const { return weight_; }
@@ -40,12 +37,12 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
 
     private:
-        PoseVariable* pose_;
+        PoseVariable *pose_;
         Eigen::Vector3d pos_prior_;
         double weight_;
         int size_ = 3;
@@ -73,10 +70,7 @@ namespace factorama
          * @param dcm_CW_prior Prior rotation - direction cosine matrix (DCM)
          * @param sigma Standard deviation of angular prior (radians)
          */
-        PoseOrientationPriorFactor(int id,
-                                   PoseVariable* pose,
-                                   const Eigen::Matrix3d &dcm_CW_prior,
-                                   double sigma = 1.0);
+        PoseOrientationPriorFactor(int id, PoseVariable *pose, const Eigen::Matrix3d& dcm_CW_prior, double sigma = 1.0);
 
         int residual_size() const override { return size_; }
         double weight() const { return weight_; }
@@ -84,15 +78,15 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
 
     private:
-        PoseVariable* pose_;
+        PoseVariable *pose_;
         Eigen::Vector3d rot_CW_prior_;
         double weight_;
         int size_ = 3;
     };
 
-}
+} // namespace factorama

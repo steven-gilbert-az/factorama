@@ -48,16 +48,12 @@ namespace factorama
                       "VariableType: variable_names array size must match num_variable_types");
 
         // Additional safety: ensure no strings are null
-        static_assert(variable_names[none] != nullptr &&
-                          variable_names[pose] != nullptr &&
-                          variable_names[landmark] != nullptr &&
-                          variable_names[inverse_range_landmark] != nullptr &&
-                          variable_names[extrinsic_rotation] != nullptr &&
-                          variable_names[generic] != nullptr &&
-                          variable_names[plane] != nullptr &&
-                          variable_names[pose_2d] != nullptr,
+        static_assert(variable_names[none] != nullptr && variable_names[pose] != nullptr &&
+                          variable_names[landmark] != nullptr && variable_names[inverse_range_landmark] != nullptr &&
+                          variable_names[extrinsic_rotation] != nullptr && variable_names[generic] != nullptr &&
+                          variable_names[plane] != nullptr && variable_names[pose_2d] != nullptr,
                       "VariableType: all variable names must be non-null");
-    }
+    } // namespace VariableType
 
     namespace FactorType
     {
@@ -114,48 +110,42 @@ namespace factorama
                       "FactorType: factor_names array size must match num_factor_types");
 
         // Additional safety: ensure no strings are null
-        static_assert(factor_names[none] != nullptr &&
-                          factor_names[bearing_observation] != nullptr &&
-                          factor_names[inverse_range_bearing] != nullptr &&
-                          factor_names[generic_prior] != nullptr &&
-                          factor_names[generic_between] != nullptr &&
-                          factor_names[pose_position_prior] != nullptr &&
+        static_assert(factor_names[none] != nullptr && factor_names[bearing_observation] != nullptr &&
+                          factor_names[inverse_range_bearing] != nullptr && factor_names[generic_prior] != nullptr &&
+                          factor_names[generic_between] != nullptr && factor_names[pose_position_prior] != nullptr &&
                           factor_names[pose_orientation_prior] != nullptr &&
                           factor_names[pose_position_between] != nullptr &&
-                          factor_names[pose_orientation_between] != nullptr &&
-                          factor_names[plane_factor] != nullptr &&
-                          factor_names[plane_prior] != nullptr &&
-                          factor_names[bearing_observation_2d] != nullptr &&
-                          factor_names[range_bearing_2d] != nullptr &&
-                          factor_names[pose_2d_prior] != nullptr &&
+                          factor_names[pose_orientation_between] != nullptr && factor_names[plane_factor] != nullptr &&
+                          factor_names[plane_prior] != nullptr && factor_names[bearing_observation_2d] != nullptr &&
+                          factor_names[range_bearing_2d] != nullptr && factor_names[pose_2d_prior] != nullptr &&
                           factor_names[pose_2d_between] != nullptr,
                       "FactorType: all factor names must be non-null");
-    }
+    } // namespace FactorType
 
     /// Base class for all optimization variables in the factor graph
-    /// 
+    ///
     /// Variables represent the state being optimized (poses, landmarks, etc.)
     /// Each variable has a vector representation for efficient optimization.
     class Variable
     {
     public:
         virtual ~Variable() = default;
-        
+
         /// Get the dimension of this variable
         /// @return Dimension (e.g. 3 for rotations, 6 for poses)
         virtual int size() const = 0;
-        
+
         /// Get the variable's current value as a vector
         /// @return Current variable value
-        virtual const Eigen::VectorXd &value() const = 0;
-        
+        virtual const Eigen::VectorXd& value() const = 0;
+
         /// Set the variable from a new value vector
         /// @param x New value (used by optimizer)
-        virtual void set_value_from_vector(const Eigen::VectorXd &x) = 0;
-        
+        virtual void set_value_from_vector(const Eigen::VectorXd& x) = 0;
+
         /// Apply an increment to the current value
         /// @param dx Increment to apply (used by optimization algorithms)
-        virtual void apply_increment(const Eigen::VectorXd &dx) = 0;
+        virtual void apply_increment(const Eigen::VectorXd& dx) = 0;
 
         /// Get the variable type enumeration
         /// @return Type identifier for this variable class
@@ -167,32 +157,25 @@ namespace factorama
 
         /// Get the unique identifier for this variable
         /// @return Variable ID used for indexing and identification
-        virtual int id() const {
-            return id_;
-        }
-        
+        virtual int id() const { return id_; }
+
         /// Get a human-readable name for this variable
         /// @return String description of this variable
-        virtual std::string name() const {
-           return VariableType::variable_names[int(type())] + std::to_string(id());
-        }
-        
+        virtual std::string name() const { return VariableType::variable_names[int(type())] + std::to_string(id()); }
+
         /// Print variable information to stdout
-        virtual void print() const {
+        virtual void print() const
+        {
             std::cout << name() << std::endl;
             std::cout << "Value: " << value().transpose() << std::endl;
         };
-        
+
         /// Check if this variable is held constant during optimization
         /// @return True if variable should not be optimized
-        virtual bool is_constant() const {
-            return is_constant_;
-        }
+        virtual bool is_constant() const { return is_constant_; }
 
-        virtual void set_constant(bool val) {
-            is_constant_ = val;
-        }
-    
+        virtual void set_constant(bool val) { is_constant_ = val; }
+
     protected:
         int id_;
         bool is_constant_ = false;
@@ -209,9 +192,7 @@ namespace factorama
     public:
         virtual ~Factor() = default;
 
-        void SetKernel(ResidualKernel* kernel) {
-            kernel_ = kernel;
-        }
+        void SetKernel(ResidualKernel *kernel) { kernel_ = kernel; }
 
         /**
          * @brief Get the dimension of this factor's residual vector
@@ -231,7 +212,7 @@ namespace factorama
          * @param jacobians Output vector of jacobian matrices (one per variable).
          *                  Empty (0x0) matrices indicate constant variables by convention.
          */
-        virtual void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const = 0;
+        virtual void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const = 0;
 
         /**
          * @brief Get pointers to all variables this factor depends on
@@ -239,18 +220,14 @@ namespace factorama
          */
         virtual std::vector<Variable *> variables() = 0;
 
-        virtual int id() const {
-            return id_;
-        };
+        virtual int id() const { return id_; };
 
-        virtual std::string name() const {
-            return FactorType::factor_names[int(type())] + std::to_string(id());
-        }
+        virtual std::string name() const { return FactorType::factor_names[int(type())] + std::to_string(id()); }
         virtual FactorType::FactorTypeEnum type() const = 0;
 
-        protected:
+    protected:
         int id_;
 
-        ResidualKernel* kernel_ = nullptr; // Nullptr - no kernel
+        ResidualKernel *kernel_ = nullptr; // Nullptr - no kernel
     };
-}
+} // namespace factorama

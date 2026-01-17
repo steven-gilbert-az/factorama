@@ -27,7 +27,7 @@ namespace factorama
          * @param id Unique variable identifier
          * @param dcm_AB Rotation matrix from frame A to frame B
          */
-        RotationVariable(int id, const Eigen::Matrix3d &dcm_AB)
+        RotationVariable(int id, const Eigen::Matrix3d& dcm_AB)
             : dcm_AB_(dcm_AB)
         {
             id_ = id;
@@ -36,31 +36,23 @@ namespace factorama
 
         int size() const override { return 3; }
 
-        virtual VariableType::VariableTypeEnum type() const
-        {
-            return VariableType::extrinsic_rotation;
-        }
+        virtual VariableType::VariableTypeEnum type() const { return VariableType::extrinsic_rotation; }
 
-        const Eigen::VectorXd &value() const override
-        {
-            return value_;
-        }
+        const Eigen::VectorXd& value() const override { return value_; }
 
-        void set_value_from_vector(const Eigen::VectorXd &x) override
+        void set_value_from_vector(const Eigen::VectorXd& x) override
         {
             value_ = x;
             dcm_AB_ = ExpMapSO3(x);
         }
 
-        void apply_increment(const Eigen::VectorXd &dx) override
+        void apply_increment(const Eigen::VectorXd& dx) override
         {
             dcm_AB_ = ExpMapSO3(dx) * dcm_AB_;
             value_ = LogMapSO3(dcm_AB_);
         }
 
-        Eigen::Matrix3d& dcm_AB() {
-            return dcm_AB_;
-        }
+        Eigen::Matrix3d& dcm_AB() { return dcm_AB_; }
 
         void print() const override
         {
@@ -68,11 +60,9 @@ namespace factorama
             std::cout << dcm_AB_ << std::endl;
         }
 
-        const Eigen::Matrix3d &rotation() const { return dcm_AB_; }
-        
-        std::shared_ptr<Variable> clone() const override {
-            return std::make_shared<RotationVariable>(*this);
-        }
+        const Eigen::Matrix3d& rotation() const { return dcm_AB_; }
+
+        std::shared_ptr<Variable> clone() const override { return std::make_shared<RotationVariable>(*this); }
 
     private:
         Eigen::VectorXd value_;

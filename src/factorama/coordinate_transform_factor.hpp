@@ -37,20 +37,16 @@ namespace factorama
          * @param lm_B Same landmark expressed in coordinate frame B
          * @param sigma Standard deviation of the constraint (default 1.0)
          */
-        CoordinateTransformFactor(int id,
-            RotationVariable* rot_AB,
-            GenericVariable* B_origin_A,
-            GenericVariable* scale_AB,
-            LandmarkVariable* lm_A,
-            LandmarkVariable* lm_B,
-            double sigma = 1.0)
-            : rot_AB_(rot_AB),
-              B_origin_A_(B_origin_A),
-              scale_AB_(scale_AB),
-              lm_A_(lm_A),
-              lm_B_(lm_B),
-              weight_(1.0 / sigma),
-              size_(3)
+        CoordinateTransformFactor(int id, RotationVariable *rot_AB, GenericVariable *B_origin_A,
+                                  GenericVariable *scale_AB, LandmarkVariable *lm_A, LandmarkVariable *lm_B,
+                                  double sigma = 1.0)
+            : rot_AB_(rot_AB)
+            , B_origin_A_(B_origin_A)
+            , scale_AB_(scale_AB)
+            , lm_A_(lm_A)
+            , lm_B_(lm_B)
+            , weight_(1.0 / sigma)
+            , size_(3)
         {
             id_ = id;
             assert(rot_AB != nullptr && "rot_AB cannot be nullptr");
@@ -63,10 +59,7 @@ namespace factorama
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
         double weight() const { return weight_; }
 
@@ -97,18 +90,20 @@ namespace factorama
         {
             // Use numerical jacobians for now
             // Note: ComputeNumericalJacobians restores all variable values after computation
-            //ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
+            // ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
 
 
             compute_analytical_jacobians(jacobians);
-           //compute_numerical_jacobians(jacobians);
+            // compute_numerical_jacobians(jacobians);
         }
 
-        void compute_numerical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
-            ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
+        void compute_numerical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
+        {
+            ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor *>(this), jacobians);
         }
 
-        void compute_analytical_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const {
+        void compute_analytical_jacobians(std::vector<Eigen::MatrixXd>& jacobians_out) const
+        {
             // TODO: implement
             (void)jacobians_out;
 
@@ -117,22 +112,16 @@ namespace factorama
             const Eigen::Vector3d& lm_B = lm_B_->value();
 
             // Ensure jacobians vector has correct size for 2 variables
-            if(jacobians_out.size() == 0) 
-            {
+            if (jacobians_out.size() == 0) {
                 jacobians_out.resize(5);
-            }
-            else if(jacobians_out.size() != 5) 
-            {
+            } else if (jacobians_out.size() != 5) {
                 jacobians_out.clear();
                 jacobians_out.resize(2);
             }
 
-            if(rot_AB_->is_constant())
-            {
+            if (rot_AB_->is_constant()) {
                 jacobians_out[0] = Eigen::MatrixXd();
-            }
-            else
-            {
+            } else {
                 // d(residual)/d(rot_AB) using left perturbation: dcm_new = exp([δθ]×) * dcm
                 // d(dcm_AB * v)/d(δθ) = -skew(dcm_AB * v)
                 // residual term: -weight * scale * dcm_AB * lm_B
@@ -141,59 +130,43 @@ namespace factorama
                 jacobians_out[0] = weight_ * scale * skew_symmetric(rotated_lm_B);
             }
 
-            if(B_origin_A_->is_constant()) 
-            {
+            if (B_origin_A_->is_constant()) {
                 jacobians_out[1] = Eigen::MatrixXd();
-            }
-            else 
-            {
+            } else {
                 jacobians_out[1] = weight_ * Eigen::Matrix3d::Identity();
             }
 
-            if(scale_AB_->is_constant()) {
+            if (scale_AB_->is_constant()) {
                 jacobians_out[2] = Eigen::MatrixXd();
-            }
-            else {
+            } else {
                 jacobians_out[2] = -weight_ * dcm_AB * lm_B;
             }
 
-            if(lm_A_->is_constant()) {
+            if (lm_A_->is_constant()) {
                 jacobians_out[3] = Eigen::MatrixXd();
-            }
-            else {
+            } else {
                 jacobians_out[3] = weight_ * Eigen::Matrix3d::Identity();
             }
 
-            if(lm_B_->is_constant()) {
+            if (lm_B_->is_constant()) {
                 jacobians_out[4] = Eigen::MatrixXd();
+            } else {
+                jacobians_out[4] = -weight_ * scale * dcm_AB;
             }
-            else {
-                jacobians_out[4] = - weight_ * scale * dcm_AB;
-            }
-        
         }
 
-        std::vector<Variable*> variables() override
-        {
-            return {rot_AB_, B_origin_A_, scale_AB_, lm_A_, lm_B_};
-        }
+        std::vector<Variable *> variables() override { return {rot_AB_, B_origin_A_, scale_AB_, lm_A_, lm_B_}; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::custom;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::custom; }
 
-        std::string name() const override
-        {
-            return "CoordinateTransformFactor" + std::to_string(id());
-        }
+        std::string name() const override { return "CoordinateTransformFactor" + std::to_string(id()); }
 
     private:
-        RotationVariable* rot_AB_;
-        GenericVariable* B_origin_A_;
-        GenericVariable* scale_AB_;
-        LandmarkVariable* lm_A_;
-        LandmarkVariable* lm_B_;
+        RotationVariable *rot_AB_;
+        GenericVariable *B_origin_A_;
+        GenericVariable *scale_AB_;
+        LandmarkVariable *lm_A_;
+        LandmarkVariable *lm_B_;
         double weight_;
         int size_;
     };

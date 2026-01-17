@@ -28,18 +28,10 @@ namespace factorama
          * @param plane_var Plane variable
          * @param sigma Standard deviation of distance measurement
          */
-        PlaneFactor(int id,
-                    Variable* point_var,
-                    PlaneVariable* plane_var,
-                    double sigma = 1.0);
+        PlaneFactor(int id, Variable *point_var, PlaneVariable *plane_var, double sigma = 1.0);
 
-        PlaneFactor(int id,
-                    Variable* point_var,
-                    PlaneVariable* plane_var,
-                    double sigma,
-                    bool do_distance_scaling,
-                    double dist_scaling_r0,
-                    Eigen::Vector3d dist_scaling_p0);
+        PlaneFactor(int id, Variable *point_var, PlaneVariable *plane_var, double sigma, bool do_distance_scaling,
+                    double dist_scaling_r0, Eigen::Vector3d dist_scaling_p0);
 
         int residual_size() const override { return size_; }
         double weight() const { return weight_; }
@@ -47,13 +39,13 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
 
     private:
-        Variable* point_var_;
-        PlaneVariable* plane_var_;
+        Variable *point_var_;
+        PlaneVariable *plane_var_;
         double weight_;
         bool do_distance_scaling_;
         double dist_scaling_r0_;

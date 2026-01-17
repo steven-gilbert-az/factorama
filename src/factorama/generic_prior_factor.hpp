@@ -27,11 +27,10 @@ namespace factorama
          * @param prior_value Expected value for the variable
          * @param sigma Standard deviation of prior measurement
          */
-        GenericPriorFactor(int id,
-                           Variable* variable,
-                           const Eigen::VectorXd &prior_value,
-                           double sigma = 1.0)
-            : variable_(variable), prior_(prior_value), weight_(1.0 / sigma)
+        GenericPriorFactor(int id, Variable *variable, const Eigen::VectorXd& prior_value, double sigma = 1.0)
+            : variable_(variable)
+            , prior_(prior_value)
+            , weight_(1.0 / sigma)
         {
             id_ = id;
             assert(variable != nullptr && "variable cannot be nullptr");
@@ -40,10 +39,7 @@ namespace factorama
             size_ = prior_.size();
         }
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override
         {
@@ -51,28 +47,25 @@ namespace factorama
             return weight_ * res;
         }
 
-        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override {
+        void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
+        {
             result = weight_ * (variable_->value() - prior_);
         }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override
         {
-            if(jacobians.size() == 0) {
+            if (jacobians.size() == 0) {
                 jacobians.emplace_back(); // create a jacobian element
-            }
-            else if(jacobians.size() > 1) {
+            } else if (jacobians.size() > 1) {
                 jacobians.clear();
                 jacobians.emplace_back();
             }
-            
-            if (variable_->is_constant())
-            {
+
+            if (variable_->is_constant()) {
                 jacobians.emplace_back(); // Empty Jacobian if variable is constant
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
                     jacobians[0].resize(size_, size_);
                 }
                 jacobians[0].setZero();
@@ -80,31 +73,19 @@ namespace factorama
             }
         }
 
-        std::vector<Variable *> variables() override
-        {
-            return {variable_};
-        }
+        std::vector<Variable *> variables() override { return {variable_}; }
 
-        double weight() const
-        {
-            return weight_;
-        }
+        double weight() const { return weight_; }
 
-        std::string name() const override
-        {
-            return "GenericPriorFactor(" + variable_->name() + ")";
-        }
+        std::string name() const override { return "GenericPriorFactor(" + variable_->name() + ")"; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::generic_prior;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::generic_prior; }
 
     private:
-        Variable* variable_;
+        Variable *variable_;
         Eigen::VectorXd prior_;
         double weight_;
         int size_;
     };
 
-}
+} // namespace factorama

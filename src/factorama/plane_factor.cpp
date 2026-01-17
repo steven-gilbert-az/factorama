@@ -4,15 +4,15 @@
 namespace factorama
 {
 
-    PlaneFactor::PlaneFactor(int id,
-                             Variable *point_var,
-                             PlaneVariable *plane_var,
-                             double sigma)
-        : point_var_(point_var), plane_var_(plane_var), weight_(1.0 / sigma),
+    PlaneFactor::PlaneFactor(int id, Variable *point_var, PlaneVariable *plane_var, double sigma)
+        : point_var_(point_var)
+        , plane_var_(plane_var)
+        , weight_(1.0 / sigma)
+        ,
 
-          do_distance_scaling_(false),
-          dist_scaling_r0_(1.0),
-          dist_scaling_p0_(Eigen::Vector3d::Zero())
+        do_distance_scaling_(false)
+        , dist_scaling_r0_(1.0)
+        , dist_scaling_p0_(Eigen::Vector3d::Zero())
     {
         id_ = id;
         assert(point_var != nullptr && "point_var cannot be nullptr");
@@ -21,19 +21,14 @@ namespace factorama
         assert(sigma > 0.0 && "PlaneFactor: sigma must be greater than zero");
     }
 
-    PlaneFactor::PlaneFactor(int id,
-                             Variable *point_var,
-                             PlaneVariable *plane_var,
-                             double sigma,
-                             bool do_distance_scaling,
-                             double dist_scaling_r0,
-                             Eigen::Vector3d dist_scaling_p0)
-        : point_var_(point_var),
-          plane_var_(plane_var),
-          weight_(1.0 / sigma),
-          do_distance_scaling_(do_distance_scaling),
-          dist_scaling_r0_(dist_scaling_r0),
-          dist_scaling_p0_(dist_scaling_p0)
+    PlaneFactor::PlaneFactor(int id, Variable *point_var, PlaneVariable *plane_var, double sigma,
+                             bool do_distance_scaling, double dist_scaling_r0, Eigen::Vector3d dist_scaling_p0)
+        : point_var_(point_var)
+        , plane_var_(plane_var)
+        , weight_(1.0 / sigma)
+        , do_distance_scaling_(do_distance_scaling)
+        , dist_scaling_r0_(dist_scaling_r0)
+        , dist_scaling_p0_(dist_scaling_p0)
     {
         id_ = id;
         assert(point_var != nullptr && "point_var cannot be nullptr");
@@ -44,8 +39,7 @@ namespace factorama
 
     Eigen::VectorXd PlaneFactor::compute_residual() const
     {
-        if (!do_distance_scaling_)
-        {
+        if (!do_distance_scaling_) {
             // Old residual: simple signed distance from point to plane
             // r = n^T * p + d
             // where n is unit normal, p is point, d is distance from origin
@@ -56,9 +50,7 @@ namespace factorama
             Eigen::VectorXd res(1);
             res(0) = weight_ * distance;
             return res;
-        }
-        else
-        {
+        } else {
             // New residual with distance scaling
             // Extract values
             Eigen::Vector3d p = point_var_->value();       // 3D point
@@ -82,15 +74,12 @@ namespace factorama
     void PlaneFactor::compute_residual(Eigen::Ref<Eigen::VectorXd> result) const
     {
         result.resize(1);
-        if (!do_distance_scaling_)
-        {
+        if (!do_distance_scaling_) {
             // Old residual: simple signed distance from point to plane
             Eigen::Vector3d point_pos = point_var_->value();
             double distance = plane_var_->distance_from_point(point_pos);
             result(0) = weight_ * distance;
-        }
-        else
-        {
+        } else {
             // New residual with distance scaling
             Eigen::Vector3d p = point_var_->value();
             Eigen::Vector3d n = plane_var_->unit_vector();
@@ -107,19 +96,17 @@ namespace factorama
         }
     }
 
-    void PlaneFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
+    void PlaneFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
         // Ensure jacobians vector has correct size for 2 variables
-        if(jacobians.size() == 0) {
+        if (jacobians.size() == 0) {
             jacobians.resize(2);
-        }
-        else if(jacobians.size() != 2) {
+        } else if (jacobians.size() != 2) {
             jacobians.clear();
             jacobians.resize(2);
         }
 
-        if (!do_distance_scaling_)
-        {
+        if (!do_distance_scaling_) {
             // Old Jacobians: without distance scaling
             // Residual: r = weight * (n^T * p + d)
             // where n is plane normal (3D), p is point (3D), d is plane distance
@@ -129,13 +116,10 @@ namespace factorama
 
             // Jacobian w.r.t. point (1x3)
             // dr/dp = weight * n^T
-            if (point_var_->is_constant())
-            {
+            if (point_var_->is_constant()) {
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
                     jacobians[0].resize(size_, 3);
                 }
                 jacobians[0] = weight_ * normal.transpose();
@@ -147,13 +131,10 @@ namespace factorama
             // to avoid trying to grow/shrink it. The tangent space is perpendicular to n.
             // dr/dn_tangent = p^T * (I - n*n^T) = (p - (p^T*n)*n)^T
             // dr/dd = 1
-            if (plane_var_->is_constant())
-            {
+            if (plane_var_->is_constant()) {
                 jacobians[1] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
+            } else {
+                if (jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
                     jacobians[1].resize(size_, 4);
                 }
 
@@ -164,9 +145,7 @@ namespace factorama
                 jacobians[1].block<1, 3>(0, 0) = weight_ * p_tangent.transpose();
                 jacobians[1](0, 3) = weight_;
             }
-        }
-        else
-        {
+        } else {
             // New Jacobians with distance scaling
             // Extract values
             Eigen::Vector3d p = point_var_->value();
@@ -183,23 +162,18 @@ namespace factorama
 
             // Common partials
             Eigen::Vector3d dscale_dp = Eigen::Vector3d::Zero();
-            if (r > 1e-12)
-            {
+            if (r > 1e-12) {
                 dscale_dp = (1.0 / dist_scaling_r0_) * (diff / r);
             }
 
             // dr/dp = weight * [ (n*scale - dist*dscale_dp) / scale^2 ]
-            Eigen::Vector3d dr_dp =
-                (n * scale - dist * dscale_dp) / (scale * scale);
+            Eigen::Vector3d dr_dp = (n * scale - dist * dscale_dp) / (scale * scale);
 
             // --- Jacobian w.r.t point (1x3) ---
-            if (point_var_->is_constant())
-            {
+            if (point_var_->is_constant()) {
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
                     jacobians[0].resize(size_, 3);
                 }
                 jacobians[0] = weight_ * dr_dp.transpose();
@@ -221,13 +195,10 @@ namespace factorama
             //
             // dr/dd = -1/scale
 
-            if (plane_var_->is_constant())
-            {
+            if (plane_var_->is_constant()) {
                 jacobians[1] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
+            } else {
+                if (jacobians[1].rows() != size_ || jacobians[1].cols() != 4) {
                     jacobians[1].resize(size_, 4);
                 }
 

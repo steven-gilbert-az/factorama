@@ -28,11 +28,7 @@ namespace factorama
          * @param measured_diff Variable representing measured difference (var_b - var_a)
          * @param sigma Standard deviation of measurement
          */
-        GenericBetweenFactor(int id,
-                             Variable* var_a,
-                             Variable* var_b,
-                             Variable* measured_diff,
-                             double sigma = 1.0);
+        GenericBetweenFactor(int id, Variable *var_a, Variable *var_b, Variable *measured_diff, double sigma = 1.0);
 
         int residual_size() const override { return size_; }
         double weight() const { return weight_; }
@@ -40,14 +36,14 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
 
     private:
-        Variable* var_a_;
-        Variable* var_b_;
-        Variable* measured_diff_;
+        Variable *var_a_;
+        Variable *var_b_;
+        Variable *measured_diff_;
         double weight_;
         int size_;
     };

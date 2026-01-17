@@ -40,14 +40,8 @@ namespace factorama
          * @param range_sigma Standard deviation of range measurement
          * @param bearing_sigma Standard deviation of angular measurement (radians)
          */
-        RangeBearingFactor2D(
-            int id,
-            Pose2DVariable* pose_var,
-            Variable* landmark_var,
-            double range_obs,
-            double bearing_angle_obs,
-            double range_sigma = 1.0,
-            double bearing_sigma = 1.0);
+        RangeBearingFactor2D(int id, Pose2DVariable *pose_var, Variable *landmark_var, double range_obs,
+                             double bearing_angle_obs, double range_sigma = 1.0, double bearing_sigma = 1.0);
 
         int residual_size() const override { return size_; }
 
@@ -56,10 +50,7 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        std::vector<Variable*> variables() override
-        {
-            return {pose_var_, landmark_var_};
-        }
+        std::vector<Variable *> variables() override { return {pose_var_, landmark_var_}; }
 
         double range_weight() const { return range_weight_; }
         double bearing_weight() const { return bearing_weight_; }
@@ -67,20 +58,16 @@ namespace factorama
         double range_obs() const { return range_obs_; }
         double bearing_angle_obs() const { return bearing_angle_obs_; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::range_bearing_2d;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::range_bearing_2d; }
 
         std::string name() const override
         {
-            return "RangeBearingFactor2D(" + pose_var_->name() + ", " +
-                   landmark_var_->name() + ")";
+            return "RangeBearingFactor2D(" + pose_var_->name() + ", " + landmark_var_->name() + ")";
         }
 
     private:
-        Pose2DVariable* pose_var_;
-        Variable* landmark_var_;
+        Pose2DVariable *pose_var_;
+        Variable *landmark_var_;
         double range_obs_;
         double bearing_angle_obs_;
         double range_weight_;

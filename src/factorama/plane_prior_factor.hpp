@@ -31,24 +31,20 @@ namespace factorama
          * @param normal_sigma Standard deviation of normal vector prior (radians)
          * @param distance_sigma Standard deviation of distance prior (meters)
          */
-        PlanePriorFactor(int id,
-                        PlaneVariable* plane,
-                        const Eigen::Vector3d &normal_prior,
-                        double distance_prior,
-                        double normal_sigma = 1.0,
-                        double distance_sigma = 1.0);
+        PlanePriorFactor(int id, PlaneVariable *plane, const Eigen::Vector3d& normal_prior, double distance_prior,
+                         double normal_sigma = 1.0, double distance_sigma = 1.0);
 
         int residual_size() const override { return size_; }
         FactorType::FactorTypeEnum type() const override { return FactorType::plane_prior; }
 
         Eigen::VectorXd compute_residual() const override;
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override;
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
         std::vector<Variable *> variables() override;
         std::string name() const override;
 
     private:
-        PlaneVariable* plane_;
+        PlaneVariable *plane_;
         Eigen::Vector3d normal_prior_;
         double distance_prior_;
         double weight_normal_;

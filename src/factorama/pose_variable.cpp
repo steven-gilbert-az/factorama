@@ -5,7 +5,7 @@
 namespace factorama
 {
 
-    PoseVariable::PoseVariable(int id, const Eigen::Matrix<double, 6, 1> &pose_CW_init)
+    PoseVariable::PoseVariable(int id, const Eigen::Matrix<double, 6, 1>& pose_CW_init)
         : pose_CW_(pose_CW_init)
     {
         id_ = id;
@@ -23,16 +23,15 @@ namespace factorama
         recompute_dcm_CW();
     }
 
-    void PoseVariable::set_value_from_vector(const Eigen::VectorXd &x)
+    void PoseVariable::set_value_from_vector(const Eigen::VectorXd& x)
     {
         pose_CW_ = x;
         recompute_dcm_CW();
     }
 
-    void PoseVariable::apply_increment(const Eigen::VectorXd &dx)
+    void PoseVariable::apply_increment(const Eigen::VectorXd& dx)
     {
-        if (dx.size() != size())
-        {
+        if (dx.size() != size()) {
             throw std::runtime_error("apply_increment(): size mismatch");
         }
 
@@ -56,7 +55,7 @@ namespace factorama
         recompute_dcm_CW();
     }
 
-    const Eigen::Matrix3d & PoseVariable::dcm_CW() const
+    const Eigen::Matrix3d& PoseVariable::dcm_CW() const
     {
         return dcm_CW_;
     }
@@ -66,8 +65,7 @@ namespace factorama
         Eigen::Vector3d rot_CW_tmp = rot_CW(); // [rx, ry, rz]
         double angle = rot_CW_tmp.norm();
 
-        if (angle < 1e-8)
-        {
+        if (angle < 1e-8) {
             dcm_CW_ = Eigen::Matrix3d::Identity();
             return;
         }
@@ -82,12 +80,12 @@ namespace factorama
         recompute_dcm_CW();
     }
 
-    void PoseVariable::set_pos_W(const Eigen::Vector3d &pos_W)
+    void PoseVariable::set_pos_W(const Eigen::Vector3d& pos_W)
     {
         pose_CW_.segment<3>(0) = pos_W;
     }
 
-    void PoseVariable::set_dcm_CW(const Eigen::Matrix3d &dcm_CW)
+    void PoseVariable::set_dcm_CW(const Eigen::Matrix3d& dcm_CW)
     {
         Eigen::AngleAxisd aa(dcm_CW);
         pose_CW_.segment<3>(3) = aa.axis() * aa.angle();

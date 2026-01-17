@@ -4,19 +4,18 @@
 namespace factorama
 {
 
-    void InverseRangeBearingFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const
+    void InverseRangeBearingFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians_out) const
     {
         // Ensure jacobians vector has correct size for 2 variables
-        if(jacobians_out.size() == 0) {
+        if (jacobians_out.size() == 0) {
             jacobians_out.resize(2);
-        }
-        else if(jacobians_out.size() != 2) {
+        } else if (jacobians_out.size() != 2) {
             jacobians_out.clear();
             jacobians_out.resize(2);
         }
 
-        const Eigen::Matrix3d &dcm_CW = pose_var_->dcm_CW();
-        const Eigen::Vector3d &pos_C_W = pose_var_->pos_W();
+        const Eigen::Matrix3d& dcm_CW = pose_var_->dcm_CW();
+        const Eigen::Vector3d& pos_C_W = pose_var_->pos_W();
         const Eigen::Vector3d landmark_W = inverse_range_var_->pos_W();
         const Eigen::Vector3d delta = landmark_W - pos_C_W;
 
@@ -29,16 +28,14 @@ namespace factorama
 
         Eigen::Vector3d bearing_C = pos_C / pos_C_norm;
 
-        Eigen::Matrix3d d_bearing_d_pos = (Eigen::Matrix3d::Identity() - bearing_C * bearing_C.transpose()) / pos_C_norm;
+        Eigen::Matrix3d d_bearing_d_pos =
+            (Eigen::Matrix3d::Identity() - bearing_C * bearing_C.transpose()) / pos_C_norm;
 
         // Jacobian w.r.t. pose
-        if(pose_var_->is_constant())
-        {
+        if (pose_var_->is_constant()) {
             jacobians_out[0] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians_out[0].rows() != size_ || jacobians_out[0].cols() != 6) {
+        } else {
+            if (jacobians_out[0].rows() != size_ || jacobians_out[0].cols() != 6) {
                 jacobians_out[0].resize(size_, 6);
             }
             jacobians_out[0].setZero();
@@ -60,13 +57,10 @@ namespace factorama
         Eigen::Vector3d d_posW_d_inv = -dir / (inv_range * inv_range); // d(pos_W) / d(inv_range)
         Eigen::Vector3d d_posC_d_inv = dcm_CW * d_posW_d_inv;
 
-        if(inverse_range_var_->is_constant())
-        {
+        if (inverse_range_var_->is_constant()) {
             jacobians_out[1] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians_out[1].rows() != size_ || jacobians_out[1].cols() != 1) {
+        } else {
+            if (jacobians_out[1].rows() != size_ || jacobians_out[1].cols() != 1) {
                 jacobians_out[1].resize(size_, 1);
             }
             jacobians_out[1] = weight_ * d_bearing_d_pos * d_posC_d_inv;
@@ -74,4 +68,4 @@ namespace factorama
     }
 
 
-}
+} // namespace factorama

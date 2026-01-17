@@ -32,11 +32,8 @@ namespace factorama
          * @param position_sigma Standard deviation of position measurement
          * @param angle_sigma Standard deviation of angular measurement (radians)
          */
-        Pose2DPriorFactor(int id,
-                         Pose2DVariable* pose_var,
-                         const Eigen::Vector3d& pose_prior,
-                         double position_sigma,
-                         double angle_sigma);
+        Pose2DPriorFactor(int id, Pose2DVariable *pose_var, const Eigen::Vector3d& pose_prior, double position_sigma,
+                          double angle_sigma);
 
         int residual_size() const override { return size_; }
 
@@ -45,29 +42,20 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        std::vector<Variable*> variables() override
-        {
-            return {pose_var_};
-        }
+        std::vector<Variable *> variables() override { return {pose_var_}; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_2d_prior;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_2d_prior; }
 
-        std::string name() const override
-        {
-            return "Pose2DPriorFactor(" + pose_var_->name() + ")";
-        }
+        std::string name() const override { return "Pose2DPriorFactor(" + pose_var_->name() + ")"; }
 
         double position_weight() const { return position_weight_; }
         double angle_weight() const { return angle_weight_; }
 
     private:
-        Pose2DVariable* pose_var_;
+        Pose2DVariable *pose_var_;
         Eigen::Vector3d pose_prior_;
-        double position_weight_;  // 1.0 / position_sigma
-        double angle_weight_;     // 1.0 / angle_sigma
+        double position_weight_; // 1.0 / position_sigma
+        double angle_weight_;    // 1.0 / angle_sigma
         int size_ = 3;
 
         /**

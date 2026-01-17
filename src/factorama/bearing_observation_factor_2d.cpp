@@ -4,16 +4,12 @@
 
 namespace factorama
 {
-    BearingObservationFactor2D::BearingObservationFactor2D(
-        int id,
-        Pose2DVariable* pose_var,
-        Variable* landmark_var,
-        double bearing_angle_obs,
-        double angle_sigma)
-        : pose_var_(pose_var),
-          landmark_var_(landmark_var),
-          bearing_angle_obs_(bearing_angle_obs),
-          weight_(1.0 / angle_sigma)
+    BearingObservationFactor2D::BearingObservationFactor2D(int id, Pose2DVariable *pose_var, Variable *landmark_var,
+                                                           double bearing_angle_obs, double angle_sigma)
+        : pose_var_(pose_var)
+        , landmark_var_(landmark_var)
+        , bearing_angle_obs_(bearing_angle_obs)
+        , weight_(1.0 / angle_sigma)
     {
         id_ = id;
         assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -78,10 +74,9 @@ namespace factorama
     void BearingObservationFactor2D::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
         // Ensure jacobians vector has correct size for 2 variables
-        if(jacobians.size() == 0) {
+        if (jacobians.size() == 0) {
             jacobians.resize(2);
-        }
-        else if(jacobians.size() != 2) {
+        } else if (jacobians.size() != 2) {
             jacobians.clear();
             jacobians.resize(2);
         }
@@ -105,19 +100,15 @@ namespace factorama
         double r_sq = dx_local * dx_local + dy_local * dy_local;
 
         // Check for degenerate case (landmark at pose position)
-        if (r_sq < MIN_DISTANCE_FROM_POSE * MIN_DISTANCE_FROM_POSE)
-        {
+        if (r_sq < MIN_DISTANCE_FROM_POSE * MIN_DISTANCE_FROM_POSE) {
             throw std::runtime_error("BearingObservationFactor2D: Landmark too close to pose");
         }
 
         // --- Jacobian w.r.t. pose [x, y, theta] (1x3) ---
-        if (pose_var_->is_constant())
-        {
+        if (pose_var_->is_constant()) {
             jacobians[0] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+        } else {
+            if (jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
                 jacobians[0].resize(size_, 3);
             }
 
@@ -133,13 +124,10 @@ namespace factorama
         }
 
         // --- Jacobian w.r.t. landmark [x, y] (1x2) ---
-        if (landmark_var_->is_constant())
-        {
+        if (landmark_var_->is_constant()) {
             jacobians[1] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians[1].rows() != size_ || jacobians[1].cols() != 2) {
+        } else {
+            if (jacobians[1].rows() != size_ || jacobians[1].cols() != 2) {
                 jacobians[1].resize(size_, 2);
             }
 

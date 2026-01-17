@@ -9,85 +9,75 @@ namespace factorama
 
     void SparseOptimizer::single_step_gauss_newton()
     {
-        if (!graph_)
-        {
+        if (!graph_) {
             throw std::runtime_error("[SparseOptimizer] No factor graph set.");
         }
 
         const auto t_start = std::chrono::steady_clock::now();
 
-        
 
         // Step 1: Compute residual and Jacobian
         residual_stopwatch_.start();
         graph_->compute_full_residual_vector(residual1_);
         residual_stopwatch_.stop();
         jacobian_stopwatch_.start();
-        const Eigen::SparseMatrix<double> &J = graph_->compute_sparse_jacobian_matrix();
+        const Eigen::SparseMatrix<double>& J = graph_->compute_sparse_jacobian_matrix();
         jacobian_stopwatch_.stop();
 
         // Step 2: Form normal equations
         hessian_stopwatch_.start();
-        H_= J.transpose() * J;
+        H_ = J.transpose() * J;
         b_.noalias() = J.transpose() * residual1_;
         b_ *= -1.0;
         hessian_stopwatch_.stop();
 
 
         // Step 3: Solve H dx = b using sparse LDLT
-        //solve_stopwatch_.start();
+        // solve_stopwatch_.start();
         solve_stopwatch_.start();
         sparse_solver_.compute(H_);
-        if (sparse_solver_.info() != Eigen::Success)
-        {
+        if (sparse_solver_.info() != Eigen::Success) {
             current_stats_.valid = false;
             current_stats_.status = OptimizerStatus::FAILED;
-            if (settings_.verbose)
-            {
+            if (settings_.verbose) {
                 std::cerr << "[SparseOptimizer] Sparse Cholesky factorization failed.\n";
             }
             return;
         }
 
         // Check for singular/ill-conditioned matrix via diagonal elements
-        
+
         D_ = sparse_solver_.vectorD().cwiseAbs();
         solve_stopwatch_.stop();
         double min_diag = D_.minCoeff();
         double max_diag = D_.maxCoeff();
 
-        if (min_diag < 1e-14)
-        {
+        if (min_diag < 1e-14) {
             current_stats_.valid = false;
             current_stats_.status = OptimizerStatus::SINGULAR_HESSIAN;
-            if (settings_.verbose)
-            {
+            if (settings_.verbose) {
                 std::cerr << "[SparseOptimizer] Hessian is singular (min diagonal = " << min_diag << ")\n";
             }
             return;
         }
-        
+
         // Check condition number estimate: max/min diagonal ratio
         double cond_estimate = max_diag / min_diag;
-        if (cond_estimate > 1e12)
-        {
+        if (cond_estimate > 1e12) {
             current_stats_.valid = false;
             current_stats_.status = OptimizerStatus::ILL_CONDITIONED;
-            if (settings_.verbose)
-            {
-                std::cerr << "[SparseOptimizer] Hessian is ill-conditioned (condition estimate = "
-                          << cond_estimate << ")\n";
+            if (settings_.verbose) {
+                std::cerr << "[SparseOptimizer] Hessian is ill-conditioned (condition estimate = " << cond_estimate
+                          << ")\n";
             }
             return;
         }
 
         Eigen::VectorXd dx = sparse_solver_.solve(b_);
-        if (sparse_solver_.info() != Eigen::Success)
-        {
+        if (sparse_solver_.info() != Eigen::Success) {
             current_stats_.valid = false;
             current_stats_.status = OptimizerStatus::FAILED;
-            if (settings_.verbose)
-            {
+            if (settings_.verbose) {
                 std::cerr << "[SparseOptimizer] Failed to solve linear system.\n";
             }
             return;
@@ -97,18 +87,15 @@ namespace factorama
 
         // Step 4: Apply increment (todo - push this into the factor graph)
         update_vars_stopwatch_.start();
-        const auto &variables = graph_->get_all_variables();
-        for (const auto &var : variables)
-        {
-            if (var->is_constant())
-            {
+        const auto& variables = graph_->get_all_variables();
+        for (const auto& var : variables) {
+            if (var->is_constant()) {
                 continue;
             }
 
             bool valid = false;
             VariablePlacement placement = graph_->variable_placement(var->id(), valid);
-            if (!valid)
-            {
+            if (!valid) {
                 std::cerr << "[SparseGN] Skipping variable id=" << var->id() << " (no placement found)\n";
                 continue;
             }
@@ -126,11 +113,9 @@ namespace factorama
         current_stats_.current_iteration++;
 
         // Step 6: Optional verbose logging
-        if (settings_.verbose)
-        {
+        if (settings_.verbose) {
             const auto t_end = std::chrono::steady_clock::now();
-            auto micros = [](auto duration)
-            {
+            auto micros = [](auto duration) {
                 return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
             };
 
@@ -139,17 +124,13 @@ namespace factorama
             std::cout << "  Final residual norm:   " << current_stats_.residual_norm << "\n";
             std::cout << "  Step norm (||dx||):    " << current_stats_.delta_norm << "\n";
             std::cout << "  chi²:                  " << current_stats_.chi2 << "\n";
-            std::cout << "  J: " << J.rows() << " x " << J.cols()
-                      << " | nnz = " << J.nonZeros()
-                      << " | density = "
-                      << 100.0 * J.nonZeros() / double(J.rows() * J.cols())
-                      << " %\n";
+            std::cout << "  J: " << J.rows() << " x " << J.cols() << " | nnz = " << J.nonZeros()
+                      << " | density = " << 100.0 * J.nonZeros() / double(J.rows() * J.cols()) << " %\n";
             std::cout << "  Total time:            " << micros(t_end - t_start) << " us\n";
         }
     }
 
-    void SparseOptimizer::setup(std::shared_ptr<FactorGraph> graph_ptr,
-                                const OptimizerSettings &settings)
+    void SparseOptimizer::setup(std::shared_ptr<FactorGraph> graph_ptr, const OptimizerSettings& settings)
     {
         settings_ = settings;
         graph_ = graph_ptr;
@@ -159,8 +140,7 @@ namespace factorama
 
     void SparseOptimizer::optimize()
     {
-        if (!graph_)
-        {
+        if (!graph_) {
             throw std::runtime_error("[SparseOptimizer] No factor graph set.");
         }
 
@@ -187,10 +167,11 @@ namespace factorama
 
         initial_stats_ = current_stats_;
 
-        if (settings_.verbose)
-        {
+        if (settings_.verbose) {
             std::cout << "\n=== SparseOptimizer Starting ===\n";
-            std::cout << "Algorithm: " << (settings_.method == OptimizerMethod::GaussNewton ? "Gauss-Newton" : "Levenberg-Marquardt") << "\n";
+            std::cout << "Algorithm: "
+                      << (settings_.method == OptimizerMethod::GaussNewton ? "Gauss-Newton" : "Levenberg-Marquardt")
+                      << "\n";
             std::cout << "Max iterations: " << settings_.max_num_iterations << "\n";
             std::cout << "Initial residual norm: " << initial_stats_.residual_norm << "\n";
             std::cout << "Initial chi²: " << initial_stats_.chi2 << "\n";
@@ -203,12 +184,10 @@ namespace factorama
         auto start_time = std::chrono::high_resolution_clock::now();
 
         // Main optimization loop (following SPARSE METHOD 2 pattern)
-        for (size_t i = 0; i < settings_.max_num_iterations; ++i)
-        {
+        for (size_t i = 0; i < settings_.max_num_iterations; ++i) {
             bool verbose_iteration = settings_.verbose && (i < 2 || i == settings_.max_num_iterations - 1);
 
-            if (verbose_iteration)
-            {
+            if (verbose_iteration) {
                 std::cout << "\n#### Iteration " << i << " ####\n";
             }
 
@@ -216,19 +195,13 @@ namespace factorama
             auto prev_stats = current_stats_;
 
             // Perform one optimization step based on selected method
-            try
-            {
-                if (settings_.method == OptimizerMethod::GaussNewton)
-                {
+            try {
+                if (settings_.method == OptimizerMethod::GaussNewton) {
                     single_step_gauss_newton();
-                }
-                else
-                {
+                } else {
                     single_step_levenberg_marquardt();
                 }
-            }
-            catch (const std::exception &e)
-            {
+            } catch (const std::exception& e) {
                 std::cerr << "[SparseOptimizer] Error in iteration " << i << ": " << e.what() << std::endl;
                 current_stats_.valid = false;
                 current_stats_.status = OptimizerStatus::FAILED;
@@ -238,20 +211,16 @@ namespace factorama
             // Check if step failed due to matrix issues
             if (current_stats_.status == OptimizerStatus::SINGULAR_HESSIAN ||
                 current_stats_.status == OptimizerStatus::ILL_CONDITIONED ||
-                current_stats_.status == OptimizerStatus::FAILED)
-            {
-                if (settings_.verbose)
-                {
+                current_stats_.status == OptimizerStatus::FAILED) {
+                if (settings_.verbose) {
                     std::cout << "[SparseOptimizer] Stopping optimization due to error status.\n";
                 }
                 break;
             }
 
             // Check convergence based on step norm
-            if (current_stats_.delta_norm < settings_.step_tolerance)
-            {
-                if (settings_.verbose)
-                {
+            if (current_stats_.delta_norm < settings_.step_tolerance) {
+                if (settings_.verbose) {
                     std::cout << "[SparseOptimizer] Converged: Step norm (" << current_stats_.delta_norm
                               << ") below tolerance (" << settings_.step_tolerance << ")\n";
                 }
@@ -262,28 +231,21 @@ namespace factorama
             // Check convergence based on residual improvement
             double residual_improvement = prev_stats.residual_norm - current_stats_.residual_norm;
 
-            if (residual_improvement < 0.0)
-            {
+            if (residual_improvement < 0.0) {
                 // TODO: revert the update if the residual went up
-                if (settings_.verbose)
-                {
-                    std::cout << "[SparseOptimizer] Aborted: residual went up - residual improvement: " << residual_improvement << std::endl;
+                if (settings_.verbose) {
+                    std::cout << "[SparseOptimizer] Aborted: residual went up - residual improvement: "
+                              << residual_improvement << std::endl;
                 }
                 // Check if we've diverged beyond the initial state
-                if (current_stats_.residual_norm >= initial_stats_.residual_norm)
-                {
+                if (current_stats_.residual_norm >= initial_stats_.residual_norm) {
                     current_stats_.status = OptimizerStatus::DIVERGED;
-                }
-                else
-                {
+                } else {
                     current_stats_.status = OptimizerStatus::SUCCESS;
                 }
                 break;
-            }
-            else if (residual_improvement < settings_.residual_tolerance)
-            {
-                if (settings_.verbose)
-                {
+            } else if (residual_improvement < settings_.residual_tolerance) {
+                if (settings_.verbose) {
                     std::cout << "[SparseOptimizer] Converged: Residual improvement (" << residual_improvement
                               << ") below tolerance (" << settings_.residual_tolerance << ")\n";
                 }
@@ -292,10 +254,8 @@ namespace factorama
             }
 
             // Check for divergence
-            if (current_stats_.residual_norm > 10.0 * initial_stats_.residual_norm)
-            {
-                if (settings_.verbose)
-                {
+            if (current_stats_.residual_norm > 10.0 * initial_stats_.residual_norm) {
+                if (settings_.verbose) {
                     std::cout << "[SparseOptimizer] Diverged: Residual norm too large (" << current_stats_.residual_norm
                               << " > 10 * " << initial_stats_.residual_norm << ")\n";
                 }
@@ -309,28 +269,16 @@ namespace factorama
         std::chrono::duration<double> elapsed_sec = end_time - start_time;
 
         // Set final status if still RUNNING (max iterations reached)
-        if (current_stats_.status == OptimizerStatus::RUNNING)
-        {
+        if (current_stats_.status == OptimizerStatus::RUNNING) {
             current_stats_.status = OptimizerStatus::SUCCESS;
         }
 
-        if (settings_.verbose)
-        {
-            std::vector<std::string> timer_names = {
-                "residual",
-                "jacobian",
-                "hessian",
-                "solve",
-                "update_vars"
-            };
+        if (settings_.verbose) {
+            std::vector<std::string> timer_names = {"residual", "jacobian", "hessian", "solve", "update_vars"};
 
-            std::vector<double> timer_vals = {
-                residual_stopwatch_.elapsed(),
-                jacobian_stopwatch_.elapsed(),
-                hessian_stopwatch_.elapsed(),
-                solve_stopwatch_.elapsed(),
-                update_vars_stopwatch_.elapsed()
-            };
+            std::vector<double> timer_vals = {residual_stopwatch_.elapsed(), jacobian_stopwatch_.elapsed(),
+                                              hessian_stopwatch_.elapsed(), solve_stopwatch_.elapsed(),
+                                              update_vars_stopwatch_.elapsed()};
 
 
             std::cout << "\n=== SparseOptimizer Summary ===\n";
@@ -338,12 +286,17 @@ namespace factorama
             std::cout << "Final residual norm: " << current_stats_.residual_norm << "\n";
             std::cout << "Final chi²: " << current_stats_.chi2 << "\n";
             std::cout << "Final step norm: " << current_stats_.delta_norm << "\n";
-            std::cout << "Residual improvement: " << (initial_stats_.residual_norm - current_stats_.residual_norm) << "\n";
-            std::cout << "Relative improvement: " << (initial_stats_.residual_norm > 0 ? (initial_stats_.residual_norm - current_stats_.residual_norm) / initial_stats_.residual_norm * 100.0 : 0.0)
+            std::cout << "Residual improvement: " << (initial_stats_.residual_norm - current_stats_.residual_norm)
+                      << "\n";
+            std::cout << "Relative improvement: "
+                      << (initial_stats_.residual_norm > 0
+                              ? (initial_stats_.residual_norm - current_stats_.residual_norm) /
+                                    initial_stats_.residual_norm * 100.0
+                              : 0.0)
                       << " %\n";
             std::cout << "Total time: " << elapsed_sec.count() << " seconds\n";
             std::cout << "Detailed times:" << std::endl;
-            for(size_t i = 0; i < timer_names.size(); i++) {
+            for (size_t i = 0; i < timer_names.size(); i++) {
                 std::cout << "  " << timer_names[i] << ": " << timer_vals[i] * 1e6 << "us" << std::endl;
             }
             std::cout << "Optimization " << (current_stats_.valid ? "SUCCESS" : "FAILED") << "\n";
@@ -356,8 +309,7 @@ namespace factorama
 
     void SparseOptimizer::single_step_levenberg_marquardt()
     {
-        if (!graph_)
-        {
+        if (!graph_) {
             throw std::runtime_error("[SparseOptimizer] No factor graph set.");
         }
 
@@ -369,14 +321,13 @@ namespace factorama
         residual_stopwatch_.stop();
 
         jacobian_stopwatch_.start();
-        const Eigen::SparseMatrix<double> &J = graph_->compute_sparse_jacobian_matrix();
+        const Eigen::SparseMatrix<double>& J = graph_->compute_sparse_jacobian_matrix();
         jacobian_stopwatch_.stop();
 
         double current_cost = 0.5 * residual1_.squaredNorm();
 
         // Initialize damping parameter if this is the first iteration
-        if (current_stats_.current_iteration == 0)
-        {
+        if (current_stats_.current_iteration == 0) {
             current_stats_.damping_parameter = settings_.initial_lambda;
         }
 
@@ -387,15 +338,13 @@ namespace factorama
         const int max_lm_attempts = 5;
 
         // Levenberg-Marquardt loop: try different damping values until we get improvement
-        while (!step_accepted && lm_attempts < max_lm_attempts)
-        {
+        while (!step_accepted && lm_attempts < max_lm_attempts) {
             // Step 2: Form damped normal equations: (J^T J + λI) dx = -J^T r
             hessian_stopwatch_.start();
             Eigen::SparseMatrix<double> H = J.transpose() * J;
 
             // Add damping: H = J^T J + λI
-            for (int i = 0; i < H.outerSize(); ++i)
-            {
+            for (int i = 0; i < H.outerSize(); ++i) {
                 H.coeffRef(i, i) += current_stats_.damping_parameter;
             }
 
@@ -405,14 +354,13 @@ namespace factorama
             // Step 3: Solve damped system
             solve_stopwatch_.start();
             sparse_solver_.compute(H);
-            if (sparse_solver_.info() != Eigen::Success)
-            {
+            if (sparse_solver_.info() != Eigen::Success) {
                 // If factorization fails, increase damping and try again
                 current_stats_.damping_parameter *= settings_.lambda_up_factor;
                 lm_attempts++;
-                if (settings_.verbose)
-                {
-                    std::cout << "[LM] Factorization failed, increasing lambda to " << current_stats_.damping_parameter << "\n";
+                if (settings_.verbose) {
+                    std::cout << "[LM] Factorization failed, increasing lambda to " << current_stats_.damping_parameter
+                              << "\n";
                 }
                 continue;
             }
@@ -422,28 +370,23 @@ namespace factorama
             double min_diag = D.minCoeff();
             double max_diag = D.maxCoeff();
 
-            if (min_diag < 1e-14 || (max_diag / min_diag) > 1e12)
-            {
+            if (min_diag < 1e-14 || (max_diag / min_diag) > 1e12) {
                 // Hessian is ill-conditioned, increase damping and try again
                 current_stats_.damping_parameter *= settings_.lambda_up_factor;
                 lm_attempts++;
-                if (settings_.verbose)
-                {
-                    std::cout << "[LM] Hessian is "
-                              << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
-                              << " (min diag=" << min_diag << ", cond est=" << (max_diag/min_diag)
+                if (settings_.verbose) {
+                    std::cout << "[LM] Hessian is " << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
+                              << " (min diag=" << min_diag << ", cond est=" << (max_diag / min_diag)
                               << "), increasing lambda to " << current_stats_.damping_parameter << "\n";
                 }
                 continue;
             }
 
             dx = sparse_solver_.solve(b);
-            if (sparse_solver_.info() != Eigen::Success)
-            {
+            if (sparse_solver_.info() != Eigen::Success) {
                 current_stats_.damping_parameter *= settings_.lambda_up_factor;
                 lm_attempts++;
-                if (settings_.verbose)
-                {
+                if (settings_.verbose) {
                     std::cout << "[LM] Solve failed, increasing lambda to " << current_stats_.damping_parameter << "\n";
                 }
                 continue;
@@ -455,26 +398,22 @@ namespace factorama
             // Step 4: Apply increment to variables (temporarily)
             update_vars_stopwatch_.start();
             std::vector<Eigen::VectorXd> original_values;
-            const auto &variables = graph_->get_all_variables();
+            const auto& variables = graph_->get_all_variables();
 
             // Store original values for potential rollback
-            for (const auto &var : variables)
-            {
+            for (const auto& var : variables) {
                 original_values.push_back(var->value());
             }
 
             // Apply increments
-            for (const auto &var : variables)
-            {
-                if (var->is_constant())
-                {
+            for (const auto& var : variables) {
+                if (var->is_constant()) {
                     continue;
                 }
 
                 bool valid = false;
                 VariablePlacement placement = graph_->variable_placement(var->id(), valid);
-                if (!valid)
-                {
+                if (!valid) {
                     std::cerr << "[LM] Skipping variable id=" << var->id() << " (no placement found)\n";
                     continue;
                 }
@@ -491,25 +430,20 @@ namespace factorama
             new_cost = 0.5 * residual2_.squaredNorm();
 
             // Step 6: Check if step should be accepted
-            if (new_cost < current_cost)
-            {
+            if (new_cost < current_cost) {
                 // Accept step: decrease damping for next iteration
                 step_accepted = true;
                 current_stats_.damping_parameter *= settings_.lambda_down_factor;
                 current_stats_.damping_parameter = std::max(current_stats_.damping_parameter, 1e-12);
 
-                if (settings_.verbose)
-                {
+                if (settings_.verbose) {
                     std::cout << "[LM] Step accepted, cost: " << current_cost << " -> " << new_cost
                               << ", decreasing lambda to " << current_stats_.damping_parameter << "\n";
                 }
-            }
-            else
-            {
+            } else {
                 update_vars_stopwatch_.start();
                 // Reject step: restore original values and increase damping
-                for (size_t i = 0; i < variables.size(); ++i)
-                {
+                for (size_t i = 0; i < variables.size(); ++i) {
                     variables[i]->set_value_from_vector(original_values[i]);
                 }
 
@@ -517,17 +451,14 @@ namespace factorama
                 current_stats_.damping_parameter = std::min(current_stats_.damping_parameter, settings_.max_lambda);
                 lm_attempts++;
 
-                if (settings_.verbose)
-                {
+                if (settings_.verbose) {
                     std::cout << "[LM] Step rejected, cost: " << current_cost << " -> " << new_cost
                               << ", increasing lambda to " << current_stats_.damping_parameter << "\n";
                 }
 
                 // If lambda becomes too large, we're stuck
-                if (current_stats_.damping_parameter >= settings_.max_lambda)
-                {
-                    if (settings_.verbose)
-                    {
+                if (current_stats_.damping_parameter >= settings_.max_lambda) {
+                    if (settings_.verbose) {
                         std::cout << "[LM] Lambda too large (" << current_stats_.damping_parameter
                                   << " >= " << settings_.max_lambda << "), stopping\n";
                     }
@@ -538,25 +469,22 @@ namespace factorama
         }
 
         // If no step was accepted, we're done (convergence or failure)
-        if (!step_accepted)
-        {   
+        if (!step_accepted) {
 
             double initial_cost = initial_stats_.chi2 * 0.5;
-            if(current_cost < initial_cost) {
+            if (current_cost < initial_cost) {
                 // cost has gone down since the beginning, so we will call this a win
                 current_stats_.valid = true;
                 current_stats_.status = OptimizerStatus::SUCCESS;
 
-            }
-            else {
+            } else {
                 current_stats_.valid = false;
                 current_stats_.status = (current_stats_.damping_parameter >= settings_.max_lambda)
-                                        ? OptimizerStatus::ILL_CONDITIONED
-                                        : OptimizerStatus::FAILED;
+                                            ? OptimizerStatus::ILL_CONDITIONED
+                                            : OptimizerStatus::FAILED;
             }
-            
-            if (settings_.verbose)
-            {
+
+            if (settings_.verbose) {
                 std::cout << "[LM] No acceptable step found after " << max_lm_attempts << " attempts\n";
             }
             // Set minimal step for convergence detection
@@ -566,7 +494,7 @@ namespace factorama
 
         // Step 7: Update statistics (use final accepted state)
         Eigen::VectorXd& r_final = residual2_;
-        if(!step_accepted) {
+        if (!step_accepted) {
             r_final = residual1_;
         }
         current_stats_.delta_norm = dx.norm();
@@ -575,11 +503,9 @@ namespace factorama
         current_stats_.current_iteration++;
 
         // Step 8: Optional verbose logging
-        if (settings_.verbose)
-        {
+        if (settings_.verbose) {
             const auto t_end = std::chrono::steady_clock::now();
-            auto micros = [](auto duration)
-            {
+            auto micros = [](auto duration) {
                 return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
             };
 
@@ -591,11 +517,8 @@ namespace factorama
             std::cout << "  Damping (λ):           " << current_stats_.damping_parameter << "\n";
             std::cout << "  LM attempts:           " << lm_attempts + 1 << "\n";
             std::cout << "  Step accepted:         " << (step_accepted ? "YES" : "NO") << "\n";
-            std::cout << "  J: " << J.rows() << " x " << J.cols()
-                      << " | nnz = " << J.nonZeros()
-                      << " | density = "
-                      << 100.0 * J.nonZeros() / double(J.rows() * J.cols())
-                      << " %\n";
+            std::cout << "  J: " << J.rows() << " x " << J.cols() << " | nnz = " << J.nonZeros()
+                      << " | density = " << 100.0 * J.nonZeros() / double(J.rows() * J.cols()) << " %\n";
             std::cout << "  Total time:            " << micros(t_end - t_start) << " us\n";
         }
     }
@@ -604,13 +527,12 @@ namespace factorama
     {
         // Assume the graph has already been optimized - estimate the covariance of each variable
 
-        if (cached_hessian_valid_for_covariance_est_)
-        {
+        if (cached_hessian_valid_for_covariance_est_) {
             // early end, if it was already valid
             return;
         }
 
-        if(!optimization_complete_) {
+        if (!optimization_complete_) {
 
             return;
         }
@@ -618,17 +540,15 @@ namespace factorama
         const auto t_start = std::chrono::steady_clock::now();
 
         // Step 1: Get the sparse jacobian
-        const Eigen::SparseMatrix<double> &J = graph_->sparse_jacobian();
+        const Eigen::SparseMatrix<double>& J = graph_->sparse_jacobian();
 
         // Step 2: compute Hessian
         cached_hessian_ = J.transpose() * J;
 
         sparse_solver_.compute(cached_hessian_);
 
-        if (sparse_solver_.info() != Eigen::Success)
-        {
-            if (settings_.verbose)
-            {
+        if (sparse_solver_.info() != Eigen::Success) {
+            if (settings_.verbose) {
                 std::cerr << "[SparseOptimizer] Sparse Cholesky factorization failed for covariance estimation.\n";
             }
             return;
@@ -640,12 +560,9 @@ namespace factorama
         double max_diag = D.maxCoeff();
         double cond_estimate = max_diag / min_diag;
 
-        if (min_diag < 1e-14 || cond_estimate > 1e12)
-        {
-            if (settings_.verbose)
-            {
-                std::cerr << "[SparseOptimizer] Hessian is "
-                          << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
+        if (min_diag < 1e-14 || cond_estimate > 1e12) {
+            if (settings_.verbose) {
+                std::cerr << "[SparseOptimizer] Hessian is " << (min_diag < 1e-14 ? "singular" : "ill-conditioned")
                           << " (min diag=" << min_diag << ", cond est=" << cond_estimate
                           << ") - covariance estimation may be unreliable.\n";
             }
@@ -654,12 +571,10 @@ namespace factorama
 
         cached_hessian_valid_for_covariance_est_ = true;
 
-        if (settings_.verbose)
-        {
+        if (settings_.verbose) {
 
             const auto t_end = std::chrono::steady_clock::now();
-            auto micros = [](auto duration)
-            {
+            auto micros = [](auto duration) {
                 return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
             };
             std::cout << "estimate covariance" << std::endl;
@@ -667,39 +582,32 @@ namespace factorama
         }
     }
 
-    Eigen::MatrixXd SparseOptimizer::estimate_covariance(const Variable *variable, bool &covariance_valid)
+    Eigen::MatrixXd SparseOptimizer::estimate_covariance(const Variable *variable, bool& covariance_valid)
     {
         covariance_valid = false;
-        if (variable == nullptr)
-        {
-            if (settings_.verbose)
-            {
+        if (variable == nullptr) {
+            if (settings_.verbose) {
                 std::cerr << "get covariance got an empty variable" << std::endl;
             }
             return Eigen::MatrixXd();
         }
 
-        if (variable->is_constant() || variable->size() == 0)
-        {
-            if (settings_.verbose)
-            {
+        if (variable->is_constant() || variable->size() == 0) {
+            if (settings_.verbose) {
                 std::cerr << "cannot get a covariance from a constant variable or one with no size" << std::endl;
             }
             return Eigen::MatrixXd();
         }
 
-        if(!optimization_complete_) {
-            if (settings_.verbose)
-            {
+        if (!optimization_complete_) {
+            if (settings_.verbose) {
                 std::cerr << "optimization was not complete prior to est" << std::endl;
             }
             return Eigen::MatrixXd();
         }
 
-        if (!cached_hessian_valid_for_covariance_est_ || cached_hessian_.rows() == 0 || cached_hessian_.cols() == 0)
-        {
-            if (settings_.verbose)
-            {
+        if (!cached_hessian_valid_for_covariance_est_ || cached_hessian_.rows() == 0 || cached_hessian_.cols() == 0) {
+            if (settings_.verbose) {
                 std::cerr << "cached hessian was invalid" << std::endl;
             }
             return Eigen::MatrixXd();
@@ -710,10 +618,8 @@ namespace factorama
         bool var_valid;
         auto placement = graph_->variable_placement(var_id, var_valid);
 
-        if (!var_valid)
-        {
-            if (settings_.verbose)
-            {
+        if (!var_valid) {
+            if (settings_.verbose) {
                 std::cerr << "variable placement not found" << std::endl;
             }
             return Eigen::MatrixXd();
@@ -724,16 +630,13 @@ namespace factorama
         int variable_size = placement.dim;
         Eigen::MatrixXd B = Eigen::MatrixXd::Zero(total_hessian_size, variable_size);
 
-        for (int i = 0; i < variable_size; i++)
-        {
+        for (int i = 0; i < variable_size; i++) {
             B(placement.index + i, i) = 1.0;
         }
         Eigen::MatrixXd X = sparse_solver_.solve(B);
 
-        if (sparse_solver_.info() != Eigen::Success)
-        {
-            if (settings_.verbose)
-            {
+        if (sparse_solver_.info() != Eigen::Success) {
+            if (settings_.verbose) {
                 std::cerr << "get covariance for variable " + variable->name() + ", solve failed" << std::endl;
             }
             return Eigen::MatrixXd();
@@ -741,15 +644,13 @@ namespace factorama
 
         Eigen::MatrixXd P = X.block(placement.index, 0, variable_size, variable_size);
 
-        if (!P.allFinite())
-        {
+        if (!P.allFinite()) {
             return Eigen::MatrixXd();
         }
 
         double max_diag = P.diagonal().maxCoeff();
 
-        if (max_diag > 1e12)
-        {
+        if (max_diag > 1e12) {
             return Eigen::MatrixXd();
         }
 
@@ -763,30 +664,24 @@ namespace factorama
 
     void SparseOptimizer::print_all_covariances()
     {
-        if (!cached_hessian_valid_for_covariance_est_)
-        {
+        if (!cached_hessian_valid_for_covariance_est_) {
             prepare_to_estimate_covariances();
         }
 
         std::cout << "\n\nPrinting out all covariances for the factor graph" << std::endl;
 
-        for (auto var : graph_->get_all_variables())
-        {
+        for (auto var : graph_->get_all_variables()) {
             std::cout << "variable: " + var->name() << std::endl;
-            if (var->is_constant())
-            {
+            if (var->is_constant()) {
                 std::cout << "constant" << std::endl;
                 continue;
             }
             bool cov_valid;
             auto cov = estimate_covariance(var.get(), cov_valid);
 
-            if (cov_valid)
-            {
+            if (cov_valid) {
                 std::cout << cov << std::endl;
-            }
-            else
-            {
+            } else {
                 std::cout << "invalid" << std::endl;
             }
         }

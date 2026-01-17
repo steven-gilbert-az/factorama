@@ -28,7 +28,6 @@
 using namespace factorama;
 
 
-
 TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
 {
 
@@ -63,7 +62,8 @@ TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
     {
         Eigen::VectorXd residual = graph.compute_full_residual_vector();
         CAPTURE(residual);
-        REQUIRE(residual.size() == 12); // bearing (3) + pose orientation prior (3) + pose position prior (3) + landmark prior (3)
+        REQUIRE(residual.size() ==
+                12); // bearing (3) + pose orientation prior (3) + pose position prior (3) + landmark prior (3)
         REQUIRE(is_approx_equal(residual, Eigen::VectorXd::Zero(12)));
     }
 
@@ -89,18 +89,12 @@ TEST_CASE("BasicResidualSanityTest", "[residual][factor]")
 TEST_CASE("SO(3) exponential and logarithmic maps round trip", "[SO3]")
 {
     const std::vector<Eigen::Vector3d> test_omegas = {
-        Eigen::Vector3d::Zero(),
-        Eigen::Vector3d(0.01, 0, 0),
-        Eigen::Vector3d(0, 0.01, 0),
-        Eigen::Vector3d(0, 0, 0.01),
-        Eigen::Vector3d(0.1, -0.2, 0.3),
-        Eigen::Vector3d(PI / 2, 0, 0),
-        Eigen::Vector3d(0, PI / 2, 0),
-        Eigen::Vector3d(0, 0, PI / 2),
+        Eigen::Vector3d::Zero(),       Eigen::Vector3d(0.01, 0, 0),     Eigen::Vector3d(0, 0.01, 0),
+        Eigen::Vector3d(0, 0, 0.01),   Eigen::Vector3d(0.1, -0.2, 0.3), Eigen::Vector3d(PI / 2, 0, 0),
+        Eigen::Vector3d(0, PI / 2, 0), Eigen::Vector3d(0, 0, PI / 2),
     };
 
-    for (const auto &omega : test_omegas)
-    {
+    for (const auto& omega : test_omegas) {
         Eigen::Matrix3d R = ExpMapSO3(omega);
         Eigen::Vector3d recovered = LogMapSO3(R);
 
@@ -126,8 +120,7 @@ TEST_CASE("SO(3) ExpMap/LogMap π-rotation edge cases", "[SO3][EdgeCase]")
         Eigen::Vector3d(1, 1, 1).normalized(),
     };
 
-    for (const auto &axis : axis_vectors)
-    {
+    for (const auto& axis : axis_vectors) {
 
         CAPTURE(axis);
         Eigen::Vector3d omega = PI * axis;
@@ -154,8 +147,7 @@ TEST_CASE("SO(3) ExpMap/LogMap π-rotation edge cases", "[SO3][EdgeCase]")
         // REQUIRE(std::abs(recovered_angle - original_angle) < 1e-6 ||
         //         std::abs(recovered_angle + original_angle) < 1e-6);
 
-        if (recovered_angle > 1e-8)
-        {
+        if (recovered_angle > 1e-8) {
             Eigen::Vector3d recovered_axis = recovered / recovered_angle;
             REQUIRE(std::abs(recovered_axis.dot(axis)) > 0.999); // cosine near 1
         }
@@ -165,16 +157,9 @@ TEST_CASE("SO(3) ExpMap/LogMap π-rotation edge cases", "[SO3][EdgeCase]")
 TEST_CASE("SO(3) near-zero rotation is stable", "[SO3][EdgeCase]")
 {
 
-    std::vector<double> test_cases{
-        0.1,
-        0.01,
-        0.00345,
-        1e-5,
-        2e-7,
-        1e-10};
+    std::vector<double> test_cases{0.1, 0.01, 0.00345, 1e-5, 2e-7, 1e-10};
 
-    for (double test_theta : test_cases)
-    {
+    for (double test_theta : test_cases) {
         Eigen::Vector3d omega(test_theta, -test_theta, test_theta);
         Eigen::Matrix3d R = ExpMapSO3(omega);
         Eigen::Vector3d recovered = LogMapSO3(R);

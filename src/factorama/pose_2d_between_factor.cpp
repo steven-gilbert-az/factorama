@@ -3,19 +3,15 @@
 
 namespace factorama
 {
-    Pose2DBetweenFactor::Pose2DBetweenFactor(int id,
-                                             Pose2DVariable* pose_a,
-                                             Pose2DVariable* pose_b,
-                                             Variable* measured_between_variable,
-                                             double position_sigma,
-                                             double angle_sigma,
-                                             bool local_frame)
-        : pose_a_(pose_a),
-          pose_b_(pose_b),
-          measured_between_variable_(measured_between_variable),
-          position_weight_(1.0 / position_sigma),
-          angle_weight_(1.0 / angle_sigma),
-          local_frame_(local_frame)
+    Pose2DBetweenFactor::Pose2DBetweenFactor(int id, Pose2DVariable *pose_a, Pose2DVariable *pose_b,
+                                             Variable *measured_between_variable, double position_sigma,
+                                             double angle_sigma, bool local_frame)
+        : pose_a_(pose_a)
+        , pose_b_(pose_b)
+        , measured_between_variable_(measured_between_variable)
+        , position_weight_(1.0 / position_sigma)
+        , angle_weight_(1.0 / angle_sigma)
+        , local_frame_(local_frame)
     {
         id_ = id;
         assert(pose_a != nullptr && "pose_a cannot be nullptr");
@@ -36,15 +32,12 @@ namespace factorama
         Eigen::Vector2d measured_pos = measured_between_variable_->value().head<2>();
         Eigen::Vector2d pos_error;
 
-        if (local_frame_)
-        {
+        if (local_frame_) {
             // Measurement in pose_a's local frame: transform world difference to pose_a's frame
             Eigen::Matrix2d dcm_AW = pose_a_->dcm_2d();
             Eigen::Vector2d relative_pos_A = dcm_AW * relative_pos_W;
             pos_error = relative_pos_A - measured_pos;
-        }
-        else
-        {
+        } else {
             // Measurement in world frame (original behavior)
             pos_error = relative_pos_W - measured_pos;
         }
@@ -54,7 +47,7 @@ namespace factorama
         double relative_angle = pose_b_->theta() - pose_a_->theta();
         double measured_angle = measured_between_variable_->value()(2);
         double angle_error = relative_angle - measured_angle;
-        angle_error = wrap_angle(angle_error);  // Critical: wrap to [-π, π]
+        angle_error = wrap_angle(angle_error); // Critical: wrap to [-π, π]
         res(2) = angle_weight_ * angle_error;
 
         return res;
@@ -69,15 +62,12 @@ namespace factorama
         Eigen::Vector2d measured_pos = measured_between_variable_->value().head<2>();
         Eigen::Vector2d pos_error;
 
-        if (local_frame_)
-        {
+        if (local_frame_) {
             // Measurement in pose_a's local frame: transform world difference to pose_a's frame
             Eigen::Matrix2d dcm_AW = pose_a_->dcm_2d();
             Eigen::Vector2d relative_pos_A = dcm_AW * relative_pos_W;
             pos_error = relative_pos_A - measured_pos;
-        }
-        else
-        {
+        } else {
             // Measurement in world frame (original behavior)
             pos_error = relative_pos_W - measured_pos;
         }
@@ -87,35 +77,30 @@ namespace factorama
         double relative_angle = pose_b_->theta() - pose_a_->theta();
         double measured_angle = measured_between_variable_->value()(2);
         double angle_error = relative_angle - measured_angle;
-        angle_error = wrap_angle(angle_error);  // Critical: wrap to [-π, π]
+        angle_error = wrap_angle(angle_error); // Critical: wrap to [-π, π]
         result(2) = angle_weight_ * angle_error;
     }
 
     void Pose2DBetweenFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
         // Ensure jacobians vector has correct size for 3 variables
-        if(jacobians.size() == 0) {
+        if (jacobians.size() == 0) {
             jacobians.resize(3);
-        }
-        else if(jacobians.size() != 3) {
+        } else if (jacobians.size() != 3) {
             jacobians.clear();
             jacobians.resize(3);
         }
 
-        if (local_frame_)
-        {
+        if (local_frame_) {
             // Local frame: residual_pos = dcm_AW * (pos_b - pos_a) - measured_pos
             Eigen::Vector2d relative_pos_W = pose_b_->pos_2d() - pose_a_->pos_2d();
             Eigen::Matrix2d dcm_AW = pose_a_->dcm_2d();
 
             // Jacobian w.r.t. pose_a
-            if (pose_a_->is_constant())
-            {
+            if (pose_a_->is_constant()) {
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
                     jacobians[0].resize(size_, size_);
                 }
                 jacobians[0].setZero();
@@ -127,8 +112,7 @@ namespace factorama
                 // For 2D: dR/dtheta = J_perp * R where J_perp = [[0, -1], [1, 0]]
                 // So d(R * v)/d(theta) = J_perp * R * v
                 Eigen::Matrix2d J_perp;
-                J_perp << 0, -1,
-                          1,  0;
+                J_perp << 0, -1, 1, 0;
                 Eigen::Vector2d dres_dtheta = J_perp * dcm_AW * relative_pos_W;
                 jacobians[0].block<2, 1>(0, 2) = position_weight_ * dres_dtheta;
 
@@ -137,13 +121,10 @@ namespace factorama
             }
 
             // Jacobian w.r.t. pose_b
-            if (pose_b_->is_constant())
-            {
+            if (pose_b_->is_constant()) {
                 jacobians[1] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[1].rows() != size_ || jacobians[1].cols() != size_) {
+            } else {
+                if (jacobians[1].rows() != size_ || jacobians[1].cols() != size_) {
                     jacobians[1].resize(size_, size_);
                 }
                 jacobians[1].setZero();
@@ -157,18 +138,13 @@ namespace factorama
                 // Angle part: d(res_angle)/d(theta_b) = angle_weight
                 jacobians[1](2, 2) = angle_weight_;
             }
-        }
-        else
-        {
+        } else {
             // World frame: residual = (pos_b - pos_a) - measured (original behavior)
             // Jacobian w.r.t. pose_a
-            if (pose_a_->is_constant())
-            {
+            if (pose_a_->is_constant()) {
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != size_) {
                     jacobians[0].resize(size_, size_);
                 }
                 jacobians[0].setZero();
@@ -181,13 +157,10 @@ namespace factorama
             }
 
             // Jacobian w.r.t. pose_b
-            if (pose_b_->is_constant())
-            {
+            if (pose_b_->is_constant()) {
                 jacobians[1] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[1].rows() != size_ || jacobians[1].cols() != size_) {
+            } else {
+                if (jacobians[1].rows() != size_ || jacobians[1].cols() != size_) {
                     jacobians[1].resize(size_, size_);
                 }
                 jacobians[1].setZero();
@@ -201,13 +174,10 @@ namespace factorama
         }
 
         // Jacobian w.r.t. measured_between_variable (same for both modes)
-        if (measured_between_variable_->is_constant())
-        {
+        if (measured_between_variable_->is_constant()) {
             jacobians[2] = Eigen::MatrixXd();
-        }
-        else
-        {
-            if(jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
+        } else {
+            if (jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
                 jacobians[2].resize(size_, size_);
             }
             jacobians[2].setZero();

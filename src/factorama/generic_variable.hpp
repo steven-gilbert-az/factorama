@@ -24,49 +24,40 @@ namespace factorama
          * @param id Unique variable identifier
          * @param initial_value Initial vector value (any dimension > 0)
          */
-        GenericVariable(int id, const Eigen::VectorXd &initial_value)
+        GenericVariable(int id, const Eigen::VectorXd& initial_value)
             : value_(initial_value)
         {
             id_ = id;
-            if (initial_value.size() == 0)
-            {
+            if (initial_value.size() == 0) {
                 throw std::runtime_error("GenericVariable: initial_value must have non-zero size");
             }
         }
 
         int size() const override { return value_.size(); }
 
-        const Eigen::VectorXd &value() const override { return value_; }
+        const Eigen::VectorXd& value() const override { return value_; }
 
-        void set_value_from_vector(const Eigen::VectorXd &x) override 
+        void set_value_from_vector(const Eigen::VectorXd& x) override
         {
-            if (x.size() != size())
-            {
+            if (x.size() != size()) {
                 throw std::runtime_error("set_value_from_vector(): size mismatch");
             }
             value_ = x;
         }
 
-        void apply_increment(const Eigen::VectorXd &dx) override
+        void apply_increment(const Eigen::VectorXd& dx) override
         {
-            if (dx.size() != size())
-            {
+            if (dx.size() != size()) {
                 throw std::runtime_error("apply_increment(): size mismatch");
             }
             value_ += dx;
         }
 
-        VariableType::VariableTypeEnum type() const override
-        {
-            return VariableType::generic;
-        }
+        VariableType::VariableTypeEnum type() const override { return VariableType::generic; }
 
-        std::shared_ptr<Variable> clone() const override 
-        {
-            return std::make_shared<GenericVariable>(*this);
-        }
+        std::shared_ptr<Variable> clone() const override { return std::make_shared<GenericVariable>(*this); }
 
     private:
         Eigen::VectorXd value_;
     };
-}
+} // namespace factorama

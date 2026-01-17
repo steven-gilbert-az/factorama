@@ -33,24 +33,23 @@ namespace factorama
          * @param bearing_W Unit bearing direction in world frame
          * @param initial_range Initial range estimate (positive distance)
          */
-        InverseRangeVariable(int variable_id,
-                             const Eigen::Vector3d &origin_pos_W,
-                             const Eigen::Vector3d &bearing_W,
+        InverseRangeVariable(int variable_id, const Eigen::Vector3d& origin_pos_W, const Eigen::Vector3d& bearing_W,
                              double initial_range);
 
         // Default min/max values for inverse range - domain specific - user can change these if they want.
-        double minimum_inverse_range_ = 1e-6; // Assume meters, max range = 1million meters (1000 km) - obviously too small for satelite stuff
-        double maximum_inverse_range_ = 1e3;  // minimum range = 1mm
+        double minimum_inverse_range_ =
+            1e-6; // Assume meters, max range = 1million meters (1000 km) - obviously too small for satelite stuff
+        double maximum_inverse_range_ = 1e3; // minimum range = 1mm
 
         int size() const override { return 1; }
-        const Eigen::VectorXd &value() const override { return inverse_range_value_; }
-        const Eigen::Vector3d &origin_pos_W() const { return origin_pos_W_; }
-        const Eigen::Vector3d &bearing_W() const { return bearing_W_; }
+        const Eigen::VectorXd& value() const override { return inverse_range_value_; }
+        const Eigen::Vector3d& origin_pos_W() const { return origin_pos_W_; }
+        const Eigen::Vector3d& bearing_W() const { return bearing_W_; }
         VariableType::VariableTypeEnum type() const override { return VariableType::inverse_range_landmark; }
         double inverse_range() const { return inverse_range_value_[0]; }
         void clip_inverse_range();
-        void set_value_from_vector(const Eigen::VectorXd &x) override;
-        void apply_increment(const Eigen::VectorXd &dx) override;
+        void set_value_from_vector(const Eigen::VectorXd& x) override;
+        void apply_increment(const Eigen::VectorXd& dx) override;
         void print() const override;
         Eigen::Vector3d pos_W() const;
         std::shared_ptr<Variable> clone() const override;

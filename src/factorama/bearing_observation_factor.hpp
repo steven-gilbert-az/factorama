@@ -34,17 +34,13 @@ namespace factorama
          * @param bearing_C_observed Unit bearing vector in camera frame
          * @param angle_sigma Standard deviation of angular measurement (radians)
          */
-        BearingObservationFactor(
-            int id,
-            PoseVariable* pose_var,
-            LandmarkVariable* landmark_var,
-            const Eigen::Vector3d &bearing_C_observed,
-            double angle_sigma = 1.0)
-            : pose_var_(pose_var),
-              landmark_var_(landmark_var),
-              bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma),
-              size_(3)
+        BearingObservationFactor(int id, PoseVariable *pose_var, LandmarkVariable *landmark_var,
+                                 const Eigen::Vector3d& bearing_C_observed, double angle_sigma = 1.0)
+            : pose_var_(pose_var)
+            , landmark_var_(landmark_var)
+            , bearing_C_obs_(bearing_C_observed.normalized())
+            , weight_(1.0 / angle_sigma)
+            , size_(3)
         {
             id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -77,38 +73,23 @@ namespace factorama
             result = weight_ * (bearing_C_pred - bearing_C_obs_);
         }
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians_out) const override;
 
-        std::vector<Variable *> variables() override
-        {
-            return {pose_var_, landmark_var_};
-        }
+        std::vector<Variable *> variables() override { return {pose_var_, landmark_var_}; }
 
-        double weight() const
-        {
-            return weight_;
-        }
+        double weight() const { return weight_; }
 
-        Eigen::Vector3d bearing_C_obs() const
-        {
-            return bearing_C_obs_;
-        }
+        Eigen::Vector3d bearing_C_obs() const { return bearing_C_obs_; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::bearing_observation;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::bearing_observation; }
 
     private:
-        PoseVariable* pose_var_;
-        LandmarkVariable* landmark_var_;
+        PoseVariable *pose_var_;
+        LandmarkVariable *landmark_var_;
         Eigen::Vector3d bearing_C_obs_;
         double weight_;
         int size_;
     };
-}
+} // namespace factorama

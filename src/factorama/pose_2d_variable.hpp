@@ -73,7 +73,7 @@ namespace factorama
         std::shared_ptr<Variable> clone() const override;
 
     private:
-        Eigen::VectorXd pose_2d_;  // [x, y, θ]
+        Eigen::VectorXd pose_2d_; // [x, y, θ]
 
         /**
          * @brief Wrap angle to [-π, π]

@@ -25,7 +25,8 @@
 using namespace factorama;
 
 // Test scenario configuration
-struct TestScenario {
+struct TestScenario
+{
     std::string name;
     std::function<FactorGraph()> create_graph;
     OptimizerSettings settings;
@@ -36,7 +37,8 @@ struct TestScenario {
 };
 
 // Optimization result structure
-struct OptimizationResult {
+struct OptimizationResult
+{
     double initial_norm;
     double final_norm;
     bool converged;
@@ -44,7 +46,10 @@ struct OptimizationResult {
 };
 
 // Common optimization test pipeline
-OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSettings& settings, bool run_jacobian_test = false, double jacobian_tol = 1e-6, bool verbose = false, bool expect_failure = false) {
+OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSettings& settings,
+                                         bool run_jacobian_test = false, double jacobian_tol = 1e-6,
+                                         bool verbose = false, bool expect_failure = false)
+{
     OptimizationResult result;
 
     graph.finalize_structure();
@@ -56,7 +61,7 @@ OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSetti
     }
 
     // Run jacobian test if requested (only for non-failure cases)
-    if(run_jacobian_test && !expect_failure){
+    if (run_jacobian_test && !expect_failure) {
         REQUIRE(graph.detailed_factor_test(jacobian_tol, true));
     }
 
@@ -114,194 +119,170 @@ OptimizationResult run_optimization_test(FactorGraph graph, const OptimizerSetti
 TEST_CASE("Consolidated Integration Tests")
 {
     std::cout << "\n=== Running Consolidated Integration Tests ===" << std::endl;
-    
+
     // Define all test scenarios
     std::vector<TestScenario> scenarios;
-    
+
     // Scenario 1: Basic pose optimization
     {
         OptimizerSettings settings1;
         settings1.method = OptimizerMethod::GaussNewton;
         settings1.verbose = true;
-        scenarios.push_back({
-            "Full optimization with pose variables",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
-            },
-            settings1,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with pose variables",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false,
+                                                                 true);
+                             },
+                             settings1, false, 1e-6, true});
     }
-    
+
     // Scenario 2: Basic pose optimization (second test)
     {
         OptimizerSettings settings2;
         settings2.method = OptimizerMethod::GaussNewton;
         settings2.verbose = true;
-        scenarios.push_back({
-            "Full optimization with pose variables - second test",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
-            },
-            settings2,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with pose variables - second test",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false,
+                                                                 true);
+                             },
+                             settings2, false, 1e-6, true});
     }
-    
+
     // Scenario 3: Inverse range variables
     {
         OptimizerSettings settings3;
         settings3.method = OptimizerMethod::LevenbergMarquardt;
         settings3.verbose = true;
-        scenarios.push_back({
-            "Full optimization with inverse range variables",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true);
-            },
-            settings3,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with inverse range variables",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions,
+                                                                             true, false, true);
+                             },
+                             settings3, false, 1e-6, true});
     }
-    
+
     // Scenario 4: Inverse range with constant poses
     {
         OptimizerSettings settings4;
         settings4.method = OptimizerMethod::GaussNewton;
         settings4.verbose = true;
-        scenarios.push_back({
-            "Full optimization with inverse range variables (Camera poses held constant)",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, true);
-            },
-            settings4,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with inverse range variables (Camera poses held constant)",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions,
+                                                                             true, true, true);
+                             },
+                             settings4, false, 1e-6, true});
     }
-    
+
     // Scenario 5: Larger planar problem with jacobian testing
     {
         OptimizerSettings settings5;
         settings5.method = OptimizerMethod::LevenbergMarquardt;
         settings5.learning_rate = 1.0;
         settings5.verbose = true;
-        scenarios.push_back({
-            "Full optimization with inverse range variables (larger planar problem)",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, true, true, 0.004, 5.0);
-            },
-            settings5,
-            true, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with inverse range variables (larger planar problem)",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions,
+                                                                             true, true, true, 0.004, 5.0);
+                             },
+                             settings5, true, 1e-6, true});
     }
-    
+
     // Scenario 6: Inverse range with prior factors
     {
         OptimizerSettings settings6;
         settings6.method = OptimizerMethod::GaussNewton;
         settings6.verbose = true;
-        scenarios.push_back({
-            "Full optimization with inverse range variables (and prior factors!)",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, true, 0.005, 5.0);
-            },
-            settings6,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with inverse range variables (and prior factors!)",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions,
+                                                                             true, false, true, 0.005, 5.0);
+                             },
+                             settings6, false, 1e-6, true});
     }
-    
+
     // Scenario 7: Prior factors with landmarks
     {
         OptimizerSettings settings7;
         settings7.method = OptimizerMethod::GaussNewton;
         settings7.verbose = true;
-        scenarios.push_back({
-            "Full optimization with prior factors!",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true, 0.005);
-            },
-            settings7,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with prior factors!",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false,
+                                                                 true, 0.005);
+                             },
+                             settings7, false, 1e-6, true});
     }
-    
+
     // Scenario 8: Relative orientation alignment factors
     {
         OptimizerSettings settings8;
         settings8.method = OptimizerMethod::GaussNewton;
         settings8.verbose = true;
-        scenarios.push_back({
-            "Full optimization with relative orientation alignment factors",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses{
-                    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-                    {0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
-                    {0.0, 0.0, 0.0, 0.0, 0.0, 1.0},
-                    {0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
-                    {0.0, 0.0, 0.0, 0.0, 0.5, 0.5},
-                    {0.0, 0.0, 0.0, 0.5, 0.0, 0.5}};
-                Eigen::Vector3d gt_rot_IC{0.1, 0.2, 0.3};
-                return CreateGraphWithPoseBetweenFactors(gt_camera_poses, gt_rot_IC, true, 0.04);
-            },
-            settings8,
-            false, 1e-6, false
-        });
+        scenarios.push_back({"Full optimization with relative orientation alignment factors",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses{
+                                     {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
+                                     {0.0, 0.0, 0.0, 0.0, 0.0, 1.0}, {0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
+                                     {0.0, 0.0, 0.0, 0.0, 0.5, 0.5}, {0.0, 0.0, 0.0, 0.5, 0.0, 0.5}};
+                                 Eigen::Vector3d gt_rot_IC{0.1, 0.2, 0.3};
+                                 return CreateGraphWithPoseBetweenFactors(gt_camera_poses, gt_rot_IC, true, 0.04);
+                             },
+                             settings8, false, 1e-6, false});
     }
-    
+
     // Scenario 9: BearingProjectionFactor2D basic test
     {
         OptimizerSettings settings9;
         settings9.method = OptimizerMethod::GaussNewton;
         settings9.verbose = true;
-        scenarios.push_back({
-            "Full optimization with BearingProjectionFactor2D",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, true);
-            },
-            settings9,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with BearingProjectionFactor2D",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true,
+                                                                           false, true);
+                             },
+                             settings9, false, 1e-6, true});
     }
-    
+
     // Scenario 10: BearingProjectionFactor2D with prior factors
     {
         OptimizerSettings settings10;
         settings10.method = OptimizerMethod::GaussNewton;
         settings10.verbose = true;
-        scenarios.push_back({
-            "Full optimization with BearingProjectionFactor2D and prior factors",
-            []() {
-                std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
-                std::vector<Eigen::Vector3d> gt_landmark_positions;
-                CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
-                return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true, false, true, 0.005);
-            },
-            settings10,
-            false, 1e-6, true
-        });
+        scenarios.push_back({"Full optimization with BearingProjectionFactor2D and prior factors",
+                             []() {
+                                 std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+                                 std::vector<Eigen::Vector3d> gt_landmark_positions;
+                                 CreatePlanarScenario(gt_camera_poses, gt_landmark_positions);
+                                 return CreateGraphWithBearingProjection2D(gt_camera_poses, gt_landmark_positions, true,
+                                                                           false, true, 0.005);
+                             },
+                             settings10, false, 1e-6, true});
     }
 
     // ===== FAILURE CASES: Test that optimizer correctly detects ill-conditioned problems =====
@@ -319,8 +300,7 @@ TEST_CASE("Consolidated Integration Tests")
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
                 return CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, false);
             },
-            settings11,
-            false, 1e-6, true, true  // expect_failure = true
+            settings11, false, 1e-6, true, true // expect_failure = true
         });
     }
 
@@ -337,8 +317,7 @@ TEST_CASE("Consolidated Integration Tests")
                 CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
                 return CreateGraphWithInverseRangeVariables(gt_camera_poses, gt_landmark_positions, true, false, false);
             },
-            settings12,
-            false, 1e-6, true, true  // expect_failure = true
+            settings12, false, 1e-6, true, true // expect_failure = true
         });
     }
 
@@ -347,52 +326,44 @@ TEST_CASE("Consolidated Integration Tests")
         OptimizerSettings settings13;
         settings13.method = OptimizerMethod::LevenbergMarquardt;
         settings13.verbose = true;
-        scenarios.push_back({
-            "Plane fitting with 6 points",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back(
+            {"Plane fitting with 6 points",
+             []() {
+                 FactorGraph graph;
+                 int var_id = 0;
+                 int factor_id = 0;
 
-                // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
+                 // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
 
-                // Create 6 points on the plane with small noise
-                std::vector<Eigen::Vector3d> point_positions = {
-                    {0.0, 0.0, 5.0},
-                    {1.0, 0.0, 5.01},
-                    {0.0, 1.0, 4.99},
-                    {-1.0, 0.0, 5.02},
-                    {0.0, -1.0, 4.98},
-                    {0.5, 0.5, 5.0}
-                };
+                 // Create 6 points on the plane with small noise
+                 std::vector<Eigen::Vector3d> point_positions = {{0.0, 0.0, 5.0},   {1.0, 0.0, 5.01},  {0.0, 1.0, 4.99},
+                                                                 {-1.0, 0.0, 5.02}, {0.0, -1.0, 4.98}, {0.5, 0.5, 5.0}};
 
-                // Create point variables (held constant - these are our measurements)
-                std::vector<std::shared_ptr<LandmarkVariable>> points;
-                for (const auto& pos : point_positions) {
-                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
-                    point->set_constant(true);
-                    points.push_back(point);
-                    graph.add_variable(point);
-                }
+                 // Create point variables (held constant - these are our measurements)
+                 std::vector<std::shared_ptr<LandmarkVariable>> points;
+                 for (const auto& pos : point_positions) {
+                     auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                     point->set_constant(true);
+                     points.push_back(point);
+                     graph.add_variable(point);
+                 }
 
-                // Create plane variable with incorrect initial guess
-                Eigen::Vector3d initial_normal(0.1, 0.1, 1.0);  // Slightly wrong orientation
-                double initial_distance = -4.5;  // Slightly wrong distance
-                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
-                graph.add_variable(plane);
+                 // Create plane variable with incorrect initial guess
+                 Eigen::Vector3d initial_normal(0.1, 0.1, 1.0); // Slightly wrong orientation
+                 double initial_distance = -4.5;                // Slightly wrong distance
+                 auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                 graph.add_variable(plane);
 
-                // Add plane factors connecting each point to the plane
-                double sigma = 0.1;
-                for (auto& point : points) {
-                    auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), sigma);
-                    graph.add_factor(factor);
-                }
+                 // Add plane factors connecting each point to the plane
+                 double sigma = 0.1;
+                 for (auto& point : points) {
+                     auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), sigma);
+                     graph.add_factor(factor);
+                 }
 
-                return graph;
-            },
-            settings13,
-            true, 1e-6, true
-        });
+                 return graph;
+             },
+             settings13, true, 1e-6, true});
     }
 
     // Scenario 14: Plane fitting with prior
@@ -400,58 +371,52 @@ TEST_CASE("Consolidated Integration Tests")
         OptimizerSettings settings14;
         settings14.method = OptimizerMethod::LevenbergMarquardt;
         settings14.verbose = true;
-        scenarios.push_back({
-            "Plane fitting with points and prior constraint",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back(
+            {"Plane fitting with points and prior constraint",
+             []() {
+                 FactorGraph graph;
+                 int var_id = 0;
+                 int factor_id = 0;
 
-                // Ground truth plane: approximately z = 5
-                // Create 4 points with more noise this time
-                std::vector<Eigen::Vector3d> point_positions = {
-                    {0.0, 0.0, 5.1},
-                    {1.0, 0.0, 4.9},
-                    {0.0, 1.0, 5.05},
-                    {-1.0, -1.0, 4.95}
-                };
+                 // Ground truth plane: approximately z = 5
+                 // Create 4 points with more noise this time
+                 std::vector<Eigen::Vector3d> point_positions = {
+                     {0.0, 0.0, 5.1}, {1.0, 0.0, 4.9}, {0.0, 1.0, 5.05}, {-1.0, -1.0, 4.95}};
 
-                // Create point variables (held constant)
-                std::vector<std::shared_ptr<LandmarkVariable>> points;
-                for (const auto& pos : point_positions) {
-                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
-                    point->set_constant(true);
-                    points.push_back(point);
-                    graph.add_variable(point);
-                }
+                 // Create point variables (held constant)
+                 std::vector<std::shared_ptr<LandmarkVariable>> points;
+                 for (const auto& pos : point_positions) {
+                     auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                     point->set_constant(true);
+                     points.push_back(point);
+                     graph.add_variable(point);
+                 }
 
-                // Create plane variable with poor initial guess
-                Eigen::Vector3d initial_normal(0.3, 0.2, 1.0);
-                double initial_distance = -4.0;
-                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
-                graph.add_variable(plane);
+                 // Create plane variable with poor initial guess
+                 Eigen::Vector3d initial_normal(0.3, 0.2, 1.0);
+                 double initial_distance = -4.0;
+                 auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                 graph.add_variable(plane);
 
-                // Add plane factors connecting each point to the plane
-                double point_sigma = 0.2;
-                for (auto& point : points) {
-                    auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), point_sigma);
-                    graph.add_factor(factor);
-                }
+                 // Add plane factors connecting each point to the plane
+                 double point_sigma = 0.2;
+                 for (auto& point : points) {
+                     auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), point_sigma);
+                     graph.add_factor(factor);
+                 }
 
-                // Add prior constraint to help constrain the solution
-                Eigen::Vector3d prior_normal(0.0, 0.0, 1.0);
-                double prior_distance = -5.0;
-                double normal_sigma = 0.5;  // Relatively weak prior on orientation
-                double distance_sigma = 1.0;  // Weak prior on distance
-                auto prior_factor = std::make_shared<PlanePriorFactor>(
-                    factor_id++, plane.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
-                graph.add_factor(prior_factor);
+                 // Add prior constraint to help constrain the solution
+                 Eigen::Vector3d prior_normal(0.0, 0.0, 1.0);
+                 double prior_distance = -5.0;
+                 double normal_sigma = 0.5;   // Relatively weak prior on orientation
+                 double distance_sigma = 1.0; // Weak prior on distance
+                 auto prior_factor = std::make_shared<PlanePriorFactor>(factor_id++, plane.get(), prior_normal,
+                                                                        prior_distance, normal_sigma, distance_sigma);
+                 graph.add_factor(prior_factor);
 
-                return graph;
-            },
-            settings14,
-            true, 1e-6, true
-        });
+                 return graph;
+             },
+             settings14, true, 1e-6, true});
     }
 
     // Scenario 15: Plane fitting with distance scaling
@@ -459,58 +424,55 @@ TEST_CASE("Consolidated Integration Tests")
         OptimizerSettings settings15;
         settings15.method = OptimizerMethod::LevenbergMarquardt;
         settings15.verbose = true;
-        scenarios.push_back({
-            "Plane fitting with distance scaling enabled",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back(
+            {"Plane fitting with distance scaling enabled",
+             []() {
+                 FactorGraph graph;
+                 int var_id = 0;
+                 int factor_id = 0;
 
-                // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
-                // Create points at varying distances from a scaling origin
-                std::vector<Eigen::Vector3d> point_positions = {
-                    {0.0, 0.0, 5.0},    // close to origin
-                    {2.0, 0.0, 5.01},   // medium distance
-                    {0.0, 3.0, 4.99},   // medium distance
-                    {-4.0, 0.0, 5.02},  // far from origin
-                    {0.0, -5.0, 4.98},  // very far from origin
-                    {1.0, 1.0, 5.0}     // close to origin
-                };
+                 // Ground truth plane: z = 5 (normal = [0, 0, 1], distance = -5)
+                 // Create points at varying distances from a scaling origin
+                 std::vector<Eigen::Vector3d> point_positions = {
+                     {0.0, 0.0, 5.0},   // close to origin
+                     {2.0, 0.0, 5.01},  // medium distance
+                     {0.0, 3.0, 4.99},  // medium distance
+                     {-4.0, 0.0, 5.02}, // far from origin
+                     {0.0, -5.0, 4.98}, // very far from origin
+                     {1.0, 1.0, 5.0}    // close to origin
+                 };
 
-                // Create point variables (held constant - these are our measurements)
-                std::vector<std::shared_ptr<LandmarkVariable>> points;
-                for (const auto& pos : point_positions) {
-                    auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
-                    point->set_constant(true);
-                    points.push_back(point);
-                    graph.add_variable(point);
-                }
+                 // Create point variables (held constant - these are our measurements)
+                 std::vector<std::shared_ptr<LandmarkVariable>> points;
+                 for (const auto& pos : point_positions) {
+                     auto point = std::make_shared<LandmarkVariable>(var_id++, pos);
+                     point->set_constant(true);
+                     points.push_back(point);
+                     graph.add_variable(point);
+                 }
 
-                // Create plane variable with incorrect initial guess
-                Eigen::Vector3d initial_normal(0.1, 0.1, 1.0);
-                double initial_distance = -4.5;
-                auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
-                graph.add_variable(plane);
+                 // Create plane variable with incorrect initial guess
+                 Eigen::Vector3d initial_normal(0.1, 0.1, 1.0);
+                 double initial_distance = -4.5;
+                 auto plane = std::make_shared<PlaneVariable>(var_id++, initial_normal, initial_distance);
+                 graph.add_variable(plane);
 
-                // Add plane factors with distance scaling
-                // Points farther from origin will have less weight
-                double sigma = 0.1;
-                bool do_distance_scaling = true;
-                double dist_scaling_r0 = 3.0;  // characteristic scaling distance
-                Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 5.0);  // scaling origin on the plane
+                 // Add plane factors with distance scaling
+                 // Points farther from origin will have less weight
+                 double sigma = 0.1;
+                 bool do_distance_scaling = true;
+                 double dist_scaling_r0 = 3.0;                   // characteristic scaling distance
+                 Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 5.0); // scaling origin on the plane
 
-                for (auto& point : points) {
-                    auto factor = std::make_shared<PlaneFactor>(
-                        factor_id++, point.get(), plane.get(), sigma,
-                        do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
-                    graph.add_factor(factor);
-                }
+                 for (auto& point : points) {
+                     auto factor = std::make_shared<PlaneFactor>(factor_id++, point.get(), plane.get(), sigma,
+                                                                 do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+                     graph.add_factor(factor);
+                 }
 
-                return graph;
-            },
-            settings15,
-            true, 1e-6, true
-        });
+                 return graph;
+             },
+             settings15, true, 1e-6, true});
     }
 
     // Scenario 16: 2D SLAM with poses, landmarks, priors, and bearing observations
@@ -519,140 +481,135 @@ TEST_CASE("Consolidated Integration Tests")
         settings16.method = OptimizerMethod::LevenbergMarquardt;
         settings16.verbose = true;
         settings16.max_num_iterations = 50;
-        scenarios.push_back({
-            "2D SLAM with poses, landmarks, and bearing observations",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back({"2D SLAM with poses, landmarks, and bearing observations",
+                             []() {
+                                 FactorGraph graph;
+                                 int var_id = 0;
+                                 int factor_id = 0;
 
-                // Ground truth: 3 poses in a triangular configuration
-                // Pose 0: origin, facing east (0 radians)
-                // Pose 1: east of origin, facing north (π/2 radians)
-                // Pose 2: north of origin, facing west (π radians)
-                std::vector<Eigen::Vector3d> gt_poses = {
-                    {0.0, 0.0, 0.0},           // x, y, theta
-                    {3.0, 0.0, PI / 2},
-                    {1.5, 2.5, PI}
-                };
+                                 // Ground truth: 3 poses in a triangular configuration
+                                 // Pose 0: origin, facing east (0 radians)
+                                 // Pose 1: east of origin, facing north (π/2 radians)
+                                 // Pose 2: north of origin, facing west (π radians)
+                                 std::vector<Eigen::Vector3d> gt_poses = {{0.0, 0.0, 0.0}, // x, y, theta
+                                                                          {3.0, 0.0, PI / 2},
+                                                                          {1.5, 2.5, PI}};
 
-                // Ground truth: 4 landmarks forming a square in the middle
-                std::vector<Eigen::Vector2d> gt_landmarks = {
-                    {1.0, 1.0},   // Landmark 0
-                    {2.0, 1.0},   // Landmark 1
-                    {2.0, 2.0},   // Landmark 2
-                    {1.0, 2.0}    // Landmark 3
-                };
+                                 // Ground truth: 4 landmarks forming a square in the middle
+                                 std::vector<Eigen::Vector2d> gt_landmarks = {
+                                     {1.0, 1.0}, // Landmark 0
+                                     {2.0, 1.0}, // Landmark 1
+                                     {2.0, 2.0}, // Landmark 2
+                                     {1.0, 2.0}  // Landmark 3
+                                 };
 
-                // Create pose variables with noisy initial guesses
-                std::vector<std::shared_ptr<Pose2DVariable>> poses;
-                for (size_t i = 0; i < gt_poses.size(); ++i) {
-                    // Add noise to initial guess
-                    Eigen::Vector3d noisy_pose = gt_poses[i];
-                    noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);  // x noise
-                    noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
-                    noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
+                                 // Create pose variables with noisy initial guesses
+                                 std::vector<std::shared_ptr<Pose2DVariable>> poses;
+                                 for (size_t i = 0; i < gt_poses.size(); ++i) {
+                                     // Add noise to initial guess
+                                     Eigen::Vector3d noisy_pose = gt_poses[i];
+                                     noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);   // x noise
+                                     noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
+                                     noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
 
-                    auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
-                    poses.push_back(pose);
-                    graph.add_variable(pose);
-                }
+                                     auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+                                     poses.push_back(pose);
+                                     graph.add_variable(pose);
+                                 }
 
-                // Create landmark variables with noisy initial guesses
-                std::vector<std::shared_ptr<GenericVariable>> landmarks;
-                for (size_t i = 0; i < gt_landmarks.size(); ++i) {
-                    // Add noise to initial guess
-                    Eigen::Vector2d noisy_landmark = gt_landmarks[i];
-                    noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
-                    noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
+                                 // Create landmark variables with noisy initial guesses
+                                 std::vector<std::shared_ptr<GenericVariable>> landmarks;
+                                 for (size_t i = 0; i < gt_landmarks.size(); ++i) {
+                                     // Add noise to initial guess
+                                     Eigen::Vector2d noisy_landmark = gt_landmarks[i];
+                                     noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
+                                     noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
 
-                    auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
-                    landmarks.push_back(landmark);
-                    graph.add_variable(landmark);
-                }
+                                     auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
+                                     landmarks.push_back(landmark);
+                                     graph.add_variable(landmark);
+                                 }
 
-                // Add pose priors (all poses have priors based on ground truth)
-                double pose_position_sigma = 0.5;
-                double pose_angle_sigma = 0.2;
-                for (size_t i = 0; i < poses.size(); ++i) {
-                    auto pose_prior = std::make_shared<Pose2DPriorFactor>(
-                        factor_id++, poses[i].get(), gt_poses[i],
-                        pose_position_sigma, pose_angle_sigma);
-                    graph.add_factor(pose_prior);
-                }
+                                 // Add pose priors (all poses have priors based on ground truth)
+                                 double pose_position_sigma = 0.5;
+                                 double pose_angle_sigma = 0.2;
+                                 for (size_t i = 0; i < poses.size(); ++i) {
+                                     auto pose_prior =
+                                         std::make_shared<Pose2DPriorFactor>(factor_id++, poses[i].get(), gt_poses[i],
+                                                                             pose_position_sigma, pose_angle_sigma);
+                                     graph.add_factor(pose_prior);
+                                 }
 
-                // Add landmark priors (weaker priors)
-                double landmark_sigma = 1.0;
-                for (size_t i = 0; i < landmarks.size(); ++i) {
-                    auto landmark_prior = std::make_shared<GenericPriorFactor>(
-                        factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
-                    graph.add_factor(landmark_prior);
-                }
+                                 // Add landmark priors (weaker priors)
+                                 double landmark_sigma = 1.0;
+                                 for (size_t i = 0; i < landmarks.size(); ++i) {
+                                     auto landmark_prior = std::make_shared<GenericPriorFactor>(
+                                         factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
+                                     graph.add_factor(landmark_prior);
+                                 }
 
-                // Add bearing observations from poses to landmarks
-                // Compute ground truth bearing angles and add observations
-                double bearing_sigma = 0.05;  // radians
+                                 // Add bearing observations from poses to landmarks
+                                 // Compute ground truth bearing angles and add observations
+                                 double bearing_sigma = 0.05; // radians
 
-                // Pose 0 can see landmarks 0, 1, 3
-                std::vector<std::pair<int, int>> observations = {
-                    {0, 0}, {0, 1}, {0, 3},  // Pose 0 sees landmarks 0, 1, 3
-                    {1, 0}, {1, 1}, {1, 2},  // Pose 1 sees landmarks 0, 1, 2
-                    {2, 1}, {2, 2}, {2, 3}   // Pose 2 sees landmarks 1, 2, 3
-                };
+                                 // Pose 0 can see landmarks 0, 1, 3
+                                 std::vector<std::pair<int, int>> observations = {
+                                     {0, 0}, {0, 1}, {0, 3}, // Pose 0 sees landmarks 0, 1, 3
+                                     {1, 0}, {1, 1}, {1, 2}, // Pose 1 sees landmarks 0, 1, 2
+                                     {2, 1}, {2, 2}, {2, 3}  // Pose 2 sees landmarks 1, 2, 3
+                                 };
 
-                for (const auto& obs : observations) {
-                    int pose_idx = obs.first;
-                    int landmark_idx = obs.second;
+                                 for (const auto& obs : observations) {
+                                     int pose_idx = obs.first;
+                                     int landmark_idx = obs.second;
 
-                    // Compute ground truth bearing angle
-                    Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
-                    double pose_theta = gt_poses[pose_idx](2);
-                    Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
+                                     // Compute ground truth bearing angle
+                                     Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
+                                     double pose_theta = gt_poses[pose_idx](2);
+                                     Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
 
-                    // Delta in world frame
-                    Eigen::Vector2d delta_world = landmark_pos - pose_pos;
+                                     // Delta in world frame
+                                     Eigen::Vector2d delta_world = landmark_pos - pose_pos;
 
-                    // Rotate to pose frame
-                    double c = std::cos(pose_theta);
-                    double s = std::sin(pose_theta);
-                    Eigen::Matrix2d R_T;
-                    R_T << c, s, -s, c;
-                    Eigen::Vector2d delta_local = R_T * delta_world;
+                                     // Rotate to pose frame
+                                     double c = std::cos(pose_theta);
+                                     double s = std::sin(pose_theta);
+                                     Eigen::Matrix2d R_T;
+                                     R_T << c, s, -s, c;
+                                     Eigen::Vector2d delta_local = R_T * delta_world;
 
-                    // Compute bearing angle in pose frame
-                    double bearing_angle = std::atan2(delta_local(1), delta_local(0));
+                                     // Compute bearing angle in pose frame
+                                     double bearing_angle = std::atan2(delta_local(1), delta_local(0));
 
-                    // Create bearing observation factor
-                    auto bearing_factor = std::make_shared<BearingObservationFactor2D>(
-                        factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
-                        bearing_angle, bearing_sigma);
-                    graph.add_factor(bearing_factor);
-                }
+                                     // Create bearing observation factor
+                                     auto bearing_factor = std::make_shared<BearingObservationFactor2D>(
+                                         factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
+                                         bearing_angle, bearing_sigma);
+                                     graph.add_factor(bearing_factor);
+                                 }
 
-                // Add between factors connecting consecutive poses
-                double between_position_sigma = 0.1;
-                double between_angle_sigma = 0.05;
-                for (size_t i = 0; i < poses.size() - 1; ++i) {
-                    // Compute ground truth relative pose
-                    Eigen::Vector3d relative_pose;
-                    relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
-                    relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
+                                 // Add between factors connecting consecutive poses
+                                 double between_position_sigma = 0.1;
+                                 double between_angle_sigma = 0.05;
+                                 for (size_t i = 0; i < poses.size() - 1; ++i) {
+                                     // Compute ground truth relative pose
+                                     Eigen::Vector3d relative_pose;
+                                     relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
+                                     relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
 
-                    auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
-                    measured_between->set_constant(true);
-                    graph.add_variable(measured_between);
+                                     auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
+                                     measured_between->set_constant(true);
+                                     graph.add_variable(measured_between);
 
-                    auto between_factor = std::make_shared<Pose2DBetweenFactor>(
-                        factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
-                        between_position_sigma, between_angle_sigma);
-                    graph.add_factor(between_factor);
-                }
+                                     auto between_factor = std::make_shared<Pose2DBetweenFactor>(
+                                         factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
+                                         between_position_sigma, between_angle_sigma);
+                                     graph.add_factor(between_factor);
+                                 }
 
-                return graph;
-            },
-            settings16,
-            true, 1e-6, true
-        });
+                                 return graph;
+                             },
+                             settings16, true, 1e-6, true});
     }
 
     // Scenario 17: 2D SLAM with poses, landmarks, and range-bearing observations
@@ -661,142 +618,137 @@ TEST_CASE("Consolidated Integration Tests")
         settings17.method = OptimizerMethod::LevenbergMarquardt;
         settings17.verbose = true;
         settings17.max_num_iterations = 50;
-        scenarios.push_back({
-            "2D SLAM with poses, landmarks, and range-bearing observations",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back(
+            {"2D SLAM with poses, landmarks, and range-bearing observations",
+             []() {
+                 FactorGraph graph;
+                 int var_id = 0;
+                 int factor_id = 0;
 
-                // Ground truth: 3 poses in a triangular configuration
-                // Pose 0: origin, facing east (0 radians)
-                // Pose 1: east of origin, facing north (π/2 radians)
-                // Pose 2: north of origin, facing west (π radians)
-                std::vector<Eigen::Vector3d> gt_poses = {
-                    {0.0, 0.0, 0.0},           // x, y, theta
-                    {3.0, 0.0, PI / 2},
-                    {1.5, 2.5, PI}
-                };
+                 // Ground truth: 3 poses in a triangular configuration
+                 // Pose 0: origin, facing east (0 radians)
+                 // Pose 1: east of origin, facing north (π/2 radians)
+                 // Pose 2: north of origin, facing west (π radians)
+                 std::vector<Eigen::Vector3d> gt_poses = {{0.0, 0.0, 0.0}, // x, y, theta
+                                                          {3.0, 0.0, PI / 2},
+                                                          {1.5, 2.5, PI}};
 
-                // Ground truth: 4 landmarks forming a square in the middle
-                std::vector<Eigen::Vector2d> gt_landmarks = {
-                    {1.0, 1.0},   // Landmark 0
-                    {2.0, 1.0},   // Landmark 1
-                    {2.0, 2.0},   // Landmark 2
-                    {1.0, 2.0}    // Landmark 3
-                };
+                 // Ground truth: 4 landmarks forming a square in the middle
+                 std::vector<Eigen::Vector2d> gt_landmarks = {
+                     {1.0, 1.0}, // Landmark 0
+                     {2.0, 1.0}, // Landmark 1
+                     {2.0, 2.0}, // Landmark 2
+                     {1.0, 2.0}  // Landmark 3
+                 };
 
-                // Create pose variables with noisy initial guesses
-                std::vector<std::shared_ptr<Pose2DVariable>> poses;
-                for (size_t i = 0; i < gt_poses.size(); ++i) {
-                    // Add noise to initial guess
-                    Eigen::Vector3d noisy_pose = gt_poses[i];
-                    noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);  // x noise
-                    noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
-                    noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
+                 // Create pose variables with noisy initial guesses
+                 std::vector<std::shared_ptr<Pose2DVariable>> poses;
+                 for (size_t i = 0; i < gt_poses.size(); ++i) {
+                     // Add noise to initial guess
+                     Eigen::Vector3d noisy_pose = gt_poses[i];
+                     noisy_pose(0) += 0.2 * (i == 0 ? 0.1 : 0.3);   // x noise
+                     noisy_pose(1) += 0.15 * (i == 1 ? -0.2 : 0.2); // y noise
+                     noisy_pose(2) += 0.1 * (i == 2 ? 0.15 : -0.1); // theta noise
 
-                    auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
-                    poses.push_back(pose);
-                    graph.add_variable(pose);
-                }
+                     auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+                     poses.push_back(pose);
+                     graph.add_variable(pose);
+                 }
 
-                // Create landmark variables with noisy initial guesses
-                std::vector<std::shared_ptr<GenericVariable>> landmarks;
-                for (size_t i = 0; i < gt_landmarks.size(); ++i) {
-                    // Add noise to initial guess
-                    Eigen::Vector2d noisy_landmark = gt_landmarks[i];
-                    noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
-                    noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
+                 // Create landmark variables with noisy initial guesses
+                 std::vector<std::shared_ptr<GenericVariable>> landmarks;
+                 for (size_t i = 0; i < gt_landmarks.size(); ++i) {
+                     // Add noise to initial guess
+                     Eigen::Vector2d noisy_landmark = gt_landmarks[i];
+                     noisy_landmark(0) += 0.1 * (i % 2 == 0 ? 0.2 : -0.15);
+                     noisy_landmark(1) += 0.1 * (i / 2 == 0 ? -0.1 : 0.2);
 
-                    auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
-                    landmarks.push_back(landmark);
-                    graph.add_variable(landmark);
-                }
+                     auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
+                     landmarks.push_back(landmark);
+                     graph.add_variable(landmark);
+                 }
 
-                // Add pose priors (all poses have priors based on ground truth)
-                double pose_position_sigma = 0.5;
-                double pose_angle_sigma = 0.2;
-                for (size_t i = 0; i < poses.size(); ++i) {
-                    auto pose_prior = std::make_shared<Pose2DPriorFactor>(
-                        factor_id++, poses[i].get(), gt_poses[i],
-                        pose_position_sigma, pose_angle_sigma);
-                    graph.add_factor(pose_prior);
-                }
+                 // Add pose priors (all poses have priors based on ground truth)
+                 double pose_position_sigma = 0.5;
+                 double pose_angle_sigma = 0.2;
+                 for (size_t i = 0; i < poses.size(); ++i) {
+                     auto pose_prior = std::make_shared<Pose2DPriorFactor>(factor_id++, poses[i].get(), gt_poses[i],
+                                                                           pose_position_sigma, pose_angle_sigma);
+                     graph.add_factor(pose_prior);
+                 }
 
-                // Add landmark priors (weaker priors)
-                double landmark_sigma = 1.0;
-                for (size_t i = 0; i < landmarks.size(); ++i) {
-                    auto landmark_prior = std::make_shared<GenericPriorFactor>(
-                        factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
-                    graph.add_factor(landmark_prior);
-                }
+                 // Add landmark priors (weaker priors)
+                 double landmark_sigma = 1.0;
+                 for (size_t i = 0; i < landmarks.size(); ++i) {
+                     auto landmark_prior = std::make_shared<GenericPriorFactor>(factor_id++, landmarks[i].get(),
+                                                                                gt_landmarks[i], landmark_sigma);
+                     graph.add_factor(landmark_prior);
+                 }
 
-                // Add range-bearing observations from poses to landmarks
-                // Compute ground truth range and bearing angles and add observations
-                double range_sigma = 0.1;     // meters
-                double bearing_sigma = 0.05;  // radians
+                 // Add range-bearing observations from poses to landmarks
+                 // Compute ground truth range and bearing angles and add observations
+                 double range_sigma = 0.1;    // meters
+                 double bearing_sigma = 0.05; // radians
 
-                // Pose 0 can see landmarks 0, 1, 3
-                std::vector<std::pair<int, int>> observations = {
-                    {0, 0}, {0, 1}, {0, 3},  // Pose 0 sees landmarks 0, 1, 3
-                    {1, 0}, {1, 1}, {1, 2},  // Pose 1 sees landmarks 0, 1, 2
-                    {2, 1}, {2, 2}, {2, 3}   // Pose 2 sees landmarks 1, 2, 3
-                };
+                 // Pose 0 can see landmarks 0, 1, 3
+                 std::vector<std::pair<int, int>> observations = {
+                     {0, 0}, {0, 1}, {0, 3}, // Pose 0 sees landmarks 0, 1, 3
+                     {1, 0}, {1, 1}, {1, 2}, // Pose 1 sees landmarks 0, 1, 2
+                     {2, 1}, {2, 2}, {2, 3}  // Pose 2 sees landmarks 1, 2, 3
+                 };
 
-                for (const auto& obs : observations) {
-                    int pose_idx = obs.first;
-                    int landmark_idx = obs.second;
+                 for (const auto& obs : observations) {
+                     int pose_idx = obs.first;
+                     int landmark_idx = obs.second;
 
-                    // Compute ground truth range and bearing
-                    Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
-                    double pose_theta = gt_poses[pose_idx](2);
-                    Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
+                     // Compute ground truth range and bearing
+                     Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
+                     double pose_theta = gt_poses[pose_idx](2);
+                     Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
 
-                    // Delta in world frame
-                    Eigen::Vector2d delta_world = landmark_pos - pose_pos;
+                     // Delta in world frame
+                     Eigen::Vector2d delta_world = landmark_pos - pose_pos;
 
-                    // Rotate to pose frame
-                    double c = std::cos(pose_theta);
-                    double s = std::sin(pose_theta);
-                    Eigen::Matrix2d R_T;
-                    R_T << c, s, -s, c;
-                    Eigen::Vector2d delta_local = R_T * delta_world;
+                     // Rotate to pose frame
+                     double c = std::cos(pose_theta);
+                     double s = std::sin(pose_theta);
+                     Eigen::Matrix2d R_T;
+                     R_T << c, s, -s, c;
+                     Eigen::Vector2d delta_local = R_T * delta_world;
 
-                    // Compute range and bearing in pose frame
-                    double range = delta_local.norm();
-                    double bearing_angle = std::atan2(delta_local(1), delta_local(0));
+                     // Compute range and bearing in pose frame
+                     double range = delta_local.norm();
+                     double bearing_angle = std::atan2(delta_local(1), delta_local(0));
 
-                    // Create range-bearing observation factor
-                    auto rb_factor = std::make_shared<RangeBearingFactor2D>(
-                        factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
-                        range, bearing_angle, range_sigma, bearing_sigma);
-                    graph.add_factor(rb_factor);
-                }
+                     // Create range-bearing observation factor
+                     auto rb_factor = std::make_shared<RangeBearingFactor2D>(factor_id++, poses[pose_idx].get(),
+                                                                             landmarks[landmark_idx].get(), range,
+                                                                             bearing_angle, range_sigma, bearing_sigma);
+                     graph.add_factor(rb_factor);
+                 }
 
-                // Add between factors connecting consecutive poses
-                double between_position_sigma = 0.1;
-                double between_angle_sigma = 0.05;
-                for (size_t i = 0; i < poses.size() - 1; ++i) {
-                    // Compute ground truth relative pose
-                    Eigen::Vector3d relative_pose;
-                    relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
-                    relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
+                 // Add between factors connecting consecutive poses
+                 double between_position_sigma = 0.1;
+                 double between_angle_sigma = 0.05;
+                 for (size_t i = 0; i < poses.size() - 1; ++i) {
+                     // Compute ground truth relative pose
+                     Eigen::Vector3d relative_pose;
+                     relative_pose.head<2>() = gt_poses[i + 1].head<2>() - gt_poses[i].head<2>();
+                     relative_pose(2) = gt_poses[i + 1](2) - gt_poses[i](2);
 
-                    auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
-                    measured_between->set_constant(true);
-                    graph.add_variable(measured_between);
+                     auto measured_between = std::make_shared<GenericVariable>(var_id++, relative_pose);
+                     measured_between->set_constant(true);
+                     graph.add_variable(measured_between);
 
-                    auto between_factor = std::make_shared<Pose2DBetweenFactor>(
-                        factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
-                        between_position_sigma, between_angle_sigma);
-                    graph.add_factor(between_factor);
-                }
+                     auto between_factor = std::make_shared<Pose2DBetweenFactor>(
+                         factor_id++, poses[i].get(), poses[i + 1].get(), measured_between.get(),
+                         between_position_sigma, between_angle_sigma);
+                     graph.add_factor(between_factor);
+                 }
 
-                return graph;
-            },
-            settings17,
-            true, 1e-6, true
-        });
+                 return graph;
+             },
+             settings17, true, 1e-6, true});
     }
 
     // Scenario 18: Coordinate transform estimation with noisy keypoint correspondences
@@ -805,146 +757,128 @@ TEST_CASE("Consolidated Integration Tests")
         settings18.method = OptimizerMethod::LevenbergMarquardt;
         settings18.verbose = true;
         settings18.max_num_iterations = 100;
-        scenarios.push_back({
-            "Coordinate transform estimation from noisy keypoint correspondences",
-            []() {
-                FactorGraph graph;
-                int var_id = 0;
-                int factor_id = 0;
+        scenarios.push_back({"Coordinate transform estimation from noisy keypoint correspondences",
+                             []() {
+                                 FactorGraph graph;
+                                 int var_id = 0;
+                                 int factor_id = 0;
 
-                // Ground truth transform parameters (Frame B to Frame A)
-                // Non-trivial rotation: 30 degrees around Z, 20 degrees around Y, 10 degrees around X
-                double roll = 10.0 * PI / 180.0;
-                double pitch = 20.0 * PI / 180.0;
-                double yaw = 30.0 * PI / 180.0;
+                                 // Ground truth transform parameters (Frame B to Frame A)
+                                 // Non-trivial rotation: 30 degrees around Z, 20 degrees around Y, 10 degrees around X
+                                 double roll = 10.0 * PI / 180.0;
+                                 double pitch = 20.0 * PI / 180.0;
+                                 double yaw = 30.0 * PI / 180.0;
 
-                // Build rotation matrix using ZYX Euler angles
-                Eigen::Matrix3d Rz, Ry, Rx;
-                Rz << std::cos(yaw), -std::sin(yaw), 0,
-                      std::sin(yaw),  std::cos(yaw), 0,
-                      0,              0,             1;
-                Ry << std::cos(pitch),  0, std::sin(pitch),
-                      0,                1, 0,
-                      -std::sin(pitch), 0, std::cos(pitch);
-                Rx << 1, 0,              0,
-                      0, std::cos(roll), -std::sin(roll),
-                      0, std::sin(roll),  std::cos(roll);
-                Eigen::Matrix3d gt_dcm_AB = Rz * Ry * Rx;
+                                 // Build rotation matrix using ZYX Euler angles
+                                 Eigen::Matrix3d Rz, Ry, Rx;
+                                 Rz << std::cos(yaw), -std::sin(yaw), 0, std::sin(yaw), std::cos(yaw), 0, 0, 0, 1;
+                                 Ry << std::cos(pitch), 0, std::sin(pitch), 0, 1, 0, -std::sin(pitch), 0,
+                                     std::cos(pitch);
+                                 Rx << 1, 0, 0, 0, std::cos(roll), -std::sin(roll), 0, std::sin(roll), std::cos(roll);
+                                 Eigen::Matrix3d gt_dcm_AB = Rz * Ry * Rx;
 
-                // Ground truth translation (origin of frame B expressed in frame A)
-                Eigen::Vector3d gt_B_origin_A(1.5, -0.8, 2.3);
+                                 // Ground truth translation (origin of frame B expressed in frame A)
+                                 Eigen::Vector3d gt_B_origin_A(1.5, -0.8, 2.3);
 
-                // Ground truth scale
-                double gt_scale = 2.5;
+                                 // Ground truth scale
+                                 double gt_scale = 2.5;
 
-                // Create ground truth keypoints in frame B (8 points forming a cube)
-                std::vector<Eigen::Vector3d> gt_keypoints_B = {
-                    {0.0, 0.0, 0.0},
-                    {1.0, 0.0, 0.0},
-                    {0.0, 1.0, 0.0},
-                    {1.0, 1.0, 0.0},
-                    {0.0, 0.0, 1.0},
-                    {1.0, 0.0, 1.0},
-                    {0.0, 1.0, 1.0},
-                    {1.0, 1.0, 1.0}
-                };
+                                 // Create ground truth keypoints in frame B (8 points forming a cube)
+                                 std::vector<Eigen::Vector3d> gt_keypoints_B = {
+                                     {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {1.0, 1.0, 0.0},
+                                     {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, {0.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
 
-                // Transform keypoints from frame B to frame A using ground truth transform
-                // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
-                std::vector<Eigen::Vector3d> gt_keypoints_A;
-                for (const auto& pt_B : gt_keypoints_B) {
-                    Eigen::Vector3d pt_A = gt_scale * gt_dcm_AB * pt_B - gt_B_origin_A;
-                    gt_keypoints_A.push_back(pt_A);
-                }
+                                 // Transform keypoints from frame B to frame A using ground truth transform
+                                 // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
+                                 std::vector<Eigen::Vector3d> gt_keypoints_A;
+                                 for (const auto& pt_B : gt_keypoints_B) {
+                                     Eigen::Vector3d pt_A = gt_scale * gt_dcm_AB * pt_B - gt_B_origin_A;
+                                     gt_keypoints_A.push_back(pt_A);
+                                 }
 
-                // Add Gaussian noise to keypoints (both frame A and frame B)
-                std::random_device rd;
-                std::mt19937 gen(42);  // Fixed seed for reproducibility
-                std::normal_distribution<double> noise(0.0, 0.05);  // 5cm standard deviation
+                                 // Add Gaussian noise to keypoints (both frame A and frame B)
+                                 std::random_device rd;
+                                 std::mt19937 gen(42);                              // Fixed seed for reproducibility
+                                 std::normal_distribution<double> noise(0.0, 0.05); // 5cm standard deviation
 
-                std::vector<Eigen::Vector3d> noisy_keypoints_A;
-                std::vector<Eigen::Vector3d> noisy_keypoints_B;
+                                 std::vector<Eigen::Vector3d> noisy_keypoints_A;
+                                 std::vector<Eigen::Vector3d> noisy_keypoints_B;
 
-                for (size_t i = 0; i < gt_keypoints_A.size(); ++i) {
-                    Eigen::Vector3d noisy_A = gt_keypoints_A[i];
-                    Eigen::Vector3d noisy_B = gt_keypoints_B[i];
+                                 for (size_t i = 0; i < gt_keypoints_A.size(); ++i) {
+                                     Eigen::Vector3d noisy_A = gt_keypoints_A[i];
+                                     Eigen::Vector3d noisy_B = gt_keypoints_B[i];
 
-                    for (int j = 0; j < 3; ++j) {
-                        noisy_A(j) += noise(gen);
-                        noisy_B(j) += noise(gen);
-                    }
+                                     for (int j = 0; j < 3; ++j) {
+                                         noisy_A(j) += noise(gen);
+                                         noisy_B(j) += noise(gen);
+                                     }
 
-                    noisy_keypoints_A.push_back(noisy_A);
-                    noisy_keypoints_B.push_back(noisy_B);
-                }
+                                     noisy_keypoints_A.push_back(noisy_A);
+                                     noisy_keypoints_B.push_back(noisy_B);
+                                 }
 
-                // Create landmark variables for keypoints (held constant - these are measurements)
-                std::vector<std::shared_ptr<LandmarkVariable>> landmarks_A;
-                std::vector<std::shared_ptr<LandmarkVariable>> landmarks_B;
+                                 // Create landmark variables for keypoints (held constant - these are measurements)
+                                 std::vector<std::shared_ptr<LandmarkVariable>> landmarks_A;
+                                 std::vector<std::shared_ptr<LandmarkVariable>> landmarks_B;
 
-                for (size_t i = 0; i < noisy_keypoints_A.size(); ++i) {
-                    auto lm_A = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_A[i]);
-                    lm_A->set_constant(true);
-                    landmarks_A.push_back(lm_A);
-                    graph.add_variable(lm_A);
+                                 for (size_t i = 0; i < noisy_keypoints_A.size(); ++i) {
+                                     auto lm_A = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_A[i]);
+                                     lm_A->set_constant(true);
+                                     landmarks_A.push_back(lm_A);
+                                     graph.add_variable(lm_A);
 
-                    auto lm_B = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_B[i]);
-                    lm_B->set_constant(true);
-                    landmarks_B.push_back(lm_B);
-                    graph.add_variable(lm_B);
-                }
+                                     auto lm_B = std::make_shared<LandmarkVariable>(var_id++, noisy_keypoints_B[i]);
+                                     lm_B->set_constant(true);
+                                     landmarks_B.push_back(lm_B);
+                                     graph.add_variable(lm_B);
+                                 }
 
-                // Create transform parameter variables with initial guesses (slightly wrong)
-                // Rotation: start with identity rotation
-                Eigen::Matrix3d initial_dcm = Eigen::Matrix3d::Identity();
-                auto rot_AB = std::make_shared<RotationVariable>(var_id++, initial_dcm);
-                graph.add_variable(rot_AB);
+                                 // Create transform parameter variables with initial guesses (slightly wrong)
+                                 // Rotation: start with identity rotation
+                                 Eigen::Matrix3d initial_dcm = Eigen::Matrix3d::Identity();
+                                 auto rot_AB = std::make_shared<RotationVariable>(var_id++, initial_dcm);
+                                 graph.add_variable(rot_AB);
 
-                // Translation: start with zero translation
-                Eigen::Vector3d initial_B_origin_A(0.0, 0.0, 0.0);
-                auto B_origin_A = std::make_shared<GenericVariable>(var_id++, initial_B_origin_A);
-                graph.add_variable(B_origin_A);
+                                 // Translation: start with zero translation
+                                 Eigen::Vector3d initial_B_origin_A(0.0, 0.0, 0.0);
+                                 auto B_origin_A = std::make_shared<GenericVariable>(var_id++, initial_B_origin_A);
+                                 graph.add_variable(B_origin_A);
 
-                // Scale: start with unit scale
-                Eigen::VectorXd initial_scale(1);
-                initial_scale << 1.0;
-                auto scale_AB = std::make_shared<GenericVariable>(var_id++, initial_scale);
-                graph.add_variable(scale_AB);
+                                 // Scale: start with unit scale
+                                 Eigen::VectorXd initial_scale(1);
+                                 initial_scale << 1.0;
+                                 auto scale_AB = std::make_shared<GenericVariable>(var_id++, initial_scale);
+                                 graph.add_variable(scale_AB);
 
-                // Add CoordinateTransformFactor for each keypoint correspondence
-                double sigma = 0.1;  // Match the noise level we added
-                for (size_t i = 0; i < landmarks_A.size(); ++i) {
-                    auto transform_factor = std::make_shared<CoordinateTransformFactor>(
-                        factor_id++,
-                        rot_AB.get(),
-                        B_origin_A.get(),
-                        scale_AB.get(),
-                        landmarks_A[i].get(),
-                        landmarks_B[i].get(),
-                        sigma);
-                    graph.add_factor(transform_factor);
-                }
+                                 // Add CoordinateTransformFactor for each keypoint correspondence
+                                 double sigma = 0.1; // Match the noise level we added
+                                 for (size_t i = 0; i < landmarks_A.size(); ++i) {
+                                     auto transform_factor = std::make_shared<CoordinateTransformFactor>(
+                                         factor_id++, rot_AB.get(), B_origin_A.get(), scale_AB.get(),
+                                         landmarks_A[i].get(), landmarks_B[i].get(), sigma);
+                                     graph.add_factor(transform_factor);
+                                 }
 
-                return graph;
-            },
-            settings18,
-            false, 1e-6, true
-        });
+                                 return graph;
+                             },
+                             settings18, false, 1e-6, true});
     }
 
     // Run all scenarios
     int passed = 0;
     int total = scenarios.size();
-    
+
     for (size_t i = 0; i < scenarios.size(); ++i) {
         const auto& scenario = scenarios[i];
-        
-        std::cout << "\n=== [" << (i+1) << "/" << total << "] " << scenario.name << " ===" << std::endl;
-        
+
+        std::cout << "\n=== [" << (i + 1) << "/" << total << "] " << scenario.name << " ===" << std::endl;
+
         try {
             auto graph = scenario.create_graph();
 
-            auto result = run_optimization_test(graph, scenario.settings, scenario.should_run_jacobian_test, scenario.jacobian_tolerance, scenario.verbose_output, scenario.expect_failure);
+            auto result =
+                run_optimization_test(graph, scenario.settings, scenario.should_run_jacobian_test,
+                                      scenario.jacobian_tolerance, scenario.verbose_output, scenario.expect_failure);
 
             std::cout << "Initial residual norm: " << result.initial_norm << std::endl;
             std::cout << "Final residual norm: " << result.final_norm << std::endl;
@@ -962,13 +896,13 @@ TEST_CASE("Consolidated Integration Tests")
             }
             passed++;
             std::cout << "PASSED" << std::endl;
-            
+
         } catch (const std::exception& e) {
             std::cout << "FAILED: " << e.what() << std::endl;
             throw; // Re-throw to fail the test
         }
     }
-    
+
     std::cout << "\n=== FINAL SUMMARY ===" << std::endl;
     std::cout << "Scenarios passed: " << passed << "/" << total << std::endl;
     std::cout << "All integration tests completed successfully!" << std::endl;
@@ -990,15 +924,9 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
 
     // Build rotation matrix using ZYX Euler angles
     Eigen::Matrix3d Rz, Ry, Rx;
-    Rz << std::cos(gt_yaw), -std::sin(gt_yaw), 0,
-          std::sin(gt_yaw),  std::cos(gt_yaw), 0,
-          0,                 0,                1;
-    Ry << std::cos(gt_pitch),  0, std::sin(gt_pitch),
-          0,                   1, 0,
-          -std::sin(gt_pitch), 0, std::cos(gt_pitch);
-    Rx << 1, 0,                 0,
-          0, std::cos(gt_roll), -std::sin(gt_roll),
-          0, std::sin(gt_roll),  std::cos(gt_roll);
+    Rz << std::cos(gt_yaw), -std::sin(gt_yaw), 0, std::sin(gt_yaw), std::cos(gt_yaw), 0, 0, 0, 1;
+    Ry << std::cos(gt_pitch), 0, std::sin(gt_pitch), 0, 1, 0, -std::sin(gt_pitch), 0, std::cos(gt_pitch);
+    Rx << 1, 0, 0, 0, std::cos(gt_roll), -std::sin(gt_roll), 0, std::sin(gt_roll), std::cos(gt_roll);
     Eigen::Matrix3d gt_dcm_AB = Rz * Ry * Rx;
 
     // Ground truth translation (origin of frame B expressed in frame A)
@@ -1008,24 +936,15 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
     double gt_scale = 3.0;
 
     std::cout << "Ground truth transform:" << std::endl;
-    std::cout << "  Rotation (roll, pitch, yaw): " << gt_roll * 180.0 / PI << ", "
-              << gt_pitch * 180.0 / PI << ", " << gt_yaw * 180.0 / PI << " degrees" << std::endl;
+    std::cout << "  Rotation (roll, pitch, yaw): " << gt_roll * 180.0 / PI << ", " << gt_pitch * 180.0 / PI << ", "
+              << gt_yaw * 180.0 / PI << " degrees" << std::endl;
     std::cout << "  Translation B_origin_A: " << gt_B_origin_A.transpose() << std::endl;
     std::cout << "  Scale: " << gt_scale << std::endl;
 
     // Create ground truth keypoints in frame B (10 points forming a distributed cloud)
-    std::vector<Eigen::Vector3d> gt_keypoints_B = {
-        {0.0, 0.0, 0.0},
-        {1.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0},
-        {0.0, 0.0, 1.0},
-        {1.0, 1.0, 0.0},
-        {1.0, 0.0, 1.0},
-        {0.0, 1.0, 1.0},
-        {1.0, 1.0, 1.0},
-        {0.5, 0.5, 0.5},
-        {0.3, 0.7, 0.2}
-    };
+    std::vector<Eigen::Vector3d> gt_keypoints_B = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0},
+                                                   {1.0, 1.0, 0.0}, {1.0, 0.0, 1.0}, {0.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
+                                                   {0.5, 0.5, 0.5}, {0.3, 0.7, 0.2}};
 
     // Transform keypoints from frame B to frame A using ground truth transform
     // vec_A = scale_AB * dcm_AB * vec_B - B_origin_A
@@ -1037,8 +956,8 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
 
     // Add Gaussian noise to keypoints (both frame A and frame B)
     std::random_device rd;
-    std::mt19937 gen(123);  // Fixed seed for reproducibility
-    std::normal_distribution<double> noise(0.0, 0.03);  // 3cm standard deviation
+    std::mt19937 gen(123);                             // Fixed seed for reproducibility
+    std::normal_distribution<double> noise(0.0, 0.03); // 3cm standard deviation
 
     std::vector<Eigen::Vector3d> noisy_keypoints_A;
     std::vector<Eigen::Vector3d> noisy_keypoints_B;
@@ -1095,16 +1014,11 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
     std::cout << "  Scale: " << scale_AB->value()[0] << std::endl;
 
     // Add CoordinateTransformFactor for each keypoint correspondence
-    double sigma = 0.05;  // Slightly larger than noise to account for uncertainty
+    double sigma = 0.05; // Slightly larger than noise to account for uncertainty
     for (size_t i = 0; i < landmarks_A.size(); ++i) {
-        auto transform_factor = std::make_shared<CoordinateTransformFactor>(
-            factor_id++,
-            rot_AB.get(),
-            B_origin_A.get(),
-            scale_AB.get(),
-            landmarks_A[i].get(),
-            landmarks_B[i].get(),
-            sigma);
+        auto transform_factor =
+            std::make_shared<CoordinateTransformFactor>(factor_id++, rot_AB.get(), B_origin_A.get(), scale_AB.get(),
+                                                        landmarks_A[i].get(), landmarks_B[i].get(), sigma);
         graph.add_factor(transform_factor);
     }
 
@@ -1158,9 +1072,9 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
 
     // Validate results - errors should be small given the noise level
     // With 3cm noise on keypoints, we expect sub-cm translation error and sub-degree rotation error
-    REQUIRE(rotation_error < 0.1);  // DCM Frobenius norm < 0.1 corresponds to ~3 degrees
-    REQUIRE(translation_error < 0.2);  // Translation error < 20cm
-    REQUIRE(scale_error < 0.1);  // Scale error < 0.1 (3% of gt_scale=3.0)
+    REQUIRE(rotation_error < 0.1);    // DCM Frobenius norm < 0.1 corresponds to ~3 degrees
+    REQUIRE(translation_error < 0.2); // Translation error < 20cm
+    REQUIRE(scale_error < 0.1);       // Scale error < 0.1 (3% of gt_scale=3.0)
 
     std::cout << "\n=== Test PASSED ===" << std::endl;
 }

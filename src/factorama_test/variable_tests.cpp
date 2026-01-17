@@ -226,7 +226,8 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
         // Create original variables
         auto pose = std::make_shared<PoseVariable>(1, Eigen::Matrix<double, 6, 1>::Zero());
         auto landmark = std::make_shared<LandmarkVariable>(2, Eigen::Vector3d(1, 0, 0));
-        auto inv_range = std::make_shared<InverseRangeVariable>(3, Eigen::Vector3d::Zero(), Eigen::Vector3d::UnitX(), 2.0);
+        auto inv_range =
+            std::make_shared<InverseRangeVariable>(3, Eigen::Vector3d::Zero(), Eigen::Vector3d::UnitX(), 2.0);
         auto extrinsic = std::make_shared<RotationVariable>(4, Eigen::Matrix3d::Identity());
 
         variables.push_back(pose);
@@ -236,18 +237,16 @@ TEST_CASE("Variable clone() method behaves correctly", "[variable][clone]")
 
         // Clone all variables
         std::vector<std::shared_ptr<Variable>> cloned_variables;
-        for (const auto &var : variables)
-        {
+        for (const auto& var : variables) {
             cloned_variables.push_back(var->clone());
         }
 
         // Verify polymorphic behavior works
         REQUIRE(cloned_variables.size() == variables.size());
 
-        for (size_t i = 0; i < variables.size(); ++i)
-        {
-            auto &original = variables[i];
-            auto &cloned = cloned_variables[i];
+        for (size_t i = 0; i < variables.size(); ++i) {
+            auto& original = variables[i];
+            auto& cloned = cloned_variables[i];
 
             REQUIRE(cloned->id() == original->id());
             REQUIRE(cloned->type() == original->type());
@@ -399,7 +398,7 @@ TEST_CASE("Pose2DVariable apply_increment", "[pose_2d][variable]")
     REQUIRE(std::abs(pose.pos_2d()(1) - 1.7) < precision_tol);
 
     // Check updated angle (should wrap if needed)
-    double expected_theta = PI / 6 + PI / 12;  // π/4
+    double expected_theta = PI / 6 + PI / 12; // π/4
     REQUIRE(std::abs(pose.theta() - expected_theta) < precision_tol);
 }
 
@@ -415,11 +414,11 @@ TEST_CASE("Pose2DVariable apply_increment with wrapping", "[pose_2d][variable]")
     pose.apply_increment(dx);
 
     // Should wrap to negative side
-    double expected_theta = PI + 0.2;  // Should wrap to -(π - 0.2)
+    double expected_theta = PI + 0.2; // Should wrap to -(π - 0.2)
     // After wrapping: atan2(sin(π + 0.2), cos(π + 0.2))
     double wrapped = std::atan2(std::sin(expected_theta), std::cos(expected_theta));
     REQUIRE(std::abs(pose.theta() - wrapped) < precision_tol);
-    REQUIRE(pose.theta() < 0);  // Should be on negative side
+    REQUIRE(pose.theta() < 0); // Should be on negative side
 }
 
 

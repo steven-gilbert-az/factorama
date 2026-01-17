@@ -8,8 +8,7 @@ using namespace factorama;
 constexpr double precision_tol = 1e-6;
 
 
-
-TEST_CASE("SparseOptimizer basic GN convergence", "[optimizer]") 
+TEST_CASE("SparseOptimizer basic GN convergence", "[optimizer]")
 {
     // Step 1: Construct a factor graph (you’ll fill this in)
     auto graph = std::make_shared<FactorGraph>();
@@ -49,12 +48,10 @@ TEST_CASE("SparseOptimizer basic GN convergence", "[optimizer]")
     CAPTURE(optimizer.current_stats_.residual_norm);
     CAPTURE(optimizer.initial_stats_.residual_norm);
     REQUIRE(optimizer.current_stats_.residual_norm < optimizer.initial_stats_.residual_norm);
-
 }
 
 
-
-TEST_CASE("SparseOptimizer LM convergence", "[optimizer]") 
+TEST_CASE("SparseOptimizer LM convergence", "[optimizer]")
 {
     // Step 1: Construct a factor graph (you’ll fill this in)
     auto graph = std::make_shared<FactorGraph>();
@@ -94,5 +91,4 @@ TEST_CASE("SparseOptimizer LM convergence", "[optimizer]")
     CAPTURE(optimizer.current_stats_.residual_norm);
     CAPTURE(optimizer.initial_stats_.residual_norm);
     REQUIRE(optimizer.current_stats_.residual_norm < optimizer.initial_stats_.residual_norm);
-
 }

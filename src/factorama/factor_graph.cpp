@@ -5,10 +5,9 @@
 
 namespace factorama
 {
-    void FactorGraph::add_variable(const std::shared_ptr<Variable> &variable)
+    void FactorGraph::add_variable(const std::shared_ptr<Variable>& variable)
     {
-        if (variables_map_.find(variable->id()) != variables_map_.end())
-        {
+        if (variables_map_.find(variable->id()) != variables_map_.end()) {
             throw std::runtime_error("Variable with ID " + std::to_string(variable->id()) +
                                      " already exists in factor graph. Variable IDs must be unique.");
         }
@@ -16,10 +15,9 @@ namespace factorama
         variables_vector_.push_back(variable);
     }
 
-    void FactorGraph::add_factor(const std::shared_ptr<Factor> &factor)
+    void FactorGraph::add_factor(const std::shared_ptr<Factor>& factor)
     {
-        if (factors_map_.find(factor->id()) != factors_map_.end())
-        {
+        if (factors_map_.find(factor->id()) != factors_map_.end()) {
             throw std::runtime_error("Factor with ID " + std::to_string(factor->id()) +
                                      " already exists in factor graph. Factor IDs must be unique.");
         }
@@ -33,12 +31,12 @@ namespace factorama
         return (it != variables_map_.end()) ? it->second : nullptr;
     }
 
-    const std::vector<std::shared_ptr<Variable>> &FactorGraph::get_all_variables() const
+    const std::vector<std::shared_ptr<Variable>>& FactorGraph::get_all_variables() const
     {
         return variables_vector_;
     }
 
-    const std::vector<std::shared_ptr<Factor>> &FactorGraph::get_all_factors() const
+    const std::vector<std::shared_ptr<Factor>>& FactorGraph::get_all_factors() const
     {
         return factors_;
     }
@@ -47,22 +45,19 @@ namespace factorama
     {
         Eigen::VectorXd x(num_values());
         int offset = 0;
-        for (const auto &var : variables_vector_)
-        {
-            if (var->is_constant())
-            {
+        for (const auto& var : variables_vector_) {
+            if (var->is_constant()) {
                 continue;
             }
             bool placement_valid = false;
             auto var_placement = variable_placement(var->id(), placement_valid);
 
-            if (!placement_valid)
-            {
-                throw std::runtime_error("FactorGraph: Variable placement not found for variable ID " + std::to_string(var->id()));
+            if (!placement_valid) {
+                throw std::runtime_error("FactorGraph: Variable placement not found for variable ID " +
+                                         std::to_string(var->id()));
             }
 
-            if (var_placement.dim != var->size())
-            {
+            if (var_placement.dim != var->size()) {
                 throw std::runtime_error("FactorGraph: Variable size mismatch for ID " + std::to_string(var->id()) +
                                          ". Expected: " + std::to_string(var_placement.dim) +
                                          ", Got: " + std::to_string(var->size()));
@@ -74,53 +69,44 @@ namespace factorama
         return x;
     }
 
-    void FactorGraph::set_variable_values_from_vector(const Eigen::VectorXd &x)
+    void FactorGraph::set_variable_values_from_vector(const Eigen::VectorXd& x)
     {
         int offset = 0;
-        for (const auto &var : variables_vector_)
-        {
-            if (!var->is_constant())
-            {
+        for (const auto& var : variables_vector_) {
+            if (!var->is_constant()) {
                 var->set_value_from_vector(x.segment(offset, var->size()));
                 offset += var->size();
             }
         }
     }
 
-    void FactorGraph::apply_increment(const Eigen::VectorXd &dx)
+    void FactorGraph::apply_increment(const Eigen::VectorXd& dx)
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("apply_increment: must call finalize_structure() first");
         }
 
-        if (dx.size() != num_values_)
-        {
-            throw std::runtime_error("apply_increment: increment vector size (" +
-                                     std::to_string(dx.size()) +
-                                     ") does not match expected size (" +
-                                     std::to_string(num_values_) + ")");
+        if (dx.size() != num_values_) {
+            throw std::runtime_error("apply_increment: increment vector size (" + std::to_string(dx.size()) +
+                                     ") does not match expected size (" + std::to_string(num_values_) + ")");
         }
 
-        const auto &variables = get_all_variables();
-        for (const auto &var : variables)
-        {
-            if (var->is_constant())
-            {
+        const auto& variables = get_all_variables();
+        for (const auto& var : variables) {
+            if (var->is_constant()) {
                 continue;
             }
 
             bool valid = false;
             VariablePlacement placement = variable_placement(var->id(), valid);
-            if (!valid)
-            {
+            if (!valid) {
                 std::cerr << "[FactorGraph] Skipping variable id=" << var->id() << " (no placement found)\n";
                 continue;
             }
 
-            if (placement.index + placement.dim > dx.size())
-            {
-                throw std::runtime_error("apply_increment: variable placement exceeds vector bounds for variable " + std::to_string(var->id()));
+            if (placement.index + placement.dim > dx.size()) {
+                throw std::runtime_error("apply_increment: variable placement exceeds vector bounds for variable " +
+                                         std::to_string(var->id()));
             }
 
             const Eigen::VectorXd local_dx = dx.segment(placement.index, placement.dim);
@@ -128,15 +114,13 @@ namespace factorama
         }
     }
 
-    Eigen::VectorXd &FactorGraph::compute_full_residual_vector()
+    Eigen::VectorXd& FactorGraph::compute_full_residual_vector()
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Called before finalize_structure().");
         }
 
-        if (!residual_valid_)
-        {
+        if (!residual_valid_) {
             cached_residual_ = Eigen::VectorXd::Zero(num_residuals_);
         }
 
@@ -147,71 +131,62 @@ namespace factorama
         return cached_residual_;
     }
 
-    void FactorGraph::compute_full_residual_vector(Eigen::VectorXd &result)
+    void FactorGraph::compute_full_residual_vector(Eigen::VectorXd& result)
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Called before finalize_structure().");
         }
 
-        if (result.size() != num_residuals_)
-        {
+        if (result.size() != num_residuals_) {
             result.resize(num_residuals_);
         }
 
-        for (const auto &it : factor_placement_)
-        {
+        for (const auto& it : factor_placement_) {
             auto factor_placement = it.second;
-            const auto &factor = factor_placement.factor;
+            const auto& factor = factor_placement.factor;
             const int row_offset = factor_placement.residual_index;
 
             factor->compute_residual(result.segment(row_offset, factor_placement.residual_dim));
         }
     }
 
-    Eigen::MatrixXd &FactorGraph::compute_full_jacobian_matrix()
+    Eigen::MatrixXd& FactorGraph::compute_full_jacobian_matrix()
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Called 'compute_full_jacobian_matrix' before finalize_structure().");
         }
 
-        if (!jacobian_valid_)
-        {
+        if (!jacobian_valid_) {
             cached_jacobian_ = Eigen::MatrixXd::Zero(num_residuals_, num_values_);
         }
 
-        for (const auto &it : factor_placement_)
-        {
+        for (const auto& it : factor_placement_) {
             auto factor_placement = it.second;
-            const auto &factor = factor_placement.factor;
+            const auto& factor = factor_placement.factor;
             const int row_offset = factor_placement.residual_index;
 
             std::vector<Eigen::MatrixXd> jacobians;
             factor->compute_jacobians(jacobians);
-            const auto &variables = factor->variables();
+            const auto& variables = factor->variables();
 
-            for (size_t i = 0; i < variables.size(); ++i)
-            {
-                const auto &var = variables[i];
+            for (size_t i = 0; i < variables.size(); ++i) {
+                const auto& var = variables[i];
 
-                const auto &Ji = jacobians[i];
+                const auto& Ji = jacobians[i];
                 // int col_offset = variable_offset(var->id());
 
-                if (Ji.rows() == 0 || Ji.cols() == 0)
-                {
+                if (Ji.rows() == 0 || Ji.cols() == 0) {
                     // empty jacobian. ensure that this variable is meant to be constant, then move on
-                    if (!var->is_constant())
-                    {
-                        throw std::runtime_error("FactorGraph: Jacobian block empty for non-constant variable: " + var->name());
+                    if (!var->is_constant()) {
+                        throw std::runtime_error("FactorGraph: Jacobian block empty for non-constant variable: " +
+                                                 var->name());
                     }
                     continue;
                 }
 
                 bool var_valid = false;
                 auto var_placement = variable_placement(var->id(), var_valid);
-                if (!var_valid)
-                {
+                if (!var_valid) {
                     std::cerr << "var id: " << var->id() << "not found" << std::endl;
                     continue;
                 }
@@ -219,22 +194,21 @@ namespace factorama
 
                 // Bounds and dimension validation
                 if (row_offset + Ji.rows() > cached_jacobian_.rows() ||
-                    col_offset + Ji.cols() > cached_jacobian_.cols())
-                {
-                    throw std::runtime_error("FactorGraph: Jacobian block bounds exceeded. factor " + factor->name() + ", var " + var->name());
+                    col_offset + Ji.cols() > cached_jacobian_.cols()) {
+                    throw std::runtime_error("FactorGraph: Jacobian block bounds exceeded. factor " + factor->name() +
+                                             ", var " + var->name());
                 }
 
-                if (Ji.rows() != factor_placement.residual_dim)
-                {
-                    throw std::runtime_error("FactorGraph: Jacobian row mismatch for. factor " + factor->name() + ", var " + var->name());
+                if (Ji.rows() != factor_placement.residual_dim) {
+                    throw std::runtime_error("FactorGraph: Jacobian row mismatch for. factor " + factor->name() +
+                                             ", var " + var->name());
                 }
 
-                if (Ji.cols() != var_placement.dim)
-                {
+                if (Ji.cols() != var_placement.dim) {
 
-                    throw std::runtime_error("FactorGraph: Jacobian column mismatch. Expected: " + std::to_string(var_placement.dim) + 
-                                 ", actual: " + std::to_string(Ji.cols()) + 
-                                 "factor " + factor->name() + ", var " + var->name());
+                    throw std::runtime_error(
+                        "FactorGraph: Jacobian column mismatch. Expected: " + std::to_string(var_placement.dim) +
+                        ", actual: " + std::to_string(Ji.cols()) + "factor " + factor->name() + ", var " + var->name());
                 }
 
                 cached_jacobian_.block(row_offset, col_offset, Ji.rows(), Ji.cols()) = Ji;
@@ -247,8 +221,7 @@ namespace factorama
 
     void FactorGraph::compute_full_jacobian_and_residual()
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Called 'compute_full_jacobian_and_residual' before finalize_structure().");
         }
 
@@ -265,18 +238,14 @@ namespace factorama
 
         // Assign column offsets for variables
 
-        for (size_t i = 0; i < variables_vector_.size(); i++)
-        {
-            const auto &var = variables_vector_[i];
+        for (size_t i = 0; i < variables_vector_.size(); i++) {
+            const auto& var = variables_vector_[i];
             VariablePlacement placement;
             placement.variable = var.get();
             placement.index = col_offset;
-            if (var->is_constant())
-            {
+            if (var->is_constant()) {
                 placement.dim = 0;
-            }
-            else
-            {
+            } else {
                 placement.dim = var->size();
             }
             variable_placement_[var->id()] = placement;
@@ -286,39 +255,33 @@ namespace factorama
         int row_offset = 0;
 
         // Assign row offsets and column mappings for each factor
-        for (size_t i = 0; i < factors_.size(); i++)
-        {
-            const auto &factor = factors_[i];
+        for (size_t i = 0; i < factors_.size(); i++) {
+            const auto& factor = factors_[i];
             FactorPlacement placement;
             placement.factor = factor.get();
             placement.residual_index = row_offset;
             placement.residual_dim = factor->residual_size();
 
-            for (const auto &var : factor->variables())
-            {
-                if (var == nullptr)
-                {
+            for (const auto& var : factor->variables()) {
+                if (var == nullptr) {
                     throw std::runtime_error("Factor: " + factor->name() + "variable was null");
                 }
 
-                if (var->is_constant())
-                {
+                if (var->is_constant()) {
                     continue;
                 }
 
                 bool var_placement_valid;
                 auto var_placement = variable_placement(var->id(), var_placement_valid);
-                if (!var_placement_valid)
-                {
-                    throw std::runtime_error("Variable placement not found for variable: " +
-                                             var->name() +
+                if (!var_placement_valid) {
+                    throw std::runtime_error("Variable placement not found for variable: " + var->name() +
                                              ". Variable may not have been added to the factor graph.");
                 }
 
                 placement.variable_column_indices.push_back(var_placement.index);
                 placement.variable_dims.push_back(var_placement.dim);
             }
-            
+
 
             factor_placement_[i] = placement;
             row_offset += placement.residual_dim;
@@ -327,35 +290,31 @@ namespace factorama
         num_residuals_ = row_offset;
         num_values_ = col_offset;
 
-        if (num_residuals_ < num_values_)
-        {
+        if (num_residuals_ < num_values_) {
             // The problem is guaranteed to be singular, so throw an error
-            throw std::runtime_error("num residuals - " + std::to_string(num_residuals_) + ", should be >= num_values - " + std::to_string(num_values_));
+            throw std::runtime_error("num residuals - " + std::to_string(num_residuals_) +
+                                     ", should be >= num_values - " + std::to_string(num_values_));
         }
 
         // First, figure out the number of elements in each column
         // std::vector<int> num_sparse_rows(num_values_, 0); // num sparse rows in each column
         Eigen::VectorXi num_sparse_rows = Eigen::VectorXi::Zero(num_values_);
         // for (const auto &fp : factor_placement_)
-        for (size_t i = 0; i < factors_.size(); i++)
-        {
-            auto &fp = factor_placement_[i]; // TODO : switch to ID eventually
+        for (size_t i = 0; i < factors_.size(); i++) {
+            auto& fp = factor_placement_[i]; // TODO : switch to ID eventually
             // const int row_base = fp.residual_index;
             const int row_dim = fp.residual_dim;
-            for (auto &var : fp.factor->variables())
-            {
-                if (var->is_constant())
-                {
+            for (auto& var : fp.factor->variables()) {
+                if (var->is_constant()) {
                     continue;
                 }
-                auto &vp = variable_placement_[var->id()];
+                auto& vp = variable_placement_[var->id()];
 
                 // for each column - add the num rows
                 int col_base = vp.index;
                 int col_dim = vp.dim;
 
-                for (int i = col_base; i < col_base + col_dim; i++)
-                {
+                for (int i = col_base; i < col_base + col_dim; i++) {
                     num_sparse_rows[i] += row_dim;
                 }
             }
@@ -365,32 +324,27 @@ namespace factorama
         sparse_jacobian_data_ = std::vector<std::vector<double>>(num_values_);
 
         // preallocate the sparse data based on # of rows
-        for (int i = 0; i < num_values_; i++)
-        {
+        for (int i = 0; i < num_values_; i++) {
             sparse_jacobian_row_indices_[i] = std::vector<int>(num_sparse_rows[i]);
             sparse_jacobian_data_[i] = std::vector<double>(num_sparse_rows[i]);
         }
 
         std::vector<int> current_row_index(num_values_, 0);
 
-        for (size_t i = 0; i < factors_.size(); i++)
-        {
-            auto &fp = factor_placement_[i]; // TODO : switch to ID eventually
+        for (size_t i = 0; i < factors_.size(); i++) {
+            auto& fp = factor_placement_[i]; // TODO : switch to ID eventually
             const int row_base = fp.residual_index;
             const int row_dim = fp.residual_dim;
 
-            const auto &col_indices = fp.variable_column_indices;
-            const auto &col_dims = fp.variable_dims;
+            const auto& col_indices = fp.variable_column_indices;
+            const auto& col_dims = fp.variable_dims;
 
-            for (size_t j = 0; j < col_indices.size(); ++j)
-            {
+            for (size_t j = 0; j < col_indices.size(); ++j) {
                 int col_base = col_indices[j];
                 int col_dim = col_dims[j];
 
-                for (int r = 0; r < row_dim; ++r)
-                {
-                    for (int c = 0; c < col_dim; ++c)
-                    {
+                for (int r = 0; r < row_dim; ++r) {
+                    for (int c = 0; c < col_dim; ++c) {
                         int dense_row = row_base + r;
                         int dense_col = col_base + c;
                         int sparse_row = current_row_index[dense_col];
@@ -412,16 +366,15 @@ namespace factorama
         structure_finalized_ = true;
     }
 
-    Eigen::SparseMatrix<double> &FactorGraph::compute_sparse_jacobian_matrix()
+    Eigen::SparseMatrix<double>& FactorGraph::compute_sparse_jacobian_matrix()
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Called 'compute_sparse_jacobian_matrix' before finalize_structure().");
         }
 
-        if (!sparse_jacobian_initialized_)
-        {
-            throw std::runtime_error("Called 'compute_sparse_jacobian_matrix' without the sparse structure being initalized!!");
+        if (!sparse_jacobian_initialized_) {
+            throw std::runtime_error(
+                "Called 'compute_sparse_jacobian_matrix' without the sparse structure being initalized!!");
         }
 
         // sparse_jacobian_.setZero(); // Clean existing values but preserve structure
@@ -431,47 +384,43 @@ namespace factorama
         {
             auto factor_placement = factor_placement_[factor_ind];
             // auto factor_placement = it.second;
-            const auto &factor = factor_placement.factor;
+            const auto& factor = factor_placement.factor;
             // const int row_offset = factor_placement.residual_index;
 
-            //std::vector<Eigen::MatrixXd> jacobians;
+            // std::vector<Eigen::MatrixXd> jacobians;
             std::vector<Eigen::MatrixXd>& jacobians = sparse_jacobian_components_[factor_ind];
             factor->compute_jacobians(jacobians);
-            const auto &variables = factor->variables();
+            const auto& variables = factor->variables();
 
-            for (size_t i = 0; i < variables.size(); i++)
-            {
-                const auto &var = variables[i];
-                const auto &Ji = jacobians[i];
+            for (size_t i = 0; i < variables.size(); i++) {
+                const auto& var = variables[i];
+                const auto& Ji = jacobians[i];
 
                 bool var_valid = false;
                 auto var_placement = variable_placement(var->id(), var_valid);
-                if (!var_valid)
-                {
+                if (!var_valid) {
                     std::cerr << "var id: " << var->id() << " not found" << std::endl;
                     continue;
                 }
                 int col_offset = var_placement.index;
 
                 // Iterate through each element of the Ji block and add non-zero s
-                for (int r = 0; r < Ji.rows(); ++r)
-                {
-                    for (int c = 0; c < Ji.cols(); ++c)
-                    {
+                for (int r = 0; r < Ji.rows(); ++r) {
+                    for (int c = 0; c < Ji.cols(); ++c) {
                         double value = Ji(r, c);
                         // int dense_row = row_offset + r;
                         int dense_col = col_offset + c;
                         int sparse_row = current_row_index[dense_col];
                         // sparse_jacobian_.coeffRef(row_offset + r, col_offset + c) = value;
                         // sparse_jacobian_.insert(row_offset + r, col_offset + c) = value;
-                        if (dense_col < 0 || dense_col >= int(sparse_jacobian_data_.size()))
-                        {
-                            throw std::runtime_error("column index " + std::to_string(dense_col) + " out of bounds for sparse jacobian data");
+                        if (dense_col < 0 || dense_col >= int(sparse_jacobian_data_.size())) {
+                            throw std::runtime_error("column index " + std::to_string(dense_col) +
+                                                     " out of bounds for sparse jacobian data");
                         }
 
-                        if (sparse_row < 0 || sparse_row >= int(sparse_jacobian_data_[dense_col].size()))
-                        {
-                            throw std::runtime_error("sparse row index " + std::to_string(sparse_row) + " out of bounds for sparse jacobian data");
+                        if (sparse_row < 0 || sparse_row >= int(sparse_jacobian_data_[dense_col].size())) {
+                            throw std::runtime_error("sparse row index " + std::to_string(sparse_row) +
+                                                     " out of bounds for sparse jacobian data");
                         }
 
                         sparse_jacobian_data_[dense_col][sparse_row] = value;
@@ -495,24 +444,19 @@ namespace factorama
         // The sparsity pattern might theoretically be different
         // each time
 
-        if (!sparse_jacobian_valid_ || initialize_every_time)
-        {
-            if (initialize_every_time)
-            {
+        if (!sparse_jacobian_valid_ || initialize_every_time) {
+            if (initialize_every_time) {
                 // sparse_jacobian_.setZero();
             }
 
-            for (int col = 0; col < num_values_; ++col)
-            {
+            for (int col = 0; col < num_values_; ++col) {
                 // std::cout << "startvec: " << col << std::endl;
                 // sparse_jacobian_.startVec(col);
-                auto &this_col_indices = sparse_jacobian_row_indices_[col];
+                auto& this_col_indices = sparse_jacobian_row_indices_[col];
 
-                for (size_t i = 0; i < this_col_indices.size(); ++i)
-                {
+                for (size_t i = 0; i < this_col_indices.size(); ++i) {
                     double value = sparse_jacobian_data_[col][i];
-                    if (initialize_every_time && fabs(value) < 1e-12)
-                    {
+                    if (initialize_every_time && fabs(value) < 1e-12) {
                         continue;
                     }
                     int row_index = this_col_indices[i];
@@ -523,9 +467,7 @@ namespace factorama
             }
             // sparse_jacobian_.makeCompressed();s
             sparse_jacobian_.finalize();
-        }
-        else
-        {
+        } else {
             // subsequent population of sparse_jacobian_
             // use the following template, except calculate the index from row/col
             // double* values = J.valuePtr(); // Fast pointer access
@@ -542,8 +484,7 @@ namespace factorama
 
     void FactorGraph::print_structure() const
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("Cannot print structure — finalize_structure() hasn't been called.");
         }
 
@@ -558,8 +499,7 @@ namespace factorama
     {
         std::cout << "Variables:\n";
 
-        for (const auto &var : variables_vector_)
-        {
+        for (const auto& var : variables_vector_) {
             var->print();
         }
     }
@@ -567,48 +507,38 @@ namespace factorama
     void FactorGraph::print_jacobian_and_residual(bool detailed)
     {
         compute_full_jacobian_and_residual();
-        if (!jacobian_valid_)
-        {
+        if (!jacobian_valid_) {
             throw std::runtime_error("Jacobian not valid — call compute_full_jacobian_and_residual() first.");
         }
 
-        std::cout << "Jacobian: " << cached_jacobian_.rows()
-                  << " x " << cached_jacobian_.cols() << "\n";
+        std::cout << "Jacobian: " << cached_jacobian_.rows() << " x " << cached_jacobian_.cols() << "\n";
 
-        for (int i = 0; i < cached_jacobian_.cols(); ++i)
-        {
-            if (cached_jacobian_.col(i).norm() < 1e-12)
-            {
+        for (int i = 0; i < cached_jacobian_.cols(); ++i) {
+            if (cached_jacobian_.col(i).norm() < 1e-12) {
                 std::cout << "  ⚠️  Near-zero column in Jacobian: param " << i << "\n";
             }
         }
 
         Eigen::JacobiSVD<Eigen::MatrixXd> svd(cached_jacobian_);
         std::cout << "Jacobian rank: " << svd.rank() << "\n";
-        std::cout << "Condition estimate: "
-                  << svd.singularValues()(0) / svd.singularValues().tail(1)(0) << "\n";
+        std::cout << "Condition estimate: " << svd.singularValues()(0) / svd.singularValues().tail(1)(0) << "\n";
 
         std::cout << "Residual norm: " << cached_residual_.norm() << "\n";
 
-        if (detailed)
-        {
+        if (detailed) {
             Eigen::IOFormat fmt(4, 0, ", ", "\n", "[", "]");
-            std::cout << "Full Jacobian:\n"
-                      << cached_jacobian_.format(fmt) << "\n";
-            std::cout << "Full Residual:\n"
-                      << cached_residual_.format(fmt) << "\n";
+            std::cout << "Full Jacobian:\n" << cached_jacobian_.format(fmt) << "\n";
+            std::cout << "Full Residual:\n" << cached_residual_.format(fmt) << "\n";
         }
     }
 
     bool FactorGraph::detailed_factor_test(double jacobian_tol, bool verbose)
     {
-        if (!structure_finalized_)
-        {
+        if (!structure_finalized_) {
             throw std::runtime_error("detailed_factor_test: must call finalize_structure() first");
         }
 
-        if (verbose)
-        {
+        if (verbose) {
             std::cout << "\n=== DETAILED FACTOR TEST ===" << std::endl;
             std::cout << "Testing " << factors_.size() << " factors with tolerance " << jacobian_tol << std::endl;
         }
@@ -616,9 +546,8 @@ namespace factorama
         int num_passed = 0;
         int num_failed = 0;
 
-        for (size_t factor_idx = 0; factor_idx < factors_.size(); ++factor_idx)
-        {
-            const auto &factor = factors_[factor_idx];
+        for (size_t factor_idx = 0; factor_idx < factors_.size(); ++factor_idx) {
+            const auto& factor = factors_[factor_idx];
 
             // Get analytical jacobians
             std::vector<Eigen::MatrixXd> J_analytic;
@@ -629,11 +558,10 @@ namespace factorama
             ComputeNumericalJacobians(*factor, J_numeric);
 
             // Compare sizes
-            if (J_analytic.size() != J_numeric.size())
-            {
-                if (verbose)
-                {
-                    std::cout << "\n--- Factor " << factor_idx << " (" << factor->name() << ", ID=" << factor->id() << ") ---" << std::endl;
+            if (J_analytic.size() != J_numeric.size()) {
+                if (verbose) {
+                    std::cout << "\n--- Factor " << factor_idx << " (" << factor->name() << ", ID=" << factor->id()
+                              << ") ---" << std::endl;
                     std::cout << "FAIL: Jacobian count mismatch - analytical: " << J_analytic.size()
                               << ", numerical: " << J_numeric.size() << std::endl;
                 }
@@ -642,28 +570,22 @@ namespace factorama
             }
 
             bool factor_passed = true;
-            const auto &variables = factor->variables();
+            const auto& variables = factor->variables();
 
-            for (size_t var_idx = 0; var_idx < J_analytic.size(); ++var_idx)
-            {
-                const auto &var = variables[var_idx];
-                const auto &J_a = J_analytic[var_idx];
-                const auto &J_n = J_numeric[var_idx];
+            for (size_t var_idx = 0; var_idx < J_analytic.size(); ++var_idx) {
+                const auto& var = variables[var_idx];
+                const auto& J_a = J_analytic[var_idx];
+                const auto& J_n = J_numeric[var_idx];
 
                 // Handle constant variables (empty jacobians)
-                if (var->is_constant())
-                {
-                    if (J_a.size() == 0 && J_n.size() == 0)
-                    {
+                if (var->is_constant()) {
+                    if (J_a.size() == 0 && J_n.size() == 0) {
                         continue;
-                    }
-                    else
-                    {
-                        if (verbose)
-                        {
-                            if (factor_passed)
-                            {
-                                std::cout << "\n--- Factor " << factor_idx << " (" << factor->name() << ", ID=" << factor->id() << ") ---" << std::endl;
+                    } else {
+                        if (verbose) {
+                            if (factor_passed) {
+                                std::cout << "\n--- Factor " << factor_idx << " (" << factor->name()
+                                          << ", ID=" << factor->id() << ") ---" << std::endl;
                             }
                             std::cout << "  FAIL: Variable " << var_idx << " (" << var->name() << ", ID=" << var->id()
                                       << ") - constant but jacobians not empty" << std::endl;
@@ -674,13 +596,11 @@ namespace factorama
                 }
 
                 // Check dimensions
-                if (J_a.rows() != J_n.rows() || J_a.cols() != J_n.cols())
-                {
-                    if (verbose)
-                    {
-                        if (factor_passed)
-                        {
-                            std::cout << "\n--- Factor " << factor_idx << " (" << factor->name() << ", ID=" << factor->id() << ") ---" << std::endl;
+                if (J_a.rows() != J_n.rows() || J_a.cols() != J_n.cols()) {
+                    if (verbose) {
+                        if (factor_passed) {
+                            std::cout << "\n--- Factor " << factor_idx << " (" << factor->name()
+                                      << ", ID=" << factor->id() << ") ---" << std::endl;
                         }
                         std::cout << "  FAIL: Variable " << var_idx << " (" << var->name() << ", ID=" << var->id()
                                   << ") - dimension mismatch" << std::endl;
@@ -697,44 +617,38 @@ namespace factorama
                 double max_error = diff.cwiseAbs().maxCoeff();
                 double sum_abs_error = diff.cwiseAbs().sum();
 
-                // Scale the jacobian tolerance based on the actual values detected in the jacobian. This way a tiny jacobian has a smaller tolerance, a huge jacobian has a bigger tolerance
-                // Not foolproof (as different sections of a jacobian may be scaled differently) but it helps.
+                // Scale the jacobian tolerance based on the actual values detected in the jacobian. This way a tiny
+                // jacobian has a smaller tolerance, a huge jacobian has a bigger tolerance Not foolproof (as different
+                // sections of a jacobian may be scaled differently) but it helps.
                 double scaled_jacobian_tol = std::max(1e-2, max_jacobian_val * jacobian_tol);
 
-                if (max_error >= scaled_jacobian_tol)
-                {
-                    if (verbose)
-                    {
-                        if (factor_passed)
-                        {
-                            std::cout << "\n--- Factor " << factor_idx << " (" << factor->name() << ", ID=" << factor->id() << ") ---" << std::endl;
+                if (max_error >= scaled_jacobian_tol) {
+                    if (verbose) {
+                        if (factor_passed) {
+                            std::cout << "\n--- Factor " << factor_idx << " (" << factor->name()
+                                      << ", ID=" << factor->id() << ") ---" << std::endl;
                         }
                         std::cout << "  FAIL: Variable " << var_idx << " (" << var->name() << ", ID=" << var->id()
                                   << ") - jacobian comparison FAILED" << std::endl;
 
-                        std::cout << "     Max error: " << max_error << " (scaled tolerance: " << scaled_jacobian_tol << " / original tol: " << jacobian_tol << ")" << std::endl;
+                        std::cout << "     Max error: " << max_error << " (scaled tolerance: " << scaled_jacobian_tol
+                                  << " / original tol: " << jacobian_tol << ")" << std::endl;
                         std::cout << "     Sum |error|: " << sum_abs_error << std::endl;
 
                         // Print detailed jacobian info
                         Eigen::IOFormat fmt(6, 0, ", ", "\n", "[", "]");
-                        std::cout << "     Numerical jacobian:\n"
-                                  << J_n.format(fmt) << std::endl;
-                        std::cout << "     Analytical jacobian:\n"
-                                  << J_a.format(fmt) << std::endl;
-                        std::cout << "     Diff (numerical - analytical):\n"
-                                  << diff.format(fmt) << std::endl;
+                        std::cout << "     Numerical jacobian:\n" << J_n.format(fmt) << std::endl;
+                        std::cout << "     Analytical jacobian:\n" << J_a.format(fmt) << std::endl;
+                        std::cout << "     Diff (numerical - analytical):\n" << diff.format(fmt) << std::endl;
                     }
 
                     factor_passed = false;
                 }
             }
 
-            if (factor_passed)
-            {
+            if (factor_passed) {
                 num_passed++;
-            }
-            else
-            {
+            } else {
                 num_failed++;
             }
         }
@@ -745,12 +659,9 @@ namespace factorama
         std::cout << "Factors failed: " << num_failed << "/" << factors_.size() << std::endl;
 
         bool all_passed = (num_failed == 0);
-        if (all_passed)
-        {
+        if (all_passed) {
             std::cout << "ALL FACTORS PASSED!" << std::endl;
-        }
-        else
-        {
+        } else {
             std::cout << num_failed << " factors have jacobian issues" << std::endl;
         }
 
@@ -764,45 +675,37 @@ namespace factorama
         int total_nonzeros = sparse_jacobian_.nonZeros();
 
         // Validate preconditions
-        if (!values)
-        {
+        if (!values) {
             throw std::runtime_error("FactorGraph: Sparse matrix valuePtr() returned null");
         }
-        if (total_nonzeros < 0)
-        {
+        if (total_nonzeros < 0) {
             throw std::runtime_error("FactorGraph: Invalid nonzeros count");
         }
 
-        for (int col = 0; col < num_values_; ++col)
-        {
+        for (int col = 0; col < num_values_; ++col) {
             const size_t num_elem = sparse_jacobian_row_indices_[col].size();
-            const auto &source_data = sparse_jacobian_data_[col];
+            const auto& source_data = sparse_jacobian_data_[col];
 
             // Comprehensive bounds checking
-            if (source_data.size() != num_elem)
-            {
+            if (source_data.size() != num_elem) {
                 throw std::runtime_error("FactorGraph: Data/indices size mismatch for column " + std::to_string(col));
             }
-            if (source_data.empty())
-            {
+            if (source_data.empty()) {
                 continue; // Skip empty columns
             }
 
             // Check for size_t to int conversion safety
-            if (num_elem > static_cast<size_t>(std::numeric_limits<int>::max()))
-            {
+            if (num_elem > static_cast<size_t>(std::numeric_limits<int>::max())) {
                 throw std::runtime_error("FactorGraph: Column has too many elements for int indexing");
             }
 
             const int num_elem_int = static_cast<int>(num_elem);
 
             // Bounds checking with safe arithmetic
-            if (running_index < 0 || running_index >= total_nonzeros)
-            {
+            if (running_index < 0 || running_index >= total_nonzeros) {
                 throw std::runtime_error("FactorGraph: Invalid running_index " + std::to_string(running_index));
             }
-            if (running_index + num_elem_int > total_nonzeros)
-            {
+            if (running_index + num_elem_int > total_nonzeros) {
                 throw std::runtime_error("FactorGraph: Sparse matrix bounds exceeded");
             }
 
@@ -811,4 +714,4 @@ namespace factorama
             running_index += num_elem_int;
         }
     }
-}
+} // namespace factorama

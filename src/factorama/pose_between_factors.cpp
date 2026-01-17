@@ -3,13 +3,12 @@
 
 namespace factorama
 {
-    void PoseOrientationBetweenFactor::compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const
+    void PoseOrientationBetweenFactor::compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const
     {
         // Ensure jacobians vector has correct size for 3 variables
-        if(jacobians.size() == 0) {
+        if (jacobians.size() == 0) {
             jacobians.resize(3);
-        }
-        else if(jacobians.size() != 3) {
+        } else if (jacobians.size() != 3) {
             jacobians.clear();
             jacobians.resize(3);
         }
@@ -28,7 +27,7 @@ namespace factorama
         if (pose1_->is_constant()) {
             jacobians[0] = Eigen::MatrixXd();
         } else {
-            if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+            if (jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
                 jacobians[0].resize(size_, 6);
             }
             jacobians[0].setZero();
@@ -39,7 +38,7 @@ namespace factorama
         if (pose2_->is_constant()) {
             jacobians[1] = Eigen::MatrixXd();
         } else {
-            if(jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
+            if (jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
                 jacobians[1].resize(size_, 6);
             }
             jacobians[1].setZero();
@@ -51,7 +50,7 @@ namespace factorama
         if (calibration_rotation_12_->is_constant()) {
             jacobians[2] = Eigen::MatrixXd();
         } else {
-            if(jacobians[2].rows() != size_ || jacobians[2].cols() != 3) {
+            if (jacobians[2].rows() != size_ || jacobians[2].cols() != 3) {
                 jacobians[2].resize(size_, 3);
             }
             jacobians[2] = weight_ * Jr_inv.transpose() * dcm_P1_P2.transpose();

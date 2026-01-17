@@ -40,15 +40,11 @@ namespace factorama
          *        - If local_frame=false: position measured in world frame (pos_b - pos_a)
          * @param position_sigma Standard deviation of position measurement
          * @param angle_sigma Standard deviation of angular measurement (radians)
-         * @param local_frame If true, position measurement is in pose_a's frame; if false, in world frame (default: false)
+         * @param local_frame If true, position measurement is in pose_a's frame; if false, in world frame (default:
+         * false)
          */
-        Pose2DBetweenFactor(int id,
-                           Pose2DVariable* pose_a,
-                           Pose2DVariable* pose_b,
-                           Variable* measured_between_variable,
-                           double position_sigma,
-                           double angle_sigma,
-                           bool local_frame = false);
+        Pose2DBetweenFactor(int id, Pose2DVariable *pose_a, Pose2DVariable *pose_b, Variable *measured_between_variable,
+                            double position_sigma, double angle_sigma, bool local_frame = false);
 
         int residual_size() const override { return size_; }
 
@@ -57,31 +53,25 @@ namespace factorama
 
         void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        std::vector<Variable*> variables() override
-        {
-            return {pose_a_, pose_b_, measured_between_variable_};
-        }
+        std::vector<Variable *> variables() override { return {pose_a_, pose_b_, measured_between_variable_}; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_2d_between;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_2d_between; }
 
         std::string name() const override
         {
-            return "Pose2DBetweenFactor(" + pose_a_->name() + ", " +
-                   pose_b_->name() + ", " + measured_between_variable_->name() + ")";
+            return "Pose2DBetweenFactor(" + pose_a_->name() + ", " + pose_b_->name() + ", " +
+                   measured_between_variable_->name() + ")";
         }
 
         double position_weight() const { return position_weight_; }
         double angle_weight() const { return angle_weight_; }
 
     private:
-        Pose2DVariable* pose_a_;
-        Pose2DVariable* pose_b_;
-        Variable* measured_between_variable_;
-        double position_weight_;  // 1.0 / position_sigma
-        double angle_weight_;     // 1.0 / angle_sigma
+        Pose2DVariable *pose_a_;
+        Pose2DVariable *pose_b_;
+        Variable *measured_between_variable_;
+        double position_weight_; // 1.0 / position_sigma
+        double angle_weight_;    // 1.0 / angle_sigma
         bool local_frame_;
         int size_ = 3;
 

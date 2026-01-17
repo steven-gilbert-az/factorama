@@ -54,7 +54,8 @@ TEST_CASE("InverseRangeFactorSanityTest", "[sfm]")
 
     // Variable with slightly wrong inverse range
     double initial_range = 9.5;
-    std::shared_ptr<InverseRangeVariable> inv_range_var = std::make_shared<InverseRangeVariable>(1, origin_W, bearing_W, initial_range);
+    std::shared_ptr<InverseRangeVariable> inv_range_var =
+        std::make_shared<InverseRangeVariable>(1, origin_W, bearing_W, initial_range);
 
     // Ground truth landmark position in W
     Eigen::Vector3d landmark_pos_W = origin_W + bearing_W.normalized() * true_range;
@@ -181,8 +182,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -217,8 +217,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -253,8 +252,7 @@ TEST_CASE("BearingObservationFactor: analytical Jacobian matches numerical", "[j
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
             REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
@@ -277,8 +275,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
         Eigen::Vector3d bearing_W = Eigen::Vector3d(1, 1, 0).normalized();
         double range = 2.0;
 
-        auto inv_range_var = std::make_shared<InverseRangeVariable>(
-            1, cam_pos_W, bearing_W, range);
+        auto inv_range_var = std::make_shared<InverseRangeVariable>(1, cam_pos_W, bearing_W, range);
 
         Eigen::Vector3d lm_pos = cam_pos_W + range * bearing_W;
         Eigen::Matrix3d dcm_CW = pose->dcm_CW();
@@ -295,8 +292,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
             REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
@@ -333,8 +329,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
@@ -373,8 +368,7 @@ TEST_CASE("InverseRangeBearingFactor: analytical Jacobian matches numerical", "[
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
             REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
@@ -418,13 +412,10 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         std::vector<Eigen::MatrixXd> numeric_jacs;
         ComputeNumericalJacobians(factor, numeric_jacs);
 
-        for (size_t i = 0; i < vars.size(); ++i)
-        {
+        for (size_t i = 0; i < vars.size(); ++i) {
 
-            INFO("Variable " << i << " analytic jacobian:\n"
-                             << analytic_jacs[i]);
-            INFO("Variable " << i << " numeric jacobian:\n"
-                             << numeric_jacs[i]);
+            INFO("Variable " << i << " analytic jacobian:\n" << analytic_jacs[i]);
+            INFO("Variable " << i << " numeric jacobian:\n" << numeric_jacs[i]);
 
             // Compare numeric and analytic Jacobians element-wise
             CAPTURE(analytic_jacs[i]);
@@ -458,7 +449,8 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot);
 
         double sigma = 0.75;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
+        auto factor =
+            std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -469,8 +461,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         REQUIRE(J_analytic.size() == J_numeric.size());
 
         // This should pass since PoseOrientationBetweenFactor uses numerical jacobians
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
 
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
@@ -501,7 +492,8 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         auto extrinsic_var = std::make_shared<RotationVariable>(2, extrinsic_rot);
 
         double sigma = 0.12;
-        auto factor = std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
+        auto factor =
+            std::make_shared<PoseOrientationBetweenFactor>(0, pose1.get(), pose2.get(), extrinsic_var.get(), sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -512,8 +504,7 @@ TEST_CASE("PoseOrientationBetweenFactor residual and jacobian numeric check", "[
         REQUIRE(J_analytic.size() == J_numeric.size());
 
         // This should pass since PoseOrientationBetweenFactor uses numerical jacobians
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
             REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-4); // Looser tolerance for numerical vs numerical
@@ -526,8 +517,7 @@ TEST_CASE("GenericBetweenFactor residuals and jacobians with LandmarkVariable", 
 {
     using namespace factorama;
 
-    auto make_landmark = [](int id, const Eigen::Vector3d &pos)
-    {
+    auto make_landmark = [](int id, const Eigen::Vector3d& pos) {
         auto l = std::make_shared<LandmarkVariable>(id, pos);
         l->set_constant(false);
         return l;
@@ -799,8 +789,7 @@ TEST_CASE("PosePositionPriorFactor: comprehensive behavior tests", "[prior][posi
         // Test different sigma values
         std::vector<double> sigma_values = {0.1, 1.0, 2.0, 5.0};
 
-        for (double sigma : sigma_values)
-        {
+        for (double sigma : sigma_values) {
             PosePositionPriorFactor factor(0, pose.get(), pos_prior, sigma);
 
             Eigen::VectorXd residual = factor.compute_residual();
@@ -903,14 +892,10 @@ TEST_CASE("PoseOrientationPriorFactor: analytical vs numerical Jacobians", "[pri
     Eigen::MatrixXd diff = J_analytic[0] - J_numeric[0];
     double diff_norm = diff.norm();
 
-    if (diff_norm >= 1e-6)
-    {
-        std::cout << "\nPoseOrientationPriorFactor Jacobian diff (norm: " << diff_norm << "):\n"
-                  << diff << std::endl;
-        std::cout << "Analytical Jacobian:\n"
-                  << J_analytic[0] << std::endl;
-        std::cout << "Numerical Jacobian:\n"
-                  << J_numeric[0] << std::endl;
+    if (diff_norm >= 1e-6) {
+        std::cout << "\nPoseOrientationPriorFactor Jacobian diff (norm: " << diff_norm << "):\n" << diff << std::endl;
+        std::cout << "Analytical Jacobian:\n" << J_analytic[0] << std::endl;
+        std::cout << "Numerical Jacobian:\n" << J_numeric[0] << std::endl;
         std::cout << "pose rotation: " << pose->rot_CW().transpose() << std::endl;
         std::cout << "rot_prior: " << rot_prior.transpose() << std::endl;
     }
@@ -923,7 +908,8 @@ TEST_CASE("PoseOrientationPriorFactor: analytical vs numerical Jacobians", "[pri
 // BearingProjectionFactor2D Tests
 // ============================================================================
 
-TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computation", "[bearing_projection_2d][residual]")
+TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computation",
+          "[bearing_projection_2d][residual]")
 {
     // Setup: camera at origin, looking down +Z axis
     Eigen::Matrix<double, 6, 1> pose_vec = Eigen::Matrix<double, 6, 1>::Zero();
@@ -967,11 +953,13 @@ TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computati
 
         // Residual should be scaled by weight
         Eigen::Vector3d wrong_bearing(0.0, 0.0, 1.0);
-        auto factor_wrong = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, sigma);
+        auto factor_wrong =
+            std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, sigma);
         Eigen::VectorXd weighted_residual = factor_wrong->compute_residual();
 
         // Compare with unit weight version
-        auto factor_unit = std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, 1.0);
+        auto factor_unit =
+            std::make_shared<BearingProjectionFactor2D>(0, pose.get(), landmark.get(), wrong_bearing, 1.0);
         Eigen::VectorXd unit_residual = factor_unit->compute_residual();
 
         Eigen::VectorXd expected_weighted = expected_weight * unit_residual;
@@ -979,7 +967,8 @@ TEST_CASE("BearingProjectionFactor2D: Basic functionality and residual computati
     }
 }
 
-TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation", "[bearing_projection_2d][jacobian]")
+TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differentiation",
+          "[bearing_projection_2d][jacobian]")
 {
     // Setup with non-trivial pose and landmark positions
     Eigen::Matrix<double, 6, 1> pose_vec;
@@ -1014,10 +1003,8 @@ TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differ
         REQUIRE(numerical_jacobians[0].rows() == 2);
         REQUIRE(numerical_jacobians[0].cols() == 6);
 
-        for (int i = 0; i < analytic_jacobians[0].rows(); ++i)
-        {
-            for (int j = 0; j < analytic_jacobians[0].cols(); ++j)
-            {
+        for (int i = 0; i < analytic_jacobians[0].rows(); ++i) {
+            for (int j = 0; j < analytic_jacobians[0].cols(); ++j) {
                 REQUIRE(std::abs(analytic_jacobians[0](i, j) - numerical_jacobians[0](i, j)) < 1e-6);
             }
         }
@@ -1028,10 +1015,8 @@ TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differ
         REQUIRE(numerical_jacobians[1].rows() == 2);
         REQUIRE(numerical_jacobians[1].cols() == 3);
 
-        for (int i = 0; i < analytic_jacobians[1].rows(); ++i)
-        {
-            for (int j = 0; j < analytic_jacobians[1].cols(); ++j)
-            {
+        for (int i = 0; i < analytic_jacobians[1].rows(); ++i) {
+            for (int j = 0; j < analytic_jacobians[1].cols(); ++j) {
                 REQUIRE(std::abs(analytic_jacobians[1](i, j) - numerical_jacobians[1](i, j)) < 1e-6);
             }
         }
@@ -1040,8 +1025,7 @@ TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differ
     SECTION("Multiple random configurations should all pass Jacobian test")
     {
         // Test several random configurations to ensure robustness
-        for (int test_idx = 0; test_idx < 5; ++test_idx)
-        {
+        for (int test_idx = 0; test_idx < 5; ++test_idx) {
             // Random pose
             Eigen::Matrix<double, 6, 1> rand_pose = Eigen::Matrix<double, 6, 1>::Random() * 0.5;
             pose->set_value_from_vector(rand_pose);
@@ -1056,12 +1040,9 @@ TEST_CASE("BearingProjectionFactor2D: Jacobian accuracy against numerical differ
             ComputeNumericalJacobians(*factor, numerical_jac, 1e-6);
 
             // Check agreement
-            for (int i = 0; i < 2; ++i)
-            {
-                for (int r = 0; r < analytic_jac[i].rows(); ++r)
-                {
-                    for (int c = 0; c < analytic_jac[i].cols(); ++c)
-                    {
+            for (int i = 0; i < 2; ++i) {
+                for (int r = 0; r < analytic_jac[i].rows(); ++r) {
+                    for (int c = 0; c < analytic_jac[i].cols(); ++c) {
                         double diff = std::abs(analytic_jac[i](r, c) - numerical_jac[i](r, c));
                         REQUIRE(diff < 1e-5);
                     }
@@ -1123,7 +1104,8 @@ TEST_CASE("BearingProjectionFactor2D: Edge case handling for small alpha", "[bea
     }
 }
 
-TEST_CASE("BearingProjectionFactor2D: Integration test with optimization convergence", "[bearing_projection_2d][integration]")
+TEST_CASE("BearingProjectionFactor2D: Integration test with optimization convergence",
+          "[bearing_projection_2d][integration]")
 {
     // Setup initial guess with some error
     Eigen::Matrix<double, 6, 1> initial_pose;
@@ -1163,22 +1145,19 @@ TEST_CASE("BearingProjectionFactor2D: Integration test with optimization converg
         Eigen::VectorXd b = Eigen::VectorXd::Zero(9);
 
         // Accumulate pose contribution
-        if (jacobians[0].size() > 0)
-        {
+        if (jacobians[0].size() > 0) {
             H.block<6, 6>(0, 0) += jacobians[0].transpose() * jacobians[0];
             b.segment<6>(0) += jacobians[0].transpose() * initial_residual;
         }
 
         // Accumulate landmark contribution
-        if (jacobians[1].size() > 0)
-        {
+        if (jacobians[1].size() > 0) {
             H.block<3, 3>(6, 6) += jacobians[1].transpose() * jacobians[1];
             b.segment<3>(6) += jacobians[1].transpose() * initial_residual;
         }
 
         // Cross terms
-        if (jacobians[0].size() > 0 && jacobians[1].size() > 0)
-        {
+        if (jacobians[0].size() > 0 && jacobians[1].size() > 0) {
             H.block<6, 3>(0, 6) += jacobians[0].transpose() * jacobians[1];
             H.block<3, 6>(6, 0) += jacobians[1].transpose() * jacobians[0];
         }
@@ -1187,12 +1166,10 @@ TEST_CASE("BearingProjectionFactor2D: Integration test with optimization converg
         Eigen::VectorXd dx = H.ldlt().solve(-b);
 
         // Apply increments
-        if (jacobians[0].size() > 0)
-        {
+        if (jacobians[0].size() > 0) {
             pose->apply_increment(dx.segment<6>(0));
         }
-        if (jacobians[1].size() > 0)
-        {
+        if (jacobians[1].size() > 0) {
             landmark->apply_increment(dx.segment<3>(6));
         }
 
@@ -1267,8 +1244,7 @@ TEST_CASE("LinearVelocityFactor: analytical vs numerical Jacobians", "[linear_ve
     factor->compute_jacobians(J_analytic);
     ComputeNumericalJacobians(*factor, J_numeric);
 
-    for (size_t i = 0; i < J_analytic.size(); ++i)
-    {
+    for (size_t i = 0; i < J_analytic.size(); ++i) {
         REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
     }
 }
@@ -1287,7 +1263,8 @@ TEST_CASE("LinearVelocityFactor: initial_index constrains subset of state", "[li
     double dt = 2.0;
     int initial_index = 0;
 
-    auto factor = std::make_shared<LinearVelocityFactor>(0, var1.get(), var2.get(), vel_var.get(), dt, 1.0, initial_index);
+    auto factor =
+        std::make_shared<LinearVelocityFactor>(0, var1.get(), var2.get(), vel_var.get(), dt, 1.0, initial_index);
 
     Eigen::VectorXd residual = factor->compute_residual();
     REQUIRE(residual.size() == 3);
@@ -1297,8 +1274,7 @@ TEST_CASE("LinearVelocityFactor: initial_index constrains subset of state", "[li
     factor->compute_jacobians(J_analytic);
     ComputeNumericalJacobians(*factor, J_numeric);
 
-    for (size_t i = 0; i < J_analytic.size(); ++i)
-    {
+    for (size_t i = 0; i < J_analytic.size(); ++i) {
         REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
     }
 }
@@ -1327,10 +1303,10 @@ TEST_CASE("PlaneFactor: dimensions and residual", "[plane][factor]")
         std::vector<Eigen::MatrixXd> jacobians;
         factor.compute_jacobians(jacobians);
         REQUIRE(jacobians.size() == 2);
-        REQUIRE(jacobians[0].rows() == 1);  // residual size
-        REQUIRE(jacobians[0].cols() == 3);  // point variable size
-        REQUIRE(jacobians[1].rows() == 1);  // residual size
-        REQUIRE(jacobians[1].cols() == 4);  // plane variable size
+        REQUIRE(jacobians[0].rows() == 1); // residual size
+        REQUIRE(jacobians[0].cols() == 3); // point variable size
+        REQUIRE(jacobians[1].rows() == 1); // residual size
+        REQUIRE(jacobians[1].cols() == 4); // plane variable size
     }
 
     SECTION("Residual value is correct")
@@ -1375,8 +1351,7 @@ TEST_CASE("PlaneFactor: analytical Jacobian matches numerical", "[plane][factor]
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1404,8 +1379,7 @@ TEST_CASE("PlaneFactor: analytical Jacobian matches numerical", "[plane][factor]
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
         }
@@ -1430,15 +1404,15 @@ TEST_CASE("PlaneFactor: analytical Jacobian matches numerical", "[plane][factor]
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
         }
     }
 }
 
 
-TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numerical", "[plane][factor][jacobian][distance_scaling]")
+TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numerical",
+          "[plane][factor][jacobian][distance_scaling]")
 {
     SECTION("Distance scaling with simple configuration")
     {
@@ -1451,11 +1425,11 @@ TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numeri
 
         double sigma = 1.0;
         bool do_distance_scaling = true;
-        double dist_scaling_r0 = 5.0;  // scaling distance
-        Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 0.0);  // scaling origin
+        double dist_scaling_r0 = 5.0;                   // scaling distance
+        Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 0.0); // scaling origin
 
-        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
-                                                     do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma, do_distance_scaling,
+                                                    dist_scaling_r0, dist_scaling_p0);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1465,8 +1439,7 @@ TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numeri
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1486,10 +1459,10 @@ TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numeri
         double sigma = 0.2;
         bool do_distance_scaling = true;
         double dist_scaling_r0 = 10.0;
-        Eigen::Vector3d dist_scaling_p0(2.0, 1.0, 3.0);  // non-zero scaling origin
+        Eigen::Vector3d dist_scaling_p0(2.0, 1.0, 3.0); // non-zero scaling origin
 
-        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
-                                                     do_distance_scaling, dist_scaling_r0, dist_scaling_p0);
+        auto factor = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma, do_distance_scaling,
+                                                    dist_scaling_r0, dist_scaling_p0);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1499,8 +1472,7 @@ TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numeri
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE(is_approx_equal(J_analytic[i], J_numeric[i], 1e-6));
         }
@@ -1519,8 +1491,8 @@ TEST_CASE("PlaneFactor with distance scaling: analytical Jacobian matches numeri
         Eigen::Vector3d dist_scaling_p0(0.0, 0.0, 0.0);
 
         // Test with distance scaling
-        auto factor_scaled = std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma,
-                                                           true, dist_scaling_r0, dist_scaling_p0);
+        auto factor_scaled =
+            std::make_shared<PlaneFactor>(0, point.get(), plane.get(), sigma, true, dist_scaling_r0, dist_scaling_p0);
 
         // Test without distance scaling
         auto factor_unscaled = std::make_shared<PlaneFactor>(1, point.get(), plane.get(), sigma);
@@ -1561,14 +1533,15 @@ TEST_CASE("PlanePriorFactor: dimensions and residual", "[plane][prior][factor]")
         std::vector<Eigen::MatrixXd> jacobians;
         factor.compute_jacobians(jacobians);
         REQUIRE(jacobians.size() == 1);
-        REQUIRE(jacobians[0].rows() == 4);  // residual size
-        REQUIRE(jacobians[0].cols() == 4);  // plane variable size
+        REQUIRE(jacobians[0].rows() == 4); // residual size
+        REQUIRE(jacobians[0].cols() == 4); // plane variable size
     }
 
     SECTION("Zero residual when plane matches prior")
     {
         auto plane_at_prior = std::make_shared<PlaneVariable>(2, prior_normal, prior_distance);
-        PlanePriorFactor factor_zero(1, plane_at_prior.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+        PlanePriorFactor factor_zero(1, plane_at_prior.get(), prior_normal, prior_distance, normal_sigma,
+                                     distance_sigma);
 
         Eigen::VectorXd residual = factor_zero.compute_residual();
         REQUIRE(residual.norm() < precision_tol);
@@ -1578,13 +1551,14 @@ TEST_CASE("PlanePriorFactor: dimensions and residual", "[plane][prior][factor]")
     {
         // Plane with correct normal but wrong distance
         auto plane_dist_only = std::make_shared<PlaneVariable>(3, prior_normal, -4.0);
-        PlanePriorFactor factor_dist(2, plane_dist_only.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+        PlanePriorFactor factor_dist(2, plane_dist_only.get(), prior_normal, prior_distance, normal_sigma,
+                                     distance_sigma);
 
         Eigen::VectorXd residual = factor_dist.compute_residual();
-        
+
         // Normal residual should be near zero
         REQUIRE(residual.head<3>().norm() < precision_tol);
-        
+
         // Distance residual should be (1/0.5) * (-4.0 - (-5.0)) = 2.0
         REQUIRE(std::abs(residual(3) - 2.0) < precision_tol);
     }
@@ -1600,7 +1574,7 @@ TEST_CASE("PlanePriorFactor: analytical Jacobian matches numerical", "[plane][pr
 
         Eigen::Vector3d prior_normal(0.1, 0.0, 1.0);
         double prior_distance = -1.0;
-        
+
         auto factor = std::make_shared<PlanePriorFactor>(0, plane.get(), prior_normal, prior_distance, 0.1, 0.5);
 
         std::vector<Eigen::MatrixXd> J_analytic;
@@ -1622,8 +1596,9 @@ TEST_CASE("PlanePriorFactor: analytical Jacobian matches numerical", "[plane][pr
         double prior_distance = -3.0;
         double normal_sigma = 0.05;
         double distance_sigma = 1.0;
-        
-        auto factor = std::make_shared<PlanePriorFactor>(0, plane.get(), prior_normal, prior_distance, normal_sigma, distance_sigma);
+
+        auto factor = std::make_shared<PlanePriorFactor>(0, plane.get(), prior_normal, prior_distance, normal_sigma,
+                                                         distance_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1632,7 +1607,7 @@ TEST_CASE("PlanePriorFactor: analytical Jacobian matches numerical", "[plane][pr
         ComputeNumericalJacobians(*factor, J_numeric);
 
         REQUIRE(J_analytic.size() == J_numeric.size());
-        
+
         CAPTURE(J_analytic[0]);
         CAPTURE(J_numeric[0]);
         REQUIRE(is_approx_equal(J_analytic[0], J_numeric[0], 1e-6));
@@ -1656,8 +1631,8 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
         double bearing_angle_obs = 0.0;
         double sigma = 0.1;
 
-        auto factor = std::make_shared<BearingObservationFactor2D>(
-            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+        auto factor =
+            std::make_shared<BearingObservationFactor2D>(0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1667,8 +1642,7 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1697,8 +1671,8 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         double sigma = 0.05;
 
-        auto factor = std::make_shared<BearingObservationFactor2D>(
-            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+        auto factor =
+            std::make_shared<BearingObservationFactor2D>(0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1708,8 +1682,7 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1738,8 +1711,8 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         double sigma = 0.2;
 
-        auto factor = std::make_shared<BearingObservationFactor2D>(
-            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+        auto factor =
+            std::make_shared<BearingObservationFactor2D>(0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1749,8 +1722,7 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1775,8 +1747,8 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
         double bearing_angle_obs = PI - 0.05;
         double sigma = 0.1;
 
-        auto factor = std::make_shared<BearingObservationFactor2D>(
-            0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
+        auto factor =
+            std::make_shared<BearingObservationFactor2D>(0, pose.get(), landmark.get(), bearing_angle_obs, sigma);
 
         // Compute residual - should be small and wrapped properly
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1795,8 +1767,7 @@ TEST_CASE("BearingObservationFactor2D: analytical Jacobian matches numerical", "
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -1817,8 +1788,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         double position_sigma = 0.5;
         double angle_sigma = 0.1;
 
-        auto factor = std::make_shared<Pose2DPriorFactor>(
-            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DPriorFactor>(0, pose.get(), pose_prior, position_sigma, angle_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1828,8 +1798,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -1851,8 +1820,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         double position_sigma = 0.2;
         double angle_sigma = 0.05;
 
-        auto factor = std::make_shared<Pose2DPriorFactor>(
-            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DPriorFactor>(0, pose.get(), pose_prior, position_sigma, angle_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -1862,8 +1830,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -1880,8 +1847,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
 
-        auto factor = std::make_shared<Pose2DPriorFactor>(
-            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DPriorFactor>(0, pose.get(), pose_prior, position_sigma, angle_sigma);
 
         // Compute residual
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1895,7 +1861,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         // The actual angular difference is -π+0.05 - (π-0.05) = -2π+0.1
         // After wrapping, this should be approximately 0.1 radians
         double angle_weight = 1.0 / angle_sigma;
-        double expected_angle_error = 0.1;  // Wrapped difference
+        double expected_angle_error = 0.1; // Wrapped difference
         REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
 
         // Test Jacobians
@@ -1907,8 +1873,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -1925,8 +1890,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         double position_sigma = 0.5;
         double angle_sigma = 0.2;
 
-        auto factor = std::make_shared<Pose2DPriorFactor>(
-            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DPriorFactor>(0, pose.get(), pose_prior, position_sigma, angle_sigma);
 
         // Compute residual
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1940,7 +1904,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         // The actual angular difference is π-0.03 - (-π+0.03) = 2π-0.06
         // After wrapping, this should be approximately -0.06 radians
         double angle_weight = 1.0 / angle_sigma;
-        double expected_angle_error = -0.06;  // Wrapped difference
+        double expected_angle_error = -0.06; // Wrapped difference
         REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
 
         // Test Jacobians
@@ -1952,8 +1916,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -1970,8 +1933,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
 
-        auto factor = std::make_shared<Pose2DPriorFactor>(
-            0, pose.get(), pose_prior, position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DPriorFactor>(0, pose.get(), pose_prior, position_sigma, angle_sigma);
 
         // Compute residual
         Eigen::VectorXd residual = factor->compute_residual();
@@ -1979,7 +1941,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
         // All residuals should be essentially zero
         REQUIRE(std::abs(residual(0)) < precision_tol);
         REQUIRE(std::abs(residual(1)) < precision_tol);
-        REQUIRE(std::abs(residual(2)) < 1e-6);  // Angle difference should be ~0, not 2π
+        REQUIRE(std::abs(residual(2)) < 1e-6); // Angle difference should be ~0, not 2π
 
         // Test Jacobians
         std::vector<Eigen::MatrixXd> J_analytic;
@@ -1990,8 +1952,7 @@ TEST_CASE("Pose2DPriorFactor: analytical Jacobian matches numerical", "[jacobian
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -2017,8 +1978,8 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         double position_sigma = 0.1;
         double angle_sigma = 0.05;
 
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -2028,8 +1989,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -2057,8 +2017,8 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         double position_sigma = 0.2;
         double angle_sigma = 0.1;
 
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -2068,8 +2028,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -2092,8 +2051,8 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
 
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma);
 
         // Compute residual
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2107,7 +2066,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         // The actual relative angle is (π-0.05) - (-π+0.05) = 2π-0.1
         // After wrapping, this should be approximately -0.1 radians
         double angle_weight = 1.0 / angle_sigma;
-        double expected_angle_error = -0.1;  // Wrapped difference
+        double expected_angle_error = -0.1; // Wrapped difference
         REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
 
         // Test Jacobians
@@ -2119,8 +2078,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -2143,8 +2101,8 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         double position_sigma = 0.5;
         double angle_sigma = 0.2;
 
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma);
 
         // Compute residual
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2158,7 +2116,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         // The actual relative angle is (-π+0.03) - (π-0.03) = -2π+0.06
         // After wrapping, this should be approximately 0.06 radians
         double angle_weight = 1.0 / angle_sigma;
-        double expected_angle_error = 0.06;  // Wrapped difference
+        double expected_angle_error = 0.06; // Wrapped difference
         REQUIRE(std::abs(residual(2) - angle_weight * expected_angle_error) < 0.01);
 
         // Test Jacobians
@@ -2170,8 +2128,7 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -2190,13 +2147,13 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         // Measured between (not constant - can be optimized)
         Eigen::Vector3d measured_between(1.0, 1.0, 0.5);
         auto measured_var = std::make_shared<GenericVariable>(2, measured_between);
-        measured_var->set_constant(false);  // Make it solveable
+        measured_var->set_constant(false); // Make it solveable
 
         double position_sigma = 0.1;
         double angle_sigma = 0.05;
 
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(), position_sigma, angle_sigma);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma);
 
         // Test Jacobians with respect to all three variables
         std::vector<Eigen::MatrixXd> J_analytic;
@@ -2206,10 +2163,9 @@ TEST_CASE("Pose2DBetweenFactor: analytical Jacobian matches numerical", "[jacobi
         ComputeNumericalJacobians(*factor, J_numeric);
 
         REQUIRE(J_analytic.size() == J_numeric.size());
-        REQUIRE(J_analytic.size() == 3);  // pose_a, pose_b, measured_between
+        REQUIRE(J_analytic.size() == 3); // pose_a, pose_b, measured_between
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
@@ -2230,14 +2186,13 @@ TEST_CASE("RangeBearingFactor2D: basic functionality", "[range_bearing][2d]")
         auto landmark = std::make_shared<GenericVariable>(1, landmark_pos);
 
         // Ground truth range and bearing
-        double range_obs = 5.0;  // sqrt(3^2 + 4^2)
-        double bearing_angle_obs = std::atan2(4.0, 3.0);  // atan2(y, x)
+        double range_obs = 5.0;                          // sqrt(3^2 + 4^2)
+        double bearing_angle_obs = std::atan2(4.0, 3.0); // atan2(y, x)
         double range_sigma = 0.1;
         double bearing_sigma = 0.05;
 
-        auto factor = std::make_shared<RangeBearingFactor2D>(
-            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs,
-            range_sigma, bearing_sigma);
+        auto factor = std::make_shared<RangeBearingFactor2D>(0, pose.get(), landmark.get(), range_obs,
+                                                             bearing_angle_obs, range_sigma, bearing_sigma);
 
         // Check residual size
         REQUIRE(factor->residual_size() == 2);
@@ -2245,8 +2200,8 @@ TEST_CASE("RangeBearingFactor2D: basic functionality", "[range_bearing][2d]")
         // Compute residual - should be near zero since we're at ground truth
         Eigen::VectorXd res = factor->compute_residual();
         REQUIRE(res.size() == 2);
-        REQUIRE(std::abs(res(0)) < 1e-9);  // range error
-        REQUIRE(std::abs(res(1)) < 1e-9);  // bearing error
+        REQUIRE(std::abs(res(0)) < 1e-9); // range error
+        REQUIRE(std::abs(res(1)) < 1e-9); // bearing error
 
         // Check weights
         REQUIRE(std::abs(factor->range_weight() - 1.0 / range_sigma) < 1e-9);
@@ -2265,17 +2220,17 @@ TEST_CASE("RangeBearingFactor2D: basic functionality", "[range_bearing][2d]")
         double range_obs = 5.0;
         double bearing_angle_obs = 0.0;
 
-        auto factor = std::make_shared<RangeBearingFactor2D>(
-            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
+        auto factor =
+            std::make_shared<RangeBearingFactor2D>(0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
 
         std::vector<Eigen::MatrixXd> jacobians;
         factor->compute_jacobians(jacobians);
 
         REQUIRE(jacobians.size() == 2);
-        REQUIRE(jacobians[0].rows() == 2);  // 2D residual
-        REQUIRE(jacobians[0].cols() == 3);  // w.r.t. [x, y, theta]
-        REQUIRE(jacobians[1].rows() == 2);  // 2D residual
-        REQUIRE(jacobians[1].cols() == 2);  // w.r.t. [lx, ly]
+        REQUIRE(jacobians[0].rows() == 2); // 2D residual
+        REQUIRE(jacobians[0].cols() == 3); // w.r.t. [x, y, theta]
+        REQUIRE(jacobians[1].rows() == 2); // 2D residual
+        REQUIRE(jacobians[1].cols() == 2); // w.r.t. [lx, ly]
     }
 }
 
@@ -2298,9 +2253,8 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
         double range_sigma = 0.2;
         double bearing_sigma = 0.1;
 
-        auto factor = std::make_shared<RangeBearingFactor2D>(
-            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs,
-            range_sigma, bearing_sigma);
+        auto factor = std::make_shared<RangeBearingFactor2D>(0, pose.get(), landmark.get(), range_obs,
+                                                             bearing_angle_obs, range_sigma, bearing_sigma);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -2310,8 +2264,7 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -2325,7 +2278,7 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
     SECTION("Rotated pose at 30 degrees")
     {
         // Pose with rotation
-        Eigen::Vector3d pose_state(1.0, 2.0, PI / 6);  // 30 degrees
+        Eigen::Vector3d pose_state(1.0, 2.0, PI / 6); // 30 degrees
         auto pose = std::make_shared<Pose2DVariable>(0, pose_state);
 
         // Landmark offset from pose
@@ -2343,8 +2296,8 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
         double range_obs = delta_local.norm();
         double bearing_angle_obs = std::atan2(delta_local(1), delta_local(0));
 
-        auto factor = std::make_shared<RangeBearingFactor2D>(
-            0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
+        auto factor =
+            std::make_shared<RangeBearingFactor2D>(0, pose.get(), landmark.get(), range_obs, bearing_angle_obs);
 
         std::vector<Eigen::MatrixXd> J_analytic;
         std::vector<Eigen::MatrixXd> J_numeric;
@@ -2354,15 +2307,15 @@ TEST_CASE("RangeBearingFactor2D: analytical Jacobian matches numerical", "[jacob
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
         }
     }
 }
 
-TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian matches numerical", "[jacobian][between][3d][local_frame]")
+TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian matches numerical",
+          "[jacobian][between][3d][local_frame]")
 {
     SECTION("Simple configuration: pose A at origin, pose B offset")
     {
@@ -2377,8 +2330,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         auto measured = std::make_shared<GenericVariable>(2, measured_vec);
 
         double sigma = 1.0;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+        auto factor = std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma,
+                                                                  true); // local_frame=true
 
         // Residual should be zero when measurement matches
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2393,12 +2346,10 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
-            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
-            {
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6) {
                 INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
                 INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
                 INFO("Difference:\n" << (J_analytic[i] - J_numeric[i]));
@@ -2422,8 +2373,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         auto measured = std::make_shared<GenericVariable>(2, measured_vec);
 
         double sigma = 1.0;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+        auto factor = std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma,
+                                                                  true); // local_frame=true
 
         // Residual should be zero when measurement matches
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2438,8 +2389,7 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
@@ -2469,8 +2419,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         auto measured = std::make_shared<GenericVariable>(2, diff_A);
 
         double sigma = 0.3;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
+        auto factor =
+            std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
 
         // Residual should be close to zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2485,12 +2435,10 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
-            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
-            {
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6) {
                 std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
                 std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
                 std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
@@ -2517,12 +2465,12 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         // Compute true relative offset in pose_a's frame
         Eigen::Vector3d diff_W = pos_b - pos_a;
-        Eigen::Vector3d diff_A = R_a * diff_W;  // Transform to pose_a's frame: diff_A = dcm_AW * diff_W
+        Eigen::Vector3d diff_A = R_a * diff_W; // Transform to pose_a's frame: diff_A = dcm_AW * diff_W
         auto measured = std::make_shared<GenericVariable>(2, diff_A);
 
         double sigma = 0.5;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);  // local_frame=true
+        auto factor = std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma,
+                                                                  true); // local_frame=true
 
         // Residual should be close to zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2537,8 +2485,7 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
@@ -2565,8 +2512,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         auto measured = std::make_shared<GenericVariable>(2, diff_A);
 
         double sigma = 1.0;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
+        auto factor =
+            std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma, true);
 
         // Verify Jacobians
         std::vector<Eigen::MatrixXd> J_analytic;
@@ -2576,18 +2523,15 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         ComputeNumericalJacobians(*factor, J_numeric);
 
         REQUIRE(J_analytic.size() == 3);
-        REQUIRE(J_analytic[0].size() == 0);  // pose_a is constant, should be empty
-        REQUIRE(J_analytic[1].rows() == 3);  // pose_b should have Jacobian
+        REQUIRE(J_analytic[0].size() == 0); // pose_a is constant, should be empty
+        REQUIRE(J_analytic[1].rows() == 3); // pose_b should have Jacobian
         REQUIRE(J_analytic[1].cols() == 6);
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
-            if (J_analytic[i].size() > 0)
-            {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
+            if (J_analytic[i].size() > 0) {
                 CAPTURE(i);
                 CAPTURE((J_analytic[i] - J_numeric[i]).norm());
-                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
-                {
+                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6) {
                     std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
                     std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
                     std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
@@ -2610,8 +2554,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
         auto measured = std::make_shared<GenericVariable>(2, measured_vec);
 
         double sigma = 1.0;
-        auto factor = std::make_shared<PosePositionBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured.get(), sigma, false);  // local_frame=false
+        auto factor = std::make_shared<PosePositionBetweenFactor>(0, pose_a.get(), pose_b.get(), measured.get(), sigma,
+                                                                  false); // local_frame=false
 
         // Residual should be zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2626,8 +2570,7 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
             INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
@@ -2637,7 +2580,8 @@ TEST_CASE("PosePositionBetweenFactor with local_frame=true: analytical Jacobian 
     }
 }
 
-TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matches numerical", "[jacobian][between][2d][local_frame]")
+TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matches numerical",
+          "[jacobian][between][2d][local_frame]")
 {
     SECTION("Simple configuration: pose A at origin, pose B offset")
     {
@@ -2655,9 +2599,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, true);  // local_frame=true
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, true); // local_frame=true
 
         // Residual should be zero when measurement matches
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2672,8 +2615,7 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
@@ -2703,9 +2645,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, true);  // local_frame=true
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, true); // local_frame=true
 
         // Residual should be close to zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2720,8 +2661,7 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
@@ -2751,9 +2691,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 0.5;
         double angle_sigma = 0.1;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, true);  // local_frame=true
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, true); // local_frame=true
 
         // Residual should be close to zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2768,12 +2707,10 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
-            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
-            {
+            if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6) {
                 std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
                 std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
                 std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
@@ -2804,9 +2741,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 0.2;
         double angle_sigma = 0.05;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, true);  // local_frame=true
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, true); // local_frame=true
 
         // Residual should be close to zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2821,8 +2757,7 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE((J_analytic[i] - J_numeric[i]).norm());
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
@@ -2853,9 +2788,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 0.5;
         double angle_sigma = 0.1;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, true);
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, true);
 
         // Verify Jacobians
         std::vector<Eigen::MatrixXd> J_analytic;
@@ -2865,18 +2799,15 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
         ComputeNumericalJacobians(*factor, J_numeric);
 
         REQUIRE(J_analytic.size() == 3);
-        REQUIRE(J_analytic[0].size() == 0);  // pose_a is constant, should be empty
-        REQUIRE(J_analytic[1].rows() == 3);  // pose_b should have Jacobian
+        REQUIRE(J_analytic[0].size() == 0); // pose_a is constant, should be empty
+        REQUIRE(J_analytic[1].rows() == 3); // pose_b should have Jacobian
         REQUIRE(J_analytic[1].cols() == 3);
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
-            if (J_analytic[i].size() > 0)
-            {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
+            if (J_analytic[i].size() > 0) {
                 CAPTURE(i);
                 CAPTURE((J_analytic[i] - J_numeric[i]).norm());
-                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6)
-                {
+                if ((J_analytic[i] - J_numeric[i]).norm() >= 1e-6) {
                     std::cout << "\n=== JACOBIAN MISMATCH ===" << std::endl;
                     std::cout << "J_analytic[" << i << "]:\n" << J_analytic[i] << std::endl;
                     std::cout << "J_numeric[" << i << "]:\n" << J_numeric[i] << std::endl;
@@ -2903,9 +2834,8 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         double position_sigma = 1.0;
         double angle_sigma = 0.1;
-        auto factor = std::make_shared<Pose2DBetweenFactor>(
-            0, pose_a.get(), pose_b.get(), measured_var.get(),
-            position_sigma, angle_sigma, false);  // local_frame=false
+        auto factor = std::make_shared<Pose2DBetweenFactor>(0, pose_a.get(), pose_b.get(), measured_var.get(),
+                                                            position_sigma, angle_sigma, false); // local_frame=false
 
         // Residual should be zero
         Eigen::VectorXd residual = factor->compute_residual();
@@ -2920,8 +2850,7 @@ TEST_CASE("Pose2DBetweenFactor with local_frame=true: analytical Jacobian matche
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             INFO("J_analytic[" << i << "]:\n" << J_analytic[i]);
             INFO("J_numeric[" << i << "]:\n" << J_numeric[i]);
@@ -2952,8 +2881,7 @@ TEST_CASE("CoordinateTransformFactor: dimensions and residual with identity tran
     auto lm_B = std::make_shared<LandmarkVariable>(4, landmark_pos);
 
     double sigma = 1.0;
-    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(),
-                                     scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
+    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(), scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
 
     SECTION("Residual dimension is correct")
     {
@@ -2994,8 +2922,7 @@ TEST_CASE("CoordinateTransformFactor: dimensions and residual with identity tran
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);
@@ -3014,16 +2941,14 @@ TEST_CASE("CoordinateTransformFactor: non-trivial transform")
 
     // Create a 90-degree rotation around Z axis
     Eigen::Matrix3d dcm_AB;
-    dcm_AB << 0, -1, 0,
-              1,  0, 0,
-              0,  0, 1;
+    dcm_AB << 0, -1, 0, 1, 0, 0, 0, 0, 1;
     auto rot_AB = std::make_shared<RotationVariable>(0, dcm_AB);
 
     Eigen::Vector3d origin(1.0, 2.0, 0.5);
     auto B_origin_A = std::make_shared<GenericVariable>(1, origin);
 
     Eigen::VectorXd scale(1);
-    scale << 2.0;  // 2x scale
+    scale << 2.0; // 2x scale
     auto scale_AB = std::make_shared<GenericVariable>(2, scale);
 
     // Landmark in frame B
@@ -3037,8 +2962,7 @@ TEST_CASE("CoordinateTransformFactor: non-trivial transform")
     auto lm_A = std::make_shared<LandmarkVariable>(3, lm_A_expected);
 
     double sigma = 0.5;
-    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(),
-                                     scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
+    CoordinateTransformFactor factor(0, rot_AB.get(), B_origin_A.get(), scale_AB.get(), lm_A.get(), lm_B.get(), sigma);
 
     SECTION("Residual is zero when transform is satisfied")
     {
@@ -3072,8 +2996,7 @@ TEST_CASE("CoordinateTransformFactor: non-trivial transform")
 
         REQUIRE(J_analytic.size() == J_numeric.size());
 
-        for (size_t i = 0; i < J_analytic.size(); ++i)
-        {
+        for (size_t i = 0; i < J_analytic.size(); ++i) {
             CAPTURE(i);
             CAPTURE(J_analytic[i]);
             CAPTURE(J_numeric[i]);

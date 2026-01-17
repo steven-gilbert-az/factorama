@@ -23,7 +23,7 @@ namespace factorama
          * @param id Unique variable identifier
          * @param pos_W_init Initial position in world frame
          */
-        LandmarkVariable(int id, const Eigen::Vector3d &pos_W_init)
+        LandmarkVariable(int id, const Eigen::Vector3d& pos_W_init)
             : pos_W_(pos_W_init)
         {
             id_ = id;
@@ -31,44 +31,31 @@ namespace factorama
 
         int size() const override { return 3; }
 
-        const Eigen::VectorXd &value() const override { return pos_W_; }
+        const Eigen::VectorXd& value() const override { return pos_W_; }
 
-        void set_value_from_vector(const Eigen::VectorXd &x) override
-        {
-            pos_W_ = x;
-        }
+        void set_value_from_vector(const Eigen::VectorXd& x) override { pos_W_ = x; }
 
-        void apply_increment(const Eigen::VectorXd &dx) override
+        void apply_increment(const Eigen::VectorXd& dx) override
         {
-            if (dx.size() != size())
-            {
+            if (dx.size() != size()) {
                 throw std::runtime_error("apply_increment(): size mismatch");
             }
             pos_W_ += dx;
         }
 
-        VariableType::VariableTypeEnum type() const override
-        {
-            return VariableType::landmark;
-        }
+        VariableType::VariableTypeEnum type() const override { return VariableType::landmark; }
 
         /**
          * @brief Get 3D position in world frame
          * @return Position vector
          */
-        Eigen::Vector3d pos_W() const
-        {
-            return pos_W_;
-        }
+        Eigen::Vector3d pos_W() const { return pos_W_; }
 
         /**
          * @brief Set 3D position in world frame
          * @param pos New position vector
          */
-        void set_pos_W(Eigen::Vector3d pos)
-        {
-            pos_W_ = pos;
-        }
+        void set_pos_W(Eigen::Vector3d pos) { pos_W_ = pos; }
 
         void print() const override
         {
@@ -76,12 +63,9 @@ namespace factorama
             std::cout << "Pos: \n" << pos_W() << std::endl;
         }
 
-        std::shared_ptr<Variable> clone() const override
-        {
-            return std::make_shared<LandmarkVariable>(*this);
-        }
+        std::shared_ptr<Variable> clone() const override { return std::make_shared<LandmarkVariable>(*this); }
 
     private:
         Eigen::VectorXd pos_W_; // 3D position in world frame
     };
-}
+} // namespace factorama

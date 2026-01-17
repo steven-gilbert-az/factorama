@@ -33,14 +33,14 @@ namespace factorama
          * @param sigma Standard deviation of measurement
          * @param local_frame If true, measurement is in pose_a's frame; if false, in world frame (default: false)
          */
-        PosePositionBetweenFactor(int id,
-                                  PoseVariable* pose_a,
-                                  PoseVariable* pose_b,
-                                  Variable* measured_diff,
-                                  double sigma = 1.0,
-                                  bool local_frame = false)
-            : pose_a_(pose_a), pose_b_(pose_b), measured_diff_(measured_diff),
-              weight_(1.0 / sigma), local_frame_(local_frame), size_(3)
+        PosePositionBetweenFactor(int id, PoseVariable *pose_a, PoseVariable *pose_b, Variable *measured_diff,
+                                  double sigma = 1.0, bool local_frame = false)
+            : pose_a_(pose_a)
+            , pose_b_(pose_b)
+            , measured_diff_(measured_diff)
+            , weight_(1.0 / sigma)
+            , local_frame_(local_frame)
+            , size_(3)
         {
             id_ = id;
             assert(pose_a != nullptr && "pose_a cannot be nullptr");
@@ -50,25 +50,19 @@ namespace factorama
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override
         {
             Eigen::Vector3d diff_W = pose_b_->pos_W() - pose_a_->pos_W();
             Eigen::Vector3d res;
 
-            if (local_frame_)
-            {
+            if (local_frame_) {
                 // Measurement in pose_a's local frame: transform world difference to pose_a's frame
                 Eigen::Matrix3d dcm_AW = pose_a_->dcm_CW();
                 Eigen::Vector3d diff_A = dcm_AW * diff_W;
                 res = diff_A - measured_diff_->value();
-            }
-            else
-            {
+            } else {
                 // Measurement in world frame (original behavior)
                 res = diff_W - measured_diff_->value();
             }
@@ -81,15 +75,12 @@ namespace factorama
             Eigen::Vector3d diff_W = pose_b_->pos_W() - pose_a_->pos_W();
             Eigen::Vector3d res;
 
-            if (local_frame_)
-            {
+            if (local_frame_) {
                 // Measurement in pose_a's local frame: transform world difference to pose_a's frame
                 Eigen::Matrix3d dcm_AW = pose_a_->dcm_CW();
                 Eigen::Vector3d diff_A = dcm_AW * diff_W;
                 res = diff_A - measured_diff_->value();
-            }
-            else
-            {
+            } else {
                 // Measurement in world frame (original behavior)
                 res = diff_W - measured_diff_->value();
             }
@@ -97,31 +88,26 @@ namespace factorama
             result = weight_ * res;
         }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override
         {
             // Ensure jacobians vector has correct size for 3 variables
-            if(jacobians.size() == 0) {
+            if (jacobians.size() == 0) {
                 jacobians.resize(3);
-            }
-            else if(jacobians.size() != 3) {
+            } else if (jacobians.size() != 3) {
                 jacobians.clear();
                 jacobians.resize(3);
             }
 
-            if (local_frame_)
-            {
+            if (local_frame_) {
                 // Local frame: residual = dcm_AW * (pos_b_W - pos_a_W) - measured_diff
                 Eigen::Vector3d diff_W = pose_b_->pos_W() - pose_a_->pos_W();
                 Eigen::Matrix3d dcm_AW = pose_a_->dcm_CW();
 
                 // Jacobian w.r.t pose_a
-                if (pose_a_->is_constant())
-                {
+                if (pose_a_->is_constant()) {
                     jacobians[0] = Eigen::MatrixXd();
-                }
-                else
-                {
-                    if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+                } else {
+                    if (jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
                         jacobians[0].resize(size_, 6);
                     }
                     jacobians[0].setZero();
@@ -131,20 +117,15 @@ namespace factorama
                     // (negative sign due to left perturbation: R_new = exp([δθ]_×) * R)
                     Eigen::Vector3d diff_A = dcm_AW * diff_W;
                     Eigen::Matrix3d skew_diff_A;
-                    skew_diff_A << 0, -diff_A(2), diff_A(1),
-                                   diff_A(2), 0, -diff_A(0),
-                                   -diff_A(1), diff_A(0), 0;
+                    skew_diff_A << 0, -diff_A(2), diff_A(1), diff_A(2), 0, -diff_A(0), -diff_A(1), diff_A(0), 0;
                     jacobians[0].block<3, 3>(0, 3) = -weight_ * skew_diff_A;
                 }
 
                 // Jacobian w.r.t pose_b
-                if (pose_b_->is_constant())
-                {
+                if (pose_b_->is_constant()) {
                     jacobians[1] = Eigen::MatrixXd();
-                }
-                else
-                {
-                    if(jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
+                } else {
+                    if (jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
                         jacobians[1].resize(size_, 6);
                     }
                     jacobians[1].setZero();
@@ -152,18 +133,13 @@ namespace factorama
                     jacobians[1].block<3, 3>(0, 0) = weight_ * dcm_AW;
                     // Rotation part: no dependency on pose_b's rotation
                 }
-            }
-            else
-            {
+            } else {
                 // World frame: residual = (pos_b_W - pos_a_W) - measured_diff (original behavior)
                 // Jacobian w.r.t pose_a (negative identity in position block)
-                if (pose_a_->is_constant())
-                {
+                if (pose_a_->is_constant()) {
                     jacobians[0] = Eigen::MatrixXd();
-                }
-                else
-                {
-                    if(jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
+                } else {
+                    if (jacobians[0].rows() != size_ || jacobians[0].cols() != 6) {
                         jacobians[0].resize(size_, 6);
                     }
                     jacobians[0].setZero();
@@ -171,13 +147,10 @@ namespace factorama
                 }
 
                 // Jacobian w.r.t pose_b (positive identity in position block)
-                if (pose_b_->is_constant())
-                {
+                if (pose_b_->is_constant()) {
                     jacobians[1] = Eigen::MatrixXd();
-                }
-                else
-                {
-                    if(jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
+                } else {
+                    if (jacobians[1].rows() != size_ || jacobians[1].cols() != 6) {
                         jacobians[1].resize(size_, 6);
                     }
                     jacobians[1].setZero();
@@ -186,13 +159,10 @@ namespace factorama
             }
 
             // Jacobian w.r.t measured_diff (same for both modes)
-            if (measured_diff_->is_constant())
-            {
+            if (measured_diff_->is_constant()) {
                 jacobians[2] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
+            } else {
+                if (jacobians[2].rows() != size_ || jacobians[2].cols() != size_) {
                     jacobians[2].resize(size_, size_);
                 }
                 jacobians[2].setZero();
@@ -200,30 +170,22 @@ namespace factorama
             }
         }
 
-        std::vector<Variable *> variables() override
-        {
-            return {pose_a_, pose_b_, measured_diff_};
-        }
+        std::vector<Variable *> variables() override { return {pose_a_, pose_b_, measured_diff_}; }
 
-        double weight() const
-        {
-            return weight_;
-        }
+        double weight() const { return weight_; }
 
         std::string name() const override
         {
-            return "PosePositionBetweenFactor(" + pose_a_->name() + ", " + pose_b_->name() + ", " + measured_diff_->name() + ")";
+            return "PosePositionBetweenFactor(" + pose_a_->name() + ", " + pose_b_->name() + ", " +
+                   measured_diff_->name() + ")";
         }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_position_between;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_position_between; }
 
     private:
-        PoseVariable* pose_a_;
-        PoseVariable* pose_b_;
-        Variable* measured_diff_;
+        PoseVariable *pose_a_;
+        PoseVariable *pose_b_;
+        Variable *measured_diff_;
         double weight_;
         bool local_frame_;
         int size_;
@@ -250,19 +212,16 @@ namespace factorama
          * @param pose1 First pose variable
          * @param pose2 Second pose variable
          * @param calibration_rotation_12 Rotation variable representing relative rotation
-         * @param angle_sigma Represents the standard deviation to apply to the strength of the rotational constraint (radians)
+         * @param angle_sigma Represents the standard deviation to apply to the strength of the rotational constraint
+         * (radians)
          */
-        PoseOrientationBetweenFactor(
-            int id,
-            PoseVariable* pose1,
-            PoseVariable* pose2,
-            RotationVariable* calibration_rotation_12,
-            double angle_sigma = 1.0)
-            : pose1_(pose1),
-              pose2_(pose2),
-              calibration_rotation_12_(calibration_rotation_12),
-              weight_(1.0 / angle_sigma),
-              size_(3)
+        PoseOrientationBetweenFactor(int id, PoseVariable *pose1, PoseVariable *pose2,
+                                     RotationVariable *calibration_rotation_12, double angle_sigma = 1.0)
+            : pose1_(pose1)
+            , pose2_(pose2)
+            , calibration_rotation_12_(calibration_rotation_12)
+            , weight_(1.0 / angle_sigma)
+            , size_(3)
         {
             id_ = id;
             assert(pose1 != nullptr && "pose1 cannot be nullptr");
@@ -294,10 +253,8 @@ namespace factorama
             result = weight_ * res;
         }
 
-        Eigen::VectorXd compute_residual(
-            PoseVariable *pose1,
-            PoseVariable *pose2,
-            RotationVariable *calibration_rotation_12) const
+        Eigen::VectorXd compute_residual(PoseVariable *pose1, PoseVariable *pose2,
+                                         RotationVariable *calibration_rotation_12) const
         {
             // Let P1 be the coordinate frame of the sensor that corresponds to Pose1
             // Let P2 be the coordinate frame of the sensor that corresponds to pose2
@@ -311,24 +268,18 @@ namespace factorama
             return weight_ * res;
         }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        std::vector<Variable *> variables() override
-        {
-            return {pose1_, pose2_, calibration_rotation_12_};
-        }
+        std::vector<Variable *> variables() override { return {pose1_, pose2_, calibration_rotation_12_}; }
 
         double weight() const { return weight_; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_orientation_between;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_orientation_between; }
 
     private:
-        PoseVariable* pose1_;
-        PoseVariable* pose2_;
-        RotationVariable* calibration_rotation_12_;
+        PoseVariable *pose1_;
+        PoseVariable *pose2_;
+        RotationVariable *calibration_rotation_12_;
         double weight_;
         int size_;
     };

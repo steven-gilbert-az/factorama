@@ -37,17 +37,13 @@ namespace factorama
          * @param bearing_C_observed Unit bearing vector in camera frame
          * @param angle_sigma Standard deviation of angular measurement (radians)
          */
-        InverseRangeBearingFactor(
-            int id,
-            PoseVariable* pose_var,
-            InverseRangeVariable* inverse_range_variable,
-            const Eigen::Vector3d &bearing_C_observed,
-            double angle_sigma = 1.0)
-            : pose_var_(pose_var),
-              inverse_range_var_(inverse_range_variable),
-              bearing_C_obs_(bearing_C_observed.normalized()),
-              weight_(1.0 / angle_sigma),
-              size_(3)
+        InverseRangeBearingFactor(int id, PoseVariable *pose_var, InverseRangeVariable *inverse_range_variable,
+                                  const Eigen::Vector3d& bearing_C_observed, double angle_sigma = 1.0)
+            : pose_var_(pose_var)
+            , inverse_range_var_(inverse_range_variable)
+            , bearing_C_obs_(bearing_C_observed.normalized())
+            , weight_(1.0 / angle_sigma)
+            , size_(3)
         {
             id_ = id;
             assert(pose_var != nullptr && "pose_var cannot be nullptr");
@@ -55,16 +51,13 @@ namespace factorama
             assert(angle_sigma > 0.0 && "Sigma must be greater than zero");
         }
 
-        std::vector<Variable *> variables() override
-        {
-            return {pose_var_, inverse_range_var_};
-        }
+        std::vector<Variable *> variables() override { return {pose_var_, inverse_range_var_}; }
 
         Eigen::VectorXd compute_residual() const override
         {
             // 1. Get world to camera dcm
-            const Eigen::Matrix3d &dcm_CW = pose_var_->dcm_CW();
-            const Eigen::Vector3d &pos_C_W = pose_var_->pos_W();
+            const Eigen::Matrix3d& dcm_CW = pose_var_->dcm_CW();
+            const Eigen::Vector3d& pos_C_W = pose_var_->pos_W();
 
             // 2. Get 3D point from inverse range
             Eigen::Vector3d landmark_pos_W = inverse_range_var_->pos_W();
@@ -83,8 +76,8 @@ namespace factorama
         void compute_residual(Eigen::Ref<Eigen::VectorXd> result) const override
         {
             // 1. Get world to camera dcm
-            const Eigen::Matrix3d &dcm_CW = pose_var_->dcm_CW();
-            const Eigen::Vector3d &pos_C_W = pose_var_->pos_W();
+            const Eigen::Matrix3d& dcm_CW = pose_var_->dcm_CW();
+            const Eigen::Vector3d& pos_C_W = pose_var_->pos_W();
 
             // 2. Get 3D point from inverse range
             Eigen::Vector3d landmark_pos_W = inverse_range_var_->pos_W();
@@ -99,31 +92,19 @@ namespace factorama
             result = weight_ * (bearing_C - bearing_C_obs_);
         }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override;
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override;
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
-        double weight() const
-        {
-            return weight_;
-        }
+        double weight() const { return weight_; }
 
-        const Eigen::Vector3d &bearing_C_obs() const
-        {
-            return bearing_C_obs_;
-        }
+        const Eigen::Vector3d& bearing_C_obs() const { return bearing_C_obs_; }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::inverse_range_bearing;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::inverse_range_bearing; }
 
     private:
-        PoseVariable* pose_var_;
-        InverseRangeVariable* inverse_range_var_;
+        PoseVariable *pose_var_;
+        InverseRangeVariable *inverse_range_var_;
         Eigen::Vector3d bearing_C_obs_; // In camera frame, normalized
         double weight_;
         int size_;

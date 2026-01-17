@@ -28,21 +28,18 @@ namespace factorama
          * @param dcm_AB_prior Prior rotation matrix
          * @param sigma Standard deviation of angular prior (radians)
          */
-        RotationPriorFactor(int id,
-                                   RotationVariable* rotation,
-                                   const Eigen::Matrix3d &dcm_AB_prior,
-                                   double sigma = 1.0)
-            : rotation_(rotation), dcm_AB_prior_(dcm_AB_prior), weight_(1.0 / sigma), size_(3)
+        RotationPriorFactor(int id, RotationVariable *rotation, const Eigen::Matrix3d& dcm_AB_prior, double sigma = 1.0)
+            : rotation_(rotation)
+            , dcm_AB_prior_(dcm_AB_prior)
+            , weight_(1.0 / sigma)
+            , size_(3)
         {
             id_ = id;
             assert(rotation != nullptr && "rotation variable cannot be nullptr");
             assert(sigma > 0.0 && "Sigma must be greater than zero");
         }
 
-        int residual_size() const override
-        {
-            return size_;
-        }
+        int residual_size() const override { return size_; }
 
         Eigen::VectorXd compute_residual() const override
         {
@@ -69,25 +66,21 @@ namespace factorama
             result = weight_ * res;
         }
 
-        void compute_jacobians(std::vector<Eigen::MatrixXd> &jacobians) const override
+        void compute_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const override
         {
             // Ensure jacobians vector has correct size for 1 variable
-            if(jacobians.size() == 0) {
+            if (jacobians.size() == 0) {
                 jacobians.resize(1);
-            }
-            else if(jacobians.size() != 1) {
+            } else if (jacobians.size() != 1) {
                 jacobians.clear();
                 jacobians.resize(1);
             }
 
-            if (rotation_->is_constant())
-            {
+            if (rotation_->is_constant()) {
                 // constant variable - empty jacobian
                 jacobians[0] = Eigen::MatrixXd();
-            }
-            else
-            {
-                if(jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
+            } else {
+                if (jacobians[0].rows() != size_ || jacobians[0].cols() != 3) {
                     jacobians[0].resize(size_, 3);
                 }
                 jacobians[0].setZero();
@@ -106,31 +99,22 @@ namespace factorama
         }
 
 
-        std::vector<Variable *> variables() override
-        {
-            return {rotation_};
-        }
+        std::vector<Variable *> variables() override { return {rotation_}; }
 
-        double weight() const
-        {
-            return weight_;
-        }
+        double weight() const { return weight_; }
 
         std::string name() const override
         {
             return "RotationPriorFactor" + std::to_string(id()) + "(" + rotation_->name() + ")";
         }
 
-        FactorType::FactorTypeEnum type() const override
-        {
-            return FactorType::pose_orientation_prior;
-        }
+        FactorType::FactorTypeEnum type() const override { return FactorType::pose_orientation_prior; }
 
     private:
-        RotationVariable* rotation_;
+        RotationVariable *rotation_;
         Eigen::Matrix3d dcm_AB_prior_;
         double weight_;
         int size_;
     };
 
-}
+} // namespace factorama

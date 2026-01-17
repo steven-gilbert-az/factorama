@@ -70,13 +70,13 @@ TEST_CASE("Stopwatch ignores redundant start/stop calls", "[stopwatch]")
     // Multiple starts should only count from first start
     sw.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    sw.start();  // Should do nothing
+    sw.start(); // Should do nothing
     sw.stop();
 
     double elapsed1 = sw.elapsed();
 
     // Multiple stops should not affect the time
-    sw.stop();  // Should do nothing
+    sw.stop(); // Should do nothing
 
     double elapsed2 = sw.elapsed();
     REQUIRE(elapsed1 == elapsed2);
