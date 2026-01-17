@@ -5,6 +5,7 @@
 #include "factorama/landmark_variable.hpp"
 #include "factorama/generic_variable.hpp"
 #include "factorama/numerical_jacobian.hpp"
+#include "factorama/random_utils.hpp"
 #include <Eigen/Dense>
 #include <cassert>
 
@@ -71,7 +72,7 @@ namespace factorama
 
         Eigen::VectorXd compute_residual() const override
         {
-            Eigen::VectorXd result;
+            Eigen::VectorXd result(residual_size());
             compute_residual(result);
             return result;
         }
@@ -99,17 +100,77 @@ namespace factorama
             //ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
 
 
-            //compute_analytical_jacobians(jacobians);
-            compute_numerical_jacobians(jacobians);
+            compute_analytical_jacobians(jacobians);
+           //compute_numerical_jacobians(jacobians);
         }
 
         void compute_numerical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
             ComputeNumericalJacobians(*const_cast<CoordinateTransformFactor*>(this), jacobians);
         }
 
-        void compute_analytical_jacobians(std::vector<Eigen::MatrixXd>& jacobians) const {
+        void compute_analytical_jacobians(std::vector<Eigen::MatrixXd> &jacobians_out) const {
             // TODO: implement
-            (void)jacobians;
+            (void)jacobians_out;
+
+            const Eigen::Matrix3d& dcm_AB = rot_AB_->rotation();
+            double scale = scale_AB_->value()[0];
+            const Eigen::Vector3d& lm_B = lm_B_->value();
+
+            // Ensure jacobians vector has correct size for 2 variables
+            if(jacobians_out.size() == 0) 
+            {
+                jacobians_out.resize(5);
+            }
+            else if(jacobians_out.size() != 5) 
+            {
+                jacobians_out.clear();
+                jacobians_out.resize(2);
+            }
+
+            if(rot_AB_->is_constant())
+            {
+                jacobians_out[0] = Eigen::MatrixXd();
+            }
+            else
+            {
+                // d(residual)/d(rot_AB) using left perturbation: dcm_new = exp([δθ]×) * dcm
+                // d(dcm_AB * v)/d(δθ) = -skew(dcm_AB * v)
+                // residual term: -weight * scale * dcm_AB * lm_B
+                // => d(residual)/d(δθ) = weight * scale * skew(dcm_AB * lm_B)
+                Eigen::Vector3d rotated_lm_B = dcm_AB * lm_B;
+                jacobians_out[0] = weight_ * scale * skew_symmetric(rotated_lm_B);
+            }
+
+            if(B_origin_A_->is_constant()) 
+            {
+                jacobians_out[1] = Eigen::MatrixXd();
+            }
+            else 
+            {
+                jacobians_out[1] = weight_ * Eigen::Matrix3d::Identity();
+            }
+
+            if(scale_AB_->is_constant()) {
+                jacobians_out[2] = Eigen::MatrixXd();
+            }
+            else {
+                jacobians_out[2] = -weight_ * dcm_AB * lm_B;
+            }
+
+            if(lm_A_->is_constant()) {
+                jacobians_out[3] = Eigen::MatrixXd();
+            }
+            else {
+                jacobians_out[3] = weight_ * Eigen::Matrix3d::Identity();
+            }
+
+            if(lm_B_->is_constant()) {
+                jacobians_out[4] = Eigen::MatrixXd();
+            }
+            else {
+                jacobians_out[4] = - weight_ * scale * dcm_AB;
+            }
+        
         }
 
         std::vector<Variable*> variables() override

@@ -2983,6 +2983,28 @@ TEST_CASE("CoordinateTransformFactor: dimensions and residual with identity tran
         Eigen::VectorXd residual = factor.compute_residual();
         REQUIRE(residual.norm() < 1e-9);
     }
+
+    SECTION("Analytical Jacobian matches numerical")
+    {
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor.compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
+    }
 }
 
 TEST_CASE("CoordinateTransformFactor: non-trivial transform")
@@ -3038,5 +3060,27 @@ TEST_CASE("CoordinateTransformFactor: non-trivial transform")
 
         // Restore original value
         lm_A->set_pos_W(lm_A_expected);
+    }
+
+    SECTION("Analytical Jacobian matches numerical")
+    {
+        std::vector<Eigen::MatrixXd> J_analytic;
+        std::vector<Eigen::MatrixXd> J_numeric;
+
+        factor.compute_jacobians(J_analytic);
+        ComputeNumericalJacobians(factor, J_numeric);
+
+        REQUIRE(J_analytic.size() == J_numeric.size());
+
+        for (size_t i = 0; i < J_analytic.size(); ++i)
+        {
+            CAPTURE(i);
+            CAPTURE(J_analytic[i]);
+            CAPTURE(J_numeric[i]);
+            CAPTURE((J_analytic[i] - J_numeric[i]).norm());
+            REQUIRE(J_analytic[i].rows() == J_numeric[i].rows());
+            REQUIRE(J_analytic[i].cols() == J_numeric[i].cols());
+            REQUIRE((J_analytic[i] - J_numeric[i]).norm() < 1e-6);
+        }
     }
 }
