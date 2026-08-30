@@ -48,14 +48,18 @@ See [EXAMPLES.md](EXAMPLES.md) for usage examples.
 ```
 factorama/
 ├── src/factorama/          # Core library implementation
-│   ├── base_types.hpp            # Base variable and factor interfaces
-│   ├── factor_graph.hpp     # Factor graph container and operations
-│   ├── sparse_optimizer.hpp # Sparse optimization algorithms
-│   ├── *_variable.hpp       # Variable implementations
-│   └── *_factor.hpp         # Factor implementations
-├── unit_test.cpp           # Unit tests
-├── integration_test.cpp    # Integration tests
-└── CMakeLists.txt          # Build configuration
+│   ├── base_types.hpp              # Base variable and factor interfaces
+│   ├── factor_graph.hpp            # Factor graph container and operations
+│   ├── sparse_optimizer.hpp        # Sparse optimization algorithms (SparseOptimizer)
+│   ├── elimination_optimizer.hpp   # Variable elimination optimizer (EliminationOptimizer)
+│   ├── *_variable.hpp              # Variable implementations
+│   └── *_factor.hpp                # Factor implementations
+├── src/factorama_test/     # Test implementations
+│   ├── integration_test.cpp    # Integration tests
+│   ├── solver_benchmark.cpp    # Solver performance benchmarks
+│   └── unit_test.cpp           # Unit tests
+├── CMakeLists.txt          # Build configuration
+└── LICENSE.txt             # License
 ```
 
 ## Core Components
@@ -81,11 +85,17 @@ factorama/
 
 ### Optimization
 
-The library provides optimization via the `SparseOptimizer` class (or just use the Jacobian/residual/update functions and bring your own optimizer):
+The library provides two optimization engines:
+
+#### SparseOptimizer (Default)
+Uses sparse Cholesky factorization (Eigen's SimplicialLDLT) on the full linear system:
 
 - **Sparse Linear Algebra**: Uses Eigen's sparse matrix operations for efficient computation
 - **Algorithms**: Gauss-Newton and Levenberg-Marquardt
 - **Configurable Settings**: Comprehensive optimization parameters
+
+#### EliminationOptimizer
+Uses variable elimination (on-the-fly sparse Cholesky) avoiding explicit full Hessian formation:
 
 ```cpp
 OptimizerSettings settings;

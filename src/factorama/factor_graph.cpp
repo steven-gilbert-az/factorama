@@ -2,6 +2,7 @@
 #include "factorama/numerical_jacobian.hpp"
 #include <stdexcept>
 #include <iostream>
+#include <unordered_set>
 
 namespace factorama
 {
@@ -285,6 +286,24 @@ namespace factorama
 
             factor_placement_[i] = placement;
             row_offset += placement.residual_dim;
+        }
+
+        // Populate variable-to-factor connectivity
+        // For each factor, add its ID to each connected variable's list
+        for (size_t i = 0; i < factors_.size(); i++) {
+            const auto& factor = factors_[i];
+            int factor_id = factor->id();
+
+            for (const auto& var : factor->variables()) {
+                if (var == nullptr) {
+                    continue;
+                }
+                // Add this factor's ID to the variable's connected_factor_ids
+                auto it = variable_placement_.find(var->id());
+                if (it != variable_placement_.end()) {
+                    it->second.connected_factor_ids.push_back(factor_id);
+                }
+            }
         }
 
         num_residuals_ = row_offset;
@@ -714,4 +733,56 @@ namespace factorama
             running_index += num_elem_int;
         }
     }
+
+    std::vector<Factor*> FactorGraph::get_factors_for_variable(int var_id) const
+    {
+        std::vector<Factor*> result;
+
+        auto var_it = variable_placement_.find(var_id);
+        if (var_it == variable_placement_.end()) {
+            return result;  // Variable not found
+        }
+
+        const auto& connected_factor_ids = var_it->second.connected_factor_ids;
+        result.reserve(connected_factor_ids.size());
+
+        for (int factor_id : connected_factor_ids) {
+            auto factor_it = factors_map_.find(factor_id);
+            if (factor_it != factors_map_.end()) {
+                result.push_back(factor_it->second);
+            }
+        }
+
+        return result;
+    }
+
+    std::vector<Variable*> FactorGraph::get_variable_neighbors(int var_id) const
+    {
+        std::vector<Variable*> result;
+        std::unordered_set<int> neighbor_ids;
+
+        // Get all factors connected to this variable
+        auto factors = get_factors_for_variable(var_id);
+
+        // For each connected factor, add all its variables (except the query variable)
+        for (const auto& factor : factors) {
+            for (auto* var : factor->variables()) {
+                if (var != nullptr && var->id() != var_id) {
+                    neighbor_ids.insert(var->id());
+                }
+            }
+        }
+
+        // Convert IDs to Variable pointers
+        result.reserve(neighbor_ids.size());
+        for (int neighbor_id : neighbor_ids) {
+            auto it = variables_map_.find(neighbor_id);
+            if (it != variables_map_.end()) {
+                result.push_back(it->second);
+            }
+        }
+
+        return result;
+    }
+
 } // namespace factorama

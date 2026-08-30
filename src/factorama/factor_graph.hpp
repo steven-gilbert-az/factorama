@@ -16,6 +16,9 @@ namespace factorama
         Variable *variable;
         int index; // Start column in Jacobian
         int dim;   // Variable dimension
+
+        // Factor connectivity: IDs of all factors that involve this variable
+        std::vector<int> connected_factor_ids;
     };
 
     /**
@@ -206,6 +209,20 @@ namespace factorama
 
         const std::unordered_map<int, VariablePlacement>& variable_placement_map() const { return variable_placement_; }
         const std::unordered_map<int, FactorPlacement>& factor_placement_map() const { return factor_placement_; }
+
+        /**
+         * @brief Get all factors connected to a specific variable
+         * @param var_id Variable ID to query
+         * @return Vector of pointers to connected factors (empty if variable not found)
+         */
+        std::vector<Factor*> get_factors_for_variable(int var_id) const;
+
+        /**
+         * @brief Get all variables that share at least one factor with the given variable
+         * @param var_id Variable ID to query
+         * @return Vector of pointers to neighboring variables (excluding the query variable itself)
+         */
+        std::vector<Variable*> get_variable_neighbors(int var_id) const;
 
         // detailed_factor_test:
         // Test all factors to ensure that they seem healthy.

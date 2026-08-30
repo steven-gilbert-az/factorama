@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "factorama/sparse_optimizer.hpp"
+#include "factorama/elimination_optimizer.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/bearing_projection_factor_2d.hpp"
 #include "factorama_test/test_utils.hpp"
@@ -55,7 +56,13 @@ void CreateLargeScenario(std::vector<Eigen::Matrix<double, 6, 1>>& camera_poses,
     std::cout << "Created scenario with " << num_cameras << " cameras and " << num_landmarks << " landmarks\n";
 }
 
-void RunSolverBenchmark(bool use_2d_bearing_factors)
+enum class SolverType
+{
+    SPARSE = 0,
+    ELIMINATION
+};
+
+void RunSolverBenchmark(bool use_2d_bearing_factors, SolverType solver_type)
 {
     std::cout << "\n" << std::string(60, '=') << "\n";
     std::cout << "           FACTORAMA SOLVER BENCHMARK\n";
@@ -125,6 +132,7 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
         std::cout << "Jacobian size: " << J.rows() << " x " << J.cols() << " (density: " << std::fixed
                   << std::setprecision(2) << 100.0 * J.nonZeros() / double(J.rows() * J.cols()) << "%)\n";
 
+
         // Configure optimizer settings
         OptimizerSettings settings;
         settings.method = method_types[method_idx];
@@ -134,28 +142,55 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
         settings.learning_rate = 0.0001;   // Low learning rate to get more iterations
         settings.verbose = true;           // Keep quiet during benchmark
 
-        // Run optimization with timing
-        SparseOptimizer optimizer;
-        optimizer.setup(graph, settings);
-
-        auto start_time = std::chrono::high_resolution_clock::now();
-        optimizer.optimize();
-        auto end_time = std::chrono::high_resolution_clock::now();
-
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        double total_time_ms = duration.count() / 1000.0;
-
-        // Store results
         BenchmarkResult result;
-        result.name = method_names[method_idx];
-        result.converged = optimizer.current_stats_.valid;
-        result.iterations = optimizer.current_stats_.current_iteration;
-        result.initial_residual = optimizer.initial_stats_.residual_norm;
-        result.final_residual = optimizer.current_stats_.residual_norm;
-        result.total_time_ms = total_time_ms;
-        result.avg_time_per_iter_ms = result.iterations > 0 ? total_time_ms / result.iterations : 0.0;
 
-        results.push_back(result);
+        if (solver_type == SolverType::SPARSE) {
+            // Run optimization with timing
+            SparseOptimizer optimizer;
+            optimizer.setup(graph, settings);
+
+            auto start_time = std::chrono::high_resolution_clock::now();
+            optimizer.optimize();
+            auto end_time = std::chrono::high_resolution_clock::now();
+
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+            double total_time_ms = duration.count() / 1000.0;
+            // Store results
+
+            result.name = method_names[method_idx];
+            result.converged = optimizer.current_stats_.valid;
+            result.iterations = optimizer.current_stats_.current_iteration;
+            result.initial_residual = optimizer.initial_stats_.residual_norm;
+            result.final_residual = optimizer.current_stats_.residual_norm;
+            result.total_time_ms = total_time_ms;
+            result.avg_time_per_iter_ms = result.iterations > 0 ? total_time_ms / result.iterations : 0.0;
+
+            results.push_back(result);
+        }
+        else if(solver_type == SolverType::ELIMINATION) {
+                        // Run optimization with timing
+            EliminationOptimizer optimizer;
+            optimizer.setup(graph, settings);
+
+            auto start_time = std::chrono::high_resolution_clock::now();
+            optimizer.optimize();
+            auto end_time = std::chrono::high_resolution_clock::now();
+
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+            double total_time_ms = duration.count() / 1000.0;
+            // Store results
+
+            result.name = method_names[method_idx];
+            result.converged = optimizer.current_stats_.valid;
+            result.iterations = optimizer.current_stats_.current_iteration;
+            result.initial_residual = optimizer.initial_stats_.residual_norm;
+            result.final_residual = optimizer.current_stats_.residual_norm;
+            result.total_time_ms = total_time_ms;
+            result.avg_time_per_iter_ms = result.iterations > 0 ? total_time_ms / result.iterations : 0.0;
+
+            results.push_back(result);
+        }
+
 
         // Print individual results
         std::cout << "  Status: " << (result.converged ? "CONVERGED" : "FAILED") << "\n";
@@ -214,7 +249,8 @@ void RunSolverBenchmark(bool use_2d_bearing_factors)
 int main()
 {
     try {
-        RunSolverBenchmark(false);
+        RunSolverBenchmark(false, SolverType::SPARSE);
+        RunSolverBenchmark(false, SolverType::ELIMINATION);
         // RunSolverBenchmark(true);
         return 0;
     } catch (const std::exception& e) {

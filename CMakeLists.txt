@@ -73,6 +73,7 @@ target_sources(factorama
         src/factorama/bearing_observation_factor.cpp
         src/factorama/bearing_observation_factor_2d.cpp
         src/factorama/bearing_projection_factor_2d.cpp
+        src/factorama/elimination_optimizer.cpp
         src/factorama/factor_graph.cpp
         src/factorama/generic_between_factor.cpp
         src/factorama/inverse_range_bearing_factor.cpp

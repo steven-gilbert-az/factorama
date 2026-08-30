@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <random>
 #include <functional>
+#include <set>
 #include "factorama/pose_variable.hpp"
 #include "factorama/pose_2d_variable.hpp"
 #include "factorama/landmark_variable.hpp"
@@ -18,9 +19,12 @@
 #include "factorama/pose_2d_between_factor.hpp"
 #include "factorama/range_bearing_factor_2d.hpp"
 #include "factorama/generic_prior_factor.hpp"
+#include "factorama/generic_between_factor.hpp"
 #include "factorama/coordinate_transform_factor.hpp"
+#include "factorama/pose_between_factors.hpp"
 #include "factorama/factor_graph.hpp"
 #include "factorama/sparse_optimizer.hpp"
+#include "factorama/elimination_optimizer.hpp"
 #include "factorama_test/test_utils.hpp"
 using namespace factorama;
 
@@ -1077,4 +1081,517 @@ TEST_CASE("CoordinateTransformFactor: Integration test with ground truth compari
     REQUIRE(scale_error < 0.1);       // Scale error < 0.1 (3% of gt_scale=3.0)
 
     std::cout << "\n=== Test PASSED ===" << std::endl;
+}
+
+TEST_CASE("FactorGraph: Variable-to-factor connectivity")
+{
+    std::cout << "\n=== Testing Variable-to-Factor Connectivity ===" << std::endl;
+
+    // Create a simple graph with known structure:
+    //
+    //   Pose0 ----[Factor100]---- Landmark0
+    //     |                           |
+    //  [Factor101]                [Factor102]
+    //   (+ measured_diff)         (+ lm_measured_diff)
+    //     |                           |
+    //   Pose1 ----[Factor103]---- Landmark1
+    //
+    // Variables: Pose0(0), Pose1(1), Landmark0(10), Landmark1(11), measured_diff(20), lm_measured_diff(21)
+    // Factor100: connects Pose0, Landmark0 (BearingObservationFactor)
+    // Factor101: connects Pose0, Pose1, measured_diff (PosePositionBetweenFactor)
+    // Factor102: connects Landmark0, Landmark1, lm_measured_diff (GenericBetweenFactor)
+    // Factor103: connects Pose1, Landmark1 (BearingObservationFactor)
+
+    FactorGraph graph;
+
+    // Create poses
+    Eigen::Matrix<double, 6, 1> pose_vec;
+    pose_vec << 0, 0, 0, 0, 0, 0;
+    auto pose0 = std::make_shared<PoseVariable>(0, pose_vec);
+    pose_vec << 1, 0, 0, 0, 0, 0;
+    auto pose1 = std::make_shared<PoseVariable>(1, pose_vec);
+
+    // Create landmarks (held constant for this connectivity test)
+    Eigen::Vector3d lm_pos(5, 0, 0);
+    auto landmark0 = std::make_shared<LandmarkVariable>(10, lm_pos);
+    landmark0->set_constant(true);
+    lm_pos << 5, 1, 0;
+    auto landmark1 = std::make_shared<LandmarkVariable>(11, lm_pos);
+    landmark1->set_constant(true);
+
+    graph.add_variable(pose0);
+    graph.add_variable(pose1);
+    graph.add_variable(landmark0);
+    graph.add_variable(landmark1);
+
+    // Factor 100: Pose0 -> Landmark0 (bearing observation)
+    Eigen::Vector3d bearing(1, 0, 0);
+    auto factor0 = std::make_shared<BearingObservationFactor>(100, pose0.get(), landmark0.get(), bearing, 0.01);
+    graph.add_factor(factor0);
+
+    // Factor 101: Pose0 -> Pose1 (position between)
+    Eigen::Vector3d relative_pos(1, 0, 0);
+    auto measured_diff = std::make_shared<GenericVariable>(20, relative_pos);
+    measured_diff->set_constant(true);
+    graph.add_variable(measured_diff);
+    auto factor1 = std::make_shared<PosePositionBetweenFactor>(101, pose0.get(), pose1.get(), measured_diff.get(), 0.1);
+    graph.add_factor(factor1);
+
+    // Factor 102: Landmark0 -> Landmark1 (generic between)
+    Eigen::Vector3d lm_relative(0, 1, 0);
+    auto lm_measured_diff = std::make_shared<GenericVariable>(21, lm_relative);
+    lm_measured_diff->set_constant(true);
+    graph.add_variable(lm_measured_diff);
+    auto factor2 = std::make_shared<GenericBetweenFactor>(102, landmark0.get(), landmark1.get(), lm_measured_diff.get(), 0.1);
+    graph.add_factor(factor2);
+
+    // Factor 103: Pose1 -> Landmark1 (bearing observation)
+    bearing << 1, 0, 0;
+    auto factor3 = std::make_shared<BearingObservationFactor>(103, pose1.get(), landmark1.get(), bearing, 0.01);
+    graph.add_factor(factor3);
+
+    // Finalize structure - this should populate connected_factor_ids
+    graph.finalize_structure();
+
+    std::cout << "Graph structure finalized." << std::endl;
+    std::cout << "  Variables: " << graph.num_variables() << std::endl;
+    std::cout << "  Factors: " << graph.get_all_factors().size() << std::endl;
+
+    // Test 1: Check VariablePlacement.connected_factor_ids
+    std::cout << "\nTest 1: Checking connected_factor_ids in VariablePlacement..." << std::endl;
+
+    bool valid;
+    auto pose0_placement = graph.variable_placement(0, valid);
+    REQUIRE(valid);
+    REQUIRE(pose0_placement.connected_factor_ids.size() == 2);  // Factor 100, 101
+    // Check that it contains the right factor IDs (order may vary)
+    bool has_100 = std::find(pose0_placement.connected_factor_ids.begin(),
+                              pose0_placement.connected_factor_ids.end(), 100)
+                   != pose0_placement.connected_factor_ids.end();
+    bool has_101 = std::find(pose0_placement.connected_factor_ids.begin(),
+                              pose0_placement.connected_factor_ids.end(), 101)
+                   != pose0_placement.connected_factor_ids.end();
+    REQUIRE(has_100);
+    REQUIRE(has_101);
+    std::cout << "  Pose0 connected to " << pose0_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : pose0_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    auto pose1_placement = graph.variable_placement(1, valid);
+    REQUIRE(valid);
+    REQUIRE(pose1_placement.connected_factor_ids.size() == 2);  // Factor 101, 103
+    std::cout << "  Pose1 connected to " << pose1_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : pose1_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    auto lm0_placement = graph.variable_placement(10, valid);
+    REQUIRE(valid);
+    REQUIRE(lm0_placement.connected_factor_ids.size() == 2);  // Factor 100, 102
+    std::cout << "  Landmark0 connected to " << lm0_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : lm0_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    auto lm1_placement = graph.variable_placement(11, valid);
+    REQUIRE(valid);
+    REQUIRE(lm1_placement.connected_factor_ids.size() == 2);  // Factor 102, 103
+    std::cout << "  Landmark1 connected to " << lm1_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : lm1_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    auto measured_diff_placement = graph.variable_placement(20, valid);
+    REQUIRE(valid);
+    REQUIRE(measured_diff_placement.connected_factor_ids.size() == 1);  // Factor 101 only
+    std::cout << "  measured_diff connected to " << measured_diff_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : measured_diff_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    auto lm_measured_diff_placement = graph.variable_placement(21, valid);
+    REQUIRE(valid);
+    REQUIRE(lm_measured_diff_placement.connected_factor_ids.size() == 1);  // Factor 102 only
+    std::cout << "  lm_measured_diff connected to " << lm_measured_diff_placement.connected_factor_ids.size() << " factors: ";
+    for (int id : lm_measured_diff_placement.connected_factor_ids) std::cout << id << " ";
+    std::cout << "✓" << std::endl;
+
+    // Test 2: Check get_factors_for_variable()
+    std::cout << "\nTest 2: Checking get_factors_for_variable()..." << std::endl;
+
+    auto pose0_factors = graph.get_factors_for_variable(0);
+    REQUIRE(pose0_factors.size() == 2);
+    std::cout << "  Pose0 factors: ";
+    for (auto* f : pose0_factors) std::cout << f->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    auto lm1_factors = graph.get_factors_for_variable(11);
+    REQUIRE(lm1_factors.size() == 2);
+    std::cout << "  Landmark1 factors: ";
+    for (auto* f : lm1_factors) std::cout << f->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    // Test 3: Check get_variable_neighbors()
+    std::cout << "\nTest 3: Checking get_variable_neighbors()..." << std::endl;
+
+    // Pose0's neighbors: Landmark0 (via Factor100), Pose1 (via Factor101), measured_diff (via Factor101)
+    auto pose0_neighbors = graph.get_variable_neighbors(0);
+    REQUIRE(pose0_neighbors.size() == 3);
+    std::set<int> pose0_neighbor_ids;
+    for (auto* v : pose0_neighbors) pose0_neighbor_ids.insert(v->id());
+    REQUIRE(pose0_neighbor_ids.count(1) == 1);   // Pose1
+    REQUIRE(pose0_neighbor_ids.count(10) == 1);  // Landmark0
+    REQUIRE(pose0_neighbor_ids.count(20) == 1);  // measured_diff
+    std::cout << "  Pose0 neighbors: ";
+    for (auto* v : pose0_neighbors) std::cout << v->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    // Landmark0's neighbors: Pose0 (via Factor100), Landmark1 (via Factor102), lm_measured_diff (via Factor102)
+    auto lm0_neighbors = graph.get_variable_neighbors(10);
+    REQUIRE(lm0_neighbors.size() == 3);
+    std::set<int> lm0_neighbor_ids;
+    for (auto* v : lm0_neighbors) lm0_neighbor_ids.insert(v->id());
+    REQUIRE(lm0_neighbor_ids.count(0) == 1);    // Pose0
+    REQUIRE(lm0_neighbor_ids.count(11) == 1);   // Landmark1
+    REQUIRE(lm0_neighbor_ids.count(21) == 1);   // lm_measured_diff
+    std::cout << "  Landmark0 neighbors: ";
+    for (auto* v : lm0_neighbors) std::cout << v->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    // Pose1's neighbors: Pose0 (via Factor101), measured_diff (via Factor101), Landmark1 (via Factor103)
+    auto pose1_neighbors = graph.get_variable_neighbors(1);
+    REQUIRE(pose1_neighbors.size() == 3);
+    std::set<int> pose1_neighbor_ids;
+    for (auto* v : pose1_neighbors) pose1_neighbor_ids.insert(v->id());
+    REQUIRE(pose1_neighbor_ids.count(0) == 1);   // Pose0
+    REQUIRE(pose1_neighbor_ids.count(20) == 1);  // measured_diff
+    REQUIRE(pose1_neighbor_ids.count(11) == 1);  // Landmark1
+    std::cout << "  Pose1 neighbors: ";
+    for (auto* v : pose1_neighbors) std::cout << v->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    // Landmark1's neighbors: Landmark0 (via Factor102), lm_measured_diff (via Factor102), Pose1 (via Factor103)
+    auto lm1_neighbors = graph.get_variable_neighbors(11);
+    REQUIRE(lm1_neighbors.size() == 3);
+    std::set<int> lm1_neighbor_ids;
+    for (auto* v : lm1_neighbors) lm1_neighbor_ids.insert(v->id());
+    REQUIRE(lm1_neighbor_ids.count(10) == 1);   // Landmark0
+    REQUIRE(lm1_neighbor_ids.count(21) == 1);   // lm_measured_diff
+    REQUIRE(lm1_neighbor_ids.count(1) == 1);    // Pose1
+    std::cout << "  Landmark1 neighbors: ";
+    for (auto* v : lm1_neighbors) std::cout << v->id() << " ";
+    std::cout << "✓" << std::endl;
+
+    // Test 4: Non-existent variable returns empty results
+    std::cout << "\nTest 4: Checking non-existent variable handling..." << std::endl;
+    auto no_factors = graph.get_factors_for_variable(999);
+    REQUIRE(no_factors.empty());
+    auto no_neighbors = graph.get_variable_neighbors(999);
+    REQUIRE(no_neighbors.empty());
+    std::cout << "  Non-existent variable returns empty results ✓" << std::endl;
+
+    std::cout << "\n=== Variable-to-Factor Connectivity Test PASSED ===" << std::endl;
+}
+
+// ============================================================================
+// EliminationOptimizer Tests
+// ============================================================================
+
+TEST_CASE("EliminationOptimizer: Simple chain test")
+{
+    std::cout << "\n=== EliminationOptimizer Simple Chain Test ===" << std::endl;
+
+    // Create a simple chain of 4 poses with priors and between factors
+    FactorGraph graph;
+    int var_id = 0;
+    int factor_id = 0;
+
+    // Ground truth poses in a chain
+    std::vector<Eigen::Vector3d> gt_poses = {
+        {0.0, 0.0, 0.0},  // Pose 0
+        {1.0, 0.0, 0.0},  // Pose 1
+        {2.0, 0.0, 0.0},  // Pose 2
+        {3.0, 0.0, 0.0}   // Pose 3
+    };
+
+    // Create pose variables with noisy initial guesses
+    std::vector<std::shared_ptr<Pose2DVariable>> poses;
+    for (size_t i = 0; i < gt_poses.size(); ++i) {
+        Eigen::Vector3d noisy_pose = gt_poses[i];
+        if (i > 0) {
+            noisy_pose(0) += 0.1 * (i % 2 == 0 ? 1 : -1);
+            noisy_pose(1) += 0.05;
+        }
+        auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+        poses.push_back(pose);
+        graph.add_variable(pose);
+    }
+
+    // Add prior on first pose (strong)
+    double prior_sigma = 0.01;
+    auto prior_factor = std::make_shared<Pose2DPriorFactor>(
+        factor_id++, poses[0].get(), gt_poses[0], prior_sigma, prior_sigma);
+    graph.add_factor(prior_factor);
+
+    // Add between factors connecting consecutive poses
+    double between_sigma = 0.1;
+    for (size_t i = 0; i < poses.size() - 1; ++i) {
+        Eigen::Vector3d relative_pose = gt_poses[i + 1] - gt_poses[i];
+        auto measured = std::make_shared<GenericVariable>(var_id++, relative_pose);
+        measured->set_constant(true);
+        graph.add_variable(measured);
+
+        auto between_factor = std::make_shared<Pose2DBetweenFactor>(
+            factor_id++, poses[i].get(), poses[i + 1].get(), measured.get(),
+            between_sigma, between_sigma);
+        graph.add_factor(between_factor);
+    }
+
+    graph.finalize_structure();
+
+    std::cout << "Graph structure:" << std::endl;
+    std::cout << "  Variables: " << graph.num_variables() << std::endl;
+    std::cout << "  Factors: " << graph.get_all_factors().size() << std::endl;
+    std::cout << "  Values: " << graph.num_values() << std::endl;
+
+    double initial_residual = graph.compute_full_residual_vector().norm();
+    std::cout << "Initial residual norm: " << initial_residual << std::endl;
+
+    // Create optimizer
+    OptimizerSettings settings;
+    settings.method = OptimizerMethod::GaussNewton;
+    settings.verbose = true;
+    settings.max_num_iterations = 20;
+
+    EliminationOptimizer optimizer;
+    optimizer.setup(std::make_shared<FactorGraph>(graph), settings);
+    optimizer.optimize();
+
+    // Check results
+    REQUIRE(optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+    REQUIRE(optimizer.current_stats_.valid == true);
+
+    double final_residual = optimizer.current_stats_.residual_norm;
+    std::cout << "Final residual norm: " << final_residual << std::endl;
+    std::cout << "Iterations: " << optimizer.current_stats_.current_iteration << std::endl;
+
+    REQUIRE(final_residual < initial_residual);
+    REQUIRE(final_residual < 0.5);  // Should converge well
+
+    std::cout << "\n=== EliminationOptimizer Simple Chain Test PASSED ===" << std::endl;
+}
+
+TEST_CASE("EliminationOptimizer: Comparison with SparseOptimizer")
+{
+    std::cout << "\n=== EliminationOptimizer vs SparseOptimizer Comparison ===" << std::endl;
+
+    // Create a test scenario
+    std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+    std::vector<Eigen::Vector3d> gt_landmark_positions;
+    CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+
+    // Create two identical graphs
+    FactorGraph graph_sparse = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
+    FactorGraph graph_elim = CreateGraphWithLandmarks(gt_camera_poses, gt_landmark_positions, true, false, true);
+
+    graph_sparse.finalize_structure();
+    graph_elim.finalize_structure();
+
+    double initial_residual = graph_sparse.compute_full_residual_vector().norm();
+    std::cout << "Initial residual norm: " << initial_residual << std::endl;
+
+    // Optimizer settings
+    OptimizerSettings settings;
+    settings.method = OptimizerMethod::GaussNewton;
+    settings.verbose = false;
+    settings.max_num_iterations = 50;
+
+    // Run SparseOptimizer
+    SparseOptimizer sparse_optimizer;
+    sparse_optimizer.setup(std::make_shared<FactorGraph>(graph_sparse), settings);
+    sparse_optimizer.optimize();
+
+    double sparse_final_residual = sparse_optimizer.current_stats_.residual_norm;
+    int sparse_iterations = sparse_optimizer.current_stats_.current_iteration;
+
+    std::cout << "SparseOptimizer:" << std::endl;
+    std::cout << "  Final residual: " << sparse_final_residual << std::endl;
+    std::cout << "  Iterations: " << sparse_iterations << std::endl;
+
+    // Run EliminationOptimizer
+    EliminationOptimizer elim_optimizer;
+    elim_optimizer.setup(std::make_shared<FactorGraph>(graph_elim), settings);
+    elim_optimizer.optimize();
+
+    double elim_final_residual = elim_optimizer.current_stats_.residual_norm;
+    int elim_iterations = elim_optimizer.current_stats_.current_iteration;
+
+    std::cout << "EliminationOptimizer:" << std::endl;
+    std::cout << "  Final residual: " << elim_final_residual << std::endl;
+    std::cout << "  Iterations: " << elim_iterations << std::endl;
+
+    // Both should succeed
+    REQUIRE(sparse_optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+    REQUIRE(elim_optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+
+    // Both should converge to similar solutions (within tolerance due to different algorithms)
+    double residual_ratio = std::abs(elim_final_residual - sparse_final_residual) /
+                            std::max(1e-10, std::min(elim_final_residual, sparse_final_residual));
+    std::cout << "Residual difference ratio: " << residual_ratio << std::endl;
+
+    // Allow some tolerance since elimination order and numerical differences may cause slight variations
+    REQUIRE(residual_ratio < 0.5);  // Within 50% of each other (both should be small anyway)
+
+    std::cout << "\n=== Comparison Test PASSED ===" << std::endl;
+}
+
+TEST_CASE("EliminationOptimizer: Levenberg-Marquardt test")
+{
+    std::cout << "\n=== EliminationOptimizer LM Test ===" << std::endl;
+
+    // Create a test scenario with inverse range variables (can be tricky)
+    std::vector<Eigen::Matrix<double, 6, 1>> gt_camera_poses;
+    std::vector<Eigen::Vector3d> gt_landmark_positions;
+    CreateSimpleScenario(gt_camera_poses, gt_landmark_positions);
+
+    FactorGraph graph = CreateGraphWithInverseRangeVariables(
+        gt_camera_poses, gt_landmark_positions, true, false, true, 0.04, 5.0);
+    graph.finalize_structure();
+
+    double initial_residual = graph.compute_full_residual_vector().norm();
+    std::cout << "Initial residual norm: " << initial_residual << std::endl;
+
+    // Use LM for robustness
+    OptimizerSettings settings;
+    settings.method = OptimizerMethod::LevenbergMarquardt;
+    settings.verbose = true;
+    settings.max_num_iterations = 50;
+
+    EliminationOptimizer optimizer;
+    optimizer.setup(std::make_shared<FactorGraph>(graph), settings);
+    optimizer.optimize();
+
+    REQUIRE(optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+    REQUIRE(optimizer.current_stats_.valid == true);
+
+    double final_residual = optimizer.current_stats_.residual_norm;
+    std::cout << "Final residual norm: " << final_residual << std::endl;
+    std::cout << "Iterations: " << optimizer.current_stats_.current_iteration << std::endl;
+
+    REQUIRE(final_residual < initial_residual);
+
+    std::cout << "\n=== EliminationOptimizer LM Test PASSED ===" << std::endl;
+}
+
+TEST_CASE("EliminationOptimizer: 2D SLAM scenario")
+{
+    std::cout << "\n=== EliminationOptimizer 2D SLAM Test ===" << std::endl;
+
+    FactorGraph graph;
+    int var_id = 0;
+    int factor_id = 0;
+
+    // Ground truth: 3 poses in a triangular configuration
+    std::vector<Eigen::Vector3d> gt_poses = {
+        {0.0, 0.0, 0.0},
+        {3.0, 0.0, PI / 2},
+        {1.5, 2.5, PI}
+    };
+
+    // Ground truth: 4 landmarks forming a square
+    std::vector<Eigen::Vector2d> gt_landmarks = {
+        {1.0, 1.0}, {2.0, 1.0}, {2.0, 2.0}, {1.0, 2.0}
+    };
+
+    // Create pose variables with noisy initial guesses
+    std::vector<std::shared_ptr<Pose2DVariable>> poses;
+    for (size_t i = 0; i < gt_poses.size(); ++i) {
+        Eigen::Vector3d noisy_pose = gt_poses[i];
+        noisy_pose(0) += 0.15 * (i == 0 ? 0 : 1);
+        noisy_pose(1) += 0.1 * (i == 1 ? -1 : 1);
+        noisy_pose(2) += 0.05 * (i == 2 ? 1 : 0);
+
+        auto pose = std::make_shared<Pose2DVariable>(var_id++, noisy_pose);
+        poses.push_back(pose);
+        graph.add_variable(pose);
+    }
+
+    // Create landmark variables with noisy initial guesses
+    std::vector<std::shared_ptr<GenericVariable>> landmarks;
+    for (size_t i = 0; i < gt_landmarks.size(); ++i) {
+        Eigen::Vector2d noisy_landmark = gt_landmarks[i];
+        noisy_landmark(0) += 0.08 * (i % 2 == 0 ? 1 : -1);
+        noisy_landmark(1) += 0.06 * (i / 2 == 0 ? -1 : 1);
+
+        auto landmark = std::make_shared<GenericVariable>(var_id++, noisy_landmark);
+        landmarks.push_back(landmark);
+        graph.add_variable(landmark);
+    }
+
+    // Add pose priors
+    double pose_sigma = 0.3;
+    for (size_t i = 0; i < poses.size(); ++i) {
+        auto pose_prior = std::make_shared<Pose2DPriorFactor>(
+            factor_id++, poses[i].get(), gt_poses[i], pose_sigma, pose_sigma);
+        graph.add_factor(pose_prior);
+    }
+
+    // Add landmark priors
+    double landmark_sigma = 0.5;
+    for (size_t i = 0; i < landmarks.size(); ++i) {
+        auto landmark_prior = std::make_shared<GenericPriorFactor>(
+            factor_id++, landmarks[i].get(), gt_landmarks[i], landmark_sigma);
+        graph.add_factor(landmark_prior);
+    }
+
+    // Add bearing observations
+    double bearing_sigma = 0.05;
+    std::vector<std::pair<int, int>> observations = {
+        {0, 0}, {0, 1}, {0, 3},
+        {1, 0}, {1, 1}, {1, 2},
+        {2, 1}, {2, 2}, {2, 3}
+    };
+
+    for (const auto& obs : observations) {
+        int pose_idx = obs.first;
+        int landmark_idx = obs.second;
+
+        Eigen::Vector2d pose_pos = gt_poses[pose_idx].head<2>();
+        double pose_theta = gt_poses[pose_idx](2);
+        Eigen::Vector2d landmark_pos = gt_landmarks[landmark_idx];
+
+        Eigen::Vector2d delta_world = landmark_pos - pose_pos;
+        double c = std::cos(pose_theta);
+        double s = std::sin(pose_theta);
+        Eigen::Matrix2d R_T;
+        R_T << c, s, -s, c;
+        Eigen::Vector2d delta_local = R_T * delta_world;
+        double bearing_angle = std::atan2(delta_local(1), delta_local(0));
+
+        auto bearing_factor = std::make_shared<BearingObservationFactor2D>(
+            factor_id++, poses[pose_idx].get(), landmarks[landmark_idx].get(),
+            bearing_angle, bearing_sigma);
+        graph.add_factor(bearing_factor);
+    }
+
+    graph.finalize_structure();
+
+    double initial_residual = graph.compute_full_residual_vector().norm();
+    std::cout << "Initial residual norm: " << initial_residual << std::endl;
+
+    // Optimize
+    OptimizerSettings settings;
+    settings.method = OptimizerMethod::LevenbergMarquardt;
+    settings.verbose = true;
+    settings.max_num_iterations = 50;
+
+    EliminationOptimizer optimizer;
+    optimizer.setup(std::make_shared<FactorGraph>(graph), settings);
+    optimizer.optimize();
+
+    REQUIRE(optimizer.current_stats_.status == OptimizerStatus::SUCCESS);
+    REQUIRE(optimizer.current_stats_.valid == true);
+
+    double final_residual = optimizer.current_stats_.residual_norm;
+    std::cout << "Final residual norm: " << final_residual << std::endl;
+
+    REQUIRE(final_residual < initial_residual);
+
+    std::cout << "\n=== EliminationOptimizer 2D SLAM Test PASSED ===" << std::endl;
 }
